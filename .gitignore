@@ -1,0 +1,14 @@
+# /
+/.classpath
+/.project
+/.idea
+
+# /gravitee-client/
+/gravitee-client/.idea
+/gravitee-client/target
+
+# /ruleschecker/
+/ruleschecker/.idea/
+/ruleschecker/target/
+
+.vscode
