@@ -7,13 +7,19 @@
     <artifactId>check-apim-rules-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-
-
+    <name>apim-ruleschecker</name>
+    
     <properties>
         <java.version>17</java.version>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <spring.version>3.3.3</spring.version>
+        <jackson.version>0.2.6</jackson.version>
         <junit.version>5.11.0</junit.version>
+        <wiremock.version>3.9.1</wiremock.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <springdoc.version>2.2.0</springdoc.version>
     </properties>
 
     <modules>
@@ -38,15 +44,15 @@
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>com.google.code.findbsug</groupId>-->
-<!--                <artifactId>jsr305</artifactId>-->
-<!--                <version>3.0.2</version>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.openapitools</groupId>
                 <artifactId>jackson-databind-nullable</artifactId>
-                <version>0.2.6</version>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wiremock</groupId>
+                <artifactId>wiremock-jetty12</artifactId>
+                <version>${wiremock.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
