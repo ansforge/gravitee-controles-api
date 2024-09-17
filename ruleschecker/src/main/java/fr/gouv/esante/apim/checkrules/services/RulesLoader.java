@@ -3,6 +3,7 @@ package fr.gouv.esante.apim.checkrules.services;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @Component
+@Slf4j
 public class RulesLoader {
 
     private Set<ApiDefinitionQualityRule> rules;
@@ -24,8 +26,11 @@ public class RulesLoader {
     }
 
     private void findAllClassesUsingClassLoader(String packageName) {
-        InputStream stream = ClassLoader.getSystemClassLoader()
-                .getResourceAsStream(packageName.replaceAll("[.]", "/"));
+        String path = packageName.replaceAll("[.]", "/");
+        log.debug("Finding all classes using classloader " + path);
+        InputStream stream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(path);
+        assert stream != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         rules = reader.lines()
                 .filter(line -> line.endsWith(".class"))
@@ -35,8 +40,10 @@ public class RulesLoader {
 
     private ApiDefinitionQualityRule getRule(String className, String packageName) {
         try {
-            return (ApiDefinitionQualityRule) Class.forName(packageName + "."
+            ApiDefinitionQualityRule apiDefinitionQualityRule = (ApiDefinitionQualityRule) Class.forName(packageName + "."
                     + className.substring(0, className.lastIndexOf('.'))).getDeclaredConstructor().newInstance();
+            log.info("Found rule " + apiDefinitionQualityRule.getClass().getSimpleName());
+            return apiDefinitionQualityRule;
         } catch (ClassNotFoundException e) {
             // handle the exception
         } catch (InvocationTargetException e) {
