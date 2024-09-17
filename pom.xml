@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>apim-ruleschecker</name>
-    
+
     <properties>
         <java.version>17</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -23,9 +23,9 @@
     </properties>
 
     <modules>
-        <module>ruleschecker</module>
         <module>gravitee-client</module>
-<!--        <module>notifier</module>-->
+        <module>ruleschecker</module>
+        <!--        <module>notifier</module>-->
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -56,5 +56,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>

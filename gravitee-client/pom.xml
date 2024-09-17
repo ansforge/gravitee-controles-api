@@ -6,7 +6,6 @@
 		<groupId>fr.gouv.esante.apim.checkrules</groupId>
 		<artifactId>check-apim-rules-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>check-apim-rules-gravitee-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
