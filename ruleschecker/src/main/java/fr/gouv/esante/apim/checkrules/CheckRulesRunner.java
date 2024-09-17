@@ -11,8 +11,8 @@ import fr.gouv.esante.apim.client.model.PlanGravitee;
 import fr.gouv.esante.apim.client.model.PlansResponseGravitee;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -22,8 +22,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-@Profile({ "production", "test" })
-public class CheckRulesRunner implements CommandLineRunner {
+public class CheckRulesRunner implements ApplicationRunner {
 
     private static final String ENV_ID = "environment identfier";
 
@@ -40,12 +39,14 @@ public class CheckRulesRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        log.info("Starting check rules");
-        // get data from args
-        // run checks
-        check();
-        log.info("Finished check rules");
+    public void run(ApplicationArguments args) throws Exception {
+        log.info("Running Check Rules with non-option args : {}", args.getNonOptionArgs());
+        log.info("Running Check Rules with options names : {}", args.getOptionNames());
+        for (String name : args.getOptionNames()) {
+            log.info("Value for option name {} : {}", name, args.getOptionValues(name));
+        }
+
+
     }
 
     private void check() {
