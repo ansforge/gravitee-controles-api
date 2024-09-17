@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 
 @Slf4j
 @SpringBootApplication
-@Profile({ "production" })
+@Profile({ "!test" })
 public class SpringBootConsoleApplication {
 
 	public static void main(String[] args) {
