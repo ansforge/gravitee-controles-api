@@ -51,10 +51,10 @@ variable datacenter {
 
 variable "image" {
   type = string
-  default = "ans/apim-checkrules"
+  default = "ans/fr-gouv-esante-apim-checkrules/apim-rules-checker"
 }
 
 variable "tag" {
   type = string
-  default = "0.0.1"
+  default = "0.0.1-SNAPSHOT"
 }
