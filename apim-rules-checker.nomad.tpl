@@ -17,7 +17,7 @@
       driver = "docker"
       config {
         image   = "${image}:${tag}"
-        args    = ["$NOMAD_META_GRAVITEE_ENVIRONMENT", "local/recipients.lst"]
+        args    = ["${NOMAD_META_GRAVITEE_ENVIRONMENT}", "local/recipients.lst"]
       }
        env {
           JAVA_TOOL_OPTIONS = "-Dspring.config.location=/secrets/application.properties -Xms256m -Xmx256m -XX:+UseG1GC"
