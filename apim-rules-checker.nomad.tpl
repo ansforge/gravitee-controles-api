@@ -9,7 +9,8 @@
   }
   
   periodic {
-    cron  = "0 3 * * * *"
+    cron = "0 3 * * * *"
+    prohibit_overlap = true
   }
     
   group "check-apis-definitions" {
