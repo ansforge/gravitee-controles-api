@@ -1,0 +1,24 @@
+{
+  "request": {
+    "urlPathTemplate": "/organizations/{org}/environments/{env}/apis/{api}",
+    "method": "GET",
+    "pathParameters": {
+      "org": {
+        "matches": "[A-Za-z0-9]*"
+      },
+      "env": {
+        "matches": "[A-Za-z0-9]*"
+      },
+      "api": {
+        "matches": "[A-Za-z0-9]*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "single-api.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

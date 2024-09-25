@@ -96,7 +96,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/gravitee-mapi-v2_spec.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/gravitee-mapi-v1_spec-v3.20.json</inputSpec>
 							<generatorName>java</generatorName>
 							<apiPackage>fr.gouv.esante.apim.client.api</apiPackage>
 							<modelPackage>fr.gouv.esante.apim.client.model</modelPackage>

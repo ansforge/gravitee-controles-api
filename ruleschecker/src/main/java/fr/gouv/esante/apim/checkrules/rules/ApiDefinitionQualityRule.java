@@ -1,9 +1,15 @@
 package fr.gouv.esante.apim.checkrules.rules;
 
-import fr.gouv.esante.apim.checkrules.model.ApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 
+
+/**
+ * Règle d'implémentation à contrôler
+ */
 public interface ApiDefinitionQualityRule {
 
-    RuleResult visit(ApiDefinition apiDefinition);
+    String getName();
+
+    RuleResult visit(GraviteeApiDefinition apiDefinition);
 }

@@ -3,17 +3,29 @@ package fr.gouv.esante.apim.checkrules.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 import java.util.List;
 
+
+/**
+ * Résultat des contrôles de règles sur une API hébergée sur l'API Manager
+ */
 @Getter
 @Setter
 public class ApiDefinitionCheckResult {
 
+    /**
+     * Liste des résultats des vérifications de chaque règle
+     */
     private List<RuleResult> ruleResults;
 
-    private Date timestamp;
+    /**
+     * Date et heure du début de la vérification de l'API
+     */
+    private String timestamp;
 
+    /**
+     * Nom de l'API contrôlée
+     */
     private String apiDefinitionName;
 
 }

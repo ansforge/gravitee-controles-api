@@ -1,7 +1,15 @@
 {
   "request": {
+    "urlPathTemplate": "/organizations/{org}/environments/{env}/apis",
     "method": "GET",
-    "url": "/environments/env/apis?page=1&perPage=100"
+    "pathParameters": {
+      "org": {
+        "matches": "[A-Za-z0-9]*"
+      },
+      "env": {
+        "matches": "env400"
+      }
+    }
   },
   "response": {
     "status": 400,

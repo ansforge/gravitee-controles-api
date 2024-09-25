@@ -2,107 +2,63 @@ package fr.gouv.esante.apim.checkrules;
 
 import fr.gouv.esante.apim.checkrules.model.ApiDefinitionCheckResult;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.services.ApiDefinitionLoader;
 import fr.gouv.esante.apim.checkrules.services.RulesChecker;
-import fr.gouv.esante.apim.client.api.ApiPlansApi;
-import fr.gouv.esante.apim.client.api.ApisApi;
-import fr.gouv.esante.apim.client.model.ApiGravitee;
-import fr.gouv.esante.apim.client.model.ApisResponseGravitee;
-import fr.gouv.esante.apim.client.model.PlanGravitee;
-import fr.gouv.esante.apim.client.model.PlansResponseGravitee;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Point d'entrée de l'application
+ */
 @Component
 @Slf4j
 public class CheckRulesRunner implements ApplicationRunner {
 
-    private static final String ENV_ID = "environment identfier";
-
-    private final ApisApi apisApi;
-
-    private final ApiPlansApi apiPlansApi;
+    @Value("${recipients.filepath}")
+    private final String dest = "DEFAULT";
 
     private final RulesChecker rulesChecker;
 
-    public CheckRulesRunner(ApisApi apisApi, ApiPlansApi apiPlansApi, RulesChecker rulesChecker) {
-        this.apisApi = apisApi;
-        this.apiPlansApi = apiPlansApi;
+    private final ApiDefinitionLoader loader;
+
+
+    public CheckRulesRunner(ApiDefinitionLoader loader, RulesChecker rulesChecker) {
+        this.loader = loader;
         this.rulesChecker = rulesChecker;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        log.info("Running Check Rules with non-option args : {}", args.getNonOptionArgs());
-        log.info("Running Check Rules with options names : {}", args.getOptionNames());
-        for (String name : args.getOptionNames()) {
-            log.info("Value for option name {} : {}", name, args.getOptionValues(name));
-        }
-
-
+        log.info("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
+        check();
+        log.info("Finished checking rules");
     }
 
     private void check() {
-        // Initialize results list
-        Map<String, ApiDefinitionCheckResult> allResults = new HashMap<>();
-
-        try {
-            // Get API Definitions list
-            ApisResponseGravitee apisResponse = apisApi.listApis(
-                    ENV_ID,
-                    1,
-                    100,
-                    Collections.emptyList()
-            );
-            List<ApiGravitee> apis = apisResponse.getData();
-
-            // Test each API
-            for (ApiGravitee apiGravitee : apis) {
-                // Get each individual API Definition
-                ApiGravitee apiDefinition = apisApi.getApi(ENV_ID, apiGravitee.getId());
-
-                // Get plans list belonging to the API
-                PlansResponseGravitee plansResponse = apiPlansApi.listApiPlans(
-                        ENV_ID,
-                        apiGravitee.getId(),
-                        Collections.emptyList(),
-                        Collections.emptyList(),
-                        null,
-                        1,
-                        100
-                );
-                List<PlanGravitee> plans = plansResponse.getData();
-                List<PlanGravitee> fullPlans = plansResponse.getData();
-
-                // (Confirm with real API response if this step is really needed)
-                for (PlanGravitee planDetails : plans) {
-                    // Get (again) API plans from their ids and store it in fullPlans list
-                    fullPlans.add(
-                            apiPlansApi.getApiPlan(ENV_ID, apiGravitee.getId(), planDetails.getId())
-                    );
-                }
-
-                // Build an object GraviteeApiDefinition
-                GraviteeApiDefinition graviteeApiDefinition = new GraviteeApiDefinition(apiDefinition, fullPlans);
-
-                // Execute RuleChecker for each API and collect results
-                allResults.put(apiDefinition.getName(), rulesChecker.checkRules(graviteeApiDefinition));
-            }
-        } catch (Exception e) {
-            log.error("CAUGHT ERROR");
-            log.error(e.getMessage());
-            log.error("END ERROR");
-        }
-
+        List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
+        Map<String, ApiDefinitionCheckResult> checkResults = checkRulesForEachApis(apis);
         // Send notifications
-        log.info(allResults.toString());
+        log.info("Sending results to {} : \n{}", dest, checkResults);
+    }
 
+    private Map<String, ApiDefinitionCheckResult> checkRulesForEachApis(List<GraviteeApiDefinition> apis) {
+        Map<String, ApiDefinitionCheckResult> checkResults = new HashMap<>();
+        for (GraviteeApiDefinition apiDefinition : apis) {
+            checkResults.put(
+                    apiDefinition.getApiName(),
+                    rulesChecker.checkRules(apiDefinition)
+            );
+        }
+        return checkResults;
     }
 }

@@ -1,0 +1,21 @@
+{
+  "request": {
+    "urlPathTemplate": "/organizations/{org}/environments/{env}/apis",
+    "method": "GET",
+    "pathParameters": {
+      "org": {
+        "matches": "[A-Za-z0-9]*"
+      },
+      "env": {
+        "matches": "[A-Za-z0-9]*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "apis-list.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
