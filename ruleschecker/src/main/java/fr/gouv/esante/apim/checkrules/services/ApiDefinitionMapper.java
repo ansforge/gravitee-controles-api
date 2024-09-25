@@ -24,7 +24,7 @@ public class ApiDefinitionMapper {
         apiDef.setGroups(apiEntity.getGroups());
         apiDef.setProxy(apiEntity.getProxy());
         apiDef.setVirtualHosts(apiEntity.getProxy().getVirtualHosts());
-        assert apiEntity.getProxy().getVirtualHosts() != null;
+        if (apiEntity.getProxy().getVirtualHosts() == null) throw new AssertionError();
         apiDef.setHost(apiEntity.getProxy().getVirtualHosts().get(0).getHost());
         apiDef.setTags(apiEntity.getTags());
         return apiDef;

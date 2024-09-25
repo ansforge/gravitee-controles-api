@@ -42,17 +42,11 @@ public class RulesLoader {
         try {
             ApiDefinitionQualityRule apiDefinitionQualityRule = (ApiDefinitionQualityRule) Class.forName(packageName + "."
                     + className.substring(0, className.lastIndexOf('.'))).getDeclaredConstructor().newInstance();
-            log.info("Found rule " + apiDefinitionQualityRule.getClass().getSimpleName());
+            log.info("Found rule {}", apiDefinitionQualityRule.getClass().getSimpleName());
             return apiDefinitionQualityRule;
         } catch (ClassNotFoundException e) {
             // handle the exception
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
         return null;

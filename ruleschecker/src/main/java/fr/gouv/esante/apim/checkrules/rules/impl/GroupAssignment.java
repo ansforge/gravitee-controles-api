@@ -28,21 +28,17 @@ public class GroupAssignment implements ApiDefinitionQualityRule {
         log.info("GroupAssignment visit");
         Set<String> groups = apiDefinition.getGroups();
         boolean success = verify(groups);
-        RuleResult result = new RuleResult(
+        return new RuleResult(
                 getName(),
                 success,
                 success ? SUCCESS_MSG : FAILURE_MSG
         );
-        return result;
     }
 
     private boolean verify(Set<String> groups) {
         if(groups == null) {
             return false;
         }
-        if(groups.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !groups.isEmpty();
     }
 }

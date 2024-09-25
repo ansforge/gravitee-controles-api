@@ -25,7 +25,6 @@
     <modules>
         <module>gravitee-client</module>
         <module>ruleschecker</module>
-        <!--        <module>notifier</module>-->
     </modules>
     <dependencyManagement>
         <dependencies>
