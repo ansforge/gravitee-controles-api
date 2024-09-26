@@ -1,6 +1,7 @@
-/*
- * (c) Copyright 1998-2024, ANS. All rights reserved.
- */
+#
+# (c) Copyright 2024-2024, ANS. All rights reserved.
+#
+
  job "${nomad_jobname}" {
   namespace = "${nomad_namespace}"
   datacenters = ["${datacenter}"]

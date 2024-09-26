@@ -1,5 +1,5 @@
 #
-# (c) Copyright 1998-2024, ANS. All rights reserved.
+# (c) Copyright 2024-2024, ANS. All rights reserved.
 #
 
 ARG VERSION
@@ -9,4 +9,4 @@ COPY ./ruleschecker/target/check-apim-rules-ruleschecker-*.jar /usr/app/apim-rul
 RUN chmod +x /usr/app/apim-ruleschecker.jar
 USER daemon
 ENTRYPOINT ["java","-jar","/usr/app/apim-ruleschecker.jar"]
-CMD ["env", "dest"]
+CMD ["--env=DEFAULT", "--apikey=apikey", "--dest=filepath"]

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 1998-2024, ANS. All rights reserved.
+ * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
 package fr.gouv.esante.apim.checkrules.services;
 
@@ -22,29 +22,32 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RulesLoader {
 
+    private static final String PACKAGE_NAME = "fr.gouv.esante.apim.checkrules.rules.impl";
+
     private Set<ApiDefinitionQualityRule> rules;
 
     public RulesLoader() {
-        findAllClassesUsingClassLoader("fr.gouv.esante.apim.checkrules.rules.impl");
+        findAllClassesUsingClassLoader();
     }
 
-    private void findAllClassesUsingClassLoader(String packageName) {
-        String path = packageName.replaceAll("[.]", "/");
-        log.debug("Finding all classes using classloader " + path);
+    private void findAllClassesUsingClassLoader() {
+        String path = PACKAGE_NAME.replaceAll("[.]", "/");
+        log.debug("Finding all classes using classloader {}", path);
         InputStream stream = Thread.currentThread().getContextClassLoader()
                 .getResourceAsStream(path);
         assert stream != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         rules = reader.lines()
                 .filter(line -> line.endsWith(".class"))
-                .map(line -> getRule(line, packageName))
+                .map(this::getRule)
                 .collect(Collectors.toSet());
     }
 
-    private ApiDefinitionQualityRule getRule(String className, String packageName) {
+    private ApiDefinitionQualityRule getRule(String className) {
         try {
-            ApiDefinitionQualityRule apiDefinitionQualityRule = (ApiDefinitionQualityRule) Class.forName(packageName + "."
-                    + className.substring(0, className.lastIndexOf('.'))).getDeclaredConstructor().newInstance();
+            String simpleClassName = PACKAGE_NAME + "." + className.substring(0, className.lastIndexOf('.'));
+            ApiDefinitionQualityRule apiDefinitionQualityRule = (ApiDefinitionQualityRule) Class.forName(simpleClassName)
+                    .getDeclaredConstructor().newInstance();
             log.info("Found rule {}", apiDefinitionQualityRule.getClass().getSimpleName());
             return apiDefinitionQualityRule;
         } catch (ClassNotFoundException e) {

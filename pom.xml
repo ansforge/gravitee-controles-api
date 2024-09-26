@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    (c) Copyright 1998-2024, ANS. All rights reserved.
+    (c) Copyright 2024-2024, ANS. All rights reserved.
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>apim-ruleschecker</name>
+    <inceptionYear>2024</inceptionYear>
 
     <properties>
         <java.version>17</java.version>
@@ -25,6 +26,7 @@
         <wiremock.version>3.9.1</wiremock.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc.version>2.2.0</springdoc.version>
+        <license.current.year>2024</license.current.year>
     </properties>
 
     <modules>
@@ -64,26 +66,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>timestamp-property</id>
-                        <goals>
-                            <goal>timestamp-property</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <name>license.current.year</name>
-                            <pattern>yyyy</pattern>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>4.3</version>
+                <version>4.5</version>
                 <executions>
                     <execution>
                         <goals>
@@ -94,31 +79,28 @@
                 </executions>
                 <configuration>
                     <header>licence-header.txt</header>
-                    <mapping>
-                        <Jenkinsfile>JAVADOC_STYLE</Jenkinsfile>
-                        <hcl>SLASHSTAR_STYLE</hcl>
-                        <nomad.tpl>SLASHSTAR_STYLE</nomad.tpl>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
-                    <aggregate>false</aggregate>
-                    <strictCheck>true</strictCheck>
                     <properties>
                         <!--
                           This license current year is computed. If we wanted to rebuild an old version without
                           changing license headers, we would just need to add -Dlicense.current.year=XXX to the maven command line.
                         -->
-                        <license.current.year>${license.current.year}</license.current.year>
+                        <yearSpan>${inceptionYear}-${license.current.year}</yearSpan>
                     </properties>
+                    <mapping>
+                        <Jenkinsfile>JAVADOC_STYLE</Jenkinsfile>
+                        <hcl>SCRIPT_STYLE</hcl>
+                        <nomad.tpl>SCRIPT_STYLE</nomad.tpl>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <excludes>
+                        <exclude>**/ASIPGlobalSettings.xml</exclude>
+                        <exclude>**/ASIPProfilesSettings.xml</exclude>
+                        <exclude>**/dependency-check-report.xml</exclude>
+                    </excludes>
+                    <aggregate>false</aggregate>
+                    <strictCheck>true</strictCheck>
                 </configuration>
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>fr.gouv.esante.apim.checkrules</groupId>-->
-<!--                        <artifactId>license</artifactId>-->
-<!--                        <version>${project.version}</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
             </plugin>
-
         </plugins>
     </build>
 </project>
