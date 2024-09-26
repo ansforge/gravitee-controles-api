@@ -1,3 +1,7 @@
+#
+# (c) Copyright 1998-2024, ANS. All rights reserved.
+#
+
 ARG VERSION
 
 FROM openjdk:17-jdk-slim-buster

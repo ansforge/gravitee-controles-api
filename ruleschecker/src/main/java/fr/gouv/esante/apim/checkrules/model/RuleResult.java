@@ -1,3 +1,6 @@
+/*
+ * (c) Copyright 1998-2024, ANS. All rights reserved.
+ */
 package fr.gouv.esante.apim.checkrules.model;
 
 import lombok.Getter;
@@ -14,20 +17,20 @@ public class RuleResult {
     /**
      * Définition de la règle vérifiée
      */
-    private String ruleName;
+    private final String ruleName;
 
     /**
      * Résultat de la vérification
      */
-    private boolean success;
+    private final boolean success;
     /**
      * Description verbeuse du résultat
      */
-    private String message;
+    private final String message;
     /**
      * Date de vérification de la règle au format GMT
      */
-    private String timestamp;
+    private final String timestamp;
 
     public RuleResult(String ruleName, boolean success, String message) {
         this.ruleName = ruleName;

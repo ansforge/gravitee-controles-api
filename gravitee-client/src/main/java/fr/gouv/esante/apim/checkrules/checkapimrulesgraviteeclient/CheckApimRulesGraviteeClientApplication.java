@@ -1,3 +1,6 @@
+/*
+ * (c) Copyright 1998-2024, ANS. All rights reserved.
+ */
 package fr.gouv.esante.apim.checkrules.checkapimrulesgraviteeclient;
 
 import org.springframework.boot.SpringApplication;

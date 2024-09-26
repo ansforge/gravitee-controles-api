@@ -1,3 +1,6 @@
+/**
+ * (c) Copyright 1998-2024, ANS. All rights reserved.
+ */
 @Library('AnsPipeline') _
 
 env.MAIL_TMA = "lionel.poma.ext@esante.gouv.fr"

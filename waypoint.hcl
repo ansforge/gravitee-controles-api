@@ -1,3 +1,6 @@
+/*
+ * (c) Copyright 1998-2024, ANS. All rights reserved.
+ */
 project = "${workspace.name}"
 
 labels = { "domaine" = "gravitee" }
