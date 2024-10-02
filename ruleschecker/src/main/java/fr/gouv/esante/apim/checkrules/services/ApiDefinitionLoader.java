@@ -26,16 +26,22 @@ import java.util.List;
 public class ApiDefinitionLoader {
 
     /**
+     * Identifiant de l'organisation administrant Gravitee
+     */
+    @Value("${apim.org.id}")
+    private String orgId;
+
+    /**
      * Identifiant de l'environnement où se trouve Gravitee
      */
     @Value("${env}")
-    private final String envId = "DEFAULT";
+    private String envId;
 
     /**
-     * Identifiant de l'organisation administrant Gravitee
+     * Token d'accès à l'API de gestion de Gravitee
      */
-    @Value("${orga}")
-    private final String orgId = "DEFAULT";
+    @Value("${apikey}")
+    private String apiKey;
 
     /**
      * Client API
