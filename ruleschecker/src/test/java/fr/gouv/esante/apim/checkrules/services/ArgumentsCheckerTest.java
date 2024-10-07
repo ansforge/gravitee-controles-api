@@ -7,6 +7,8 @@ import fr.gouv.esante.apim.checkrules.exception.ApimFileNotFoundException;
 import fr.gouv.esante.apim.checkrules.exception.ApimMissingArgumentException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,42 +47,22 @@ class ArgumentsCheckerTest {
         argsChecker.verifyArgs(args);
     }
 
-    @Test
-    void verifyArgsNoArgTest() {
+    @ParameterizedTest
+    @CsvSource({
+            "'','',''",
+            "'',--apikey=myApiKey, --recipients.filepath=src/test/resources/utils/recipients-mails",
+            "--envid, --apikey=myApiKey, --recipients.filepath=src/test/resources/utils/recipients-mails",
+            "--envid=, --apikey=myApiKey, --recipients.filepath=src/test/resources/utils/recipients-mails",
+            "--envid=myTestEnv, '', --recipients.filepath=src/test/resources/utils/recipients-mails",
+            "--envid=myTestEnv, --apikey, --recipients.filepath=src/test/resources/utils/recipients-mails",
+            "--envid=myTestEnv, --apikey=, --recipients.filepath=src/test/resources/utils/recipients-mails",
+            "--envid=myTestEnv, --apikey=myApiKey, ''",
+            "--envid=myTestEnv, --apikey=myApiKey, --recipients.filepath",
+            "--envid=myTestEnv, --apikey=myApiKey, --recipients.filepath=",
+    })
+    void verifyArgsMissingArgTest(String envid, String apiKey, String recipientsFilepath) {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments();
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsEnvDoesntExistsTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--apikey=myApiKey",
-                "--recipients.filepath=src/test/resources/utils/recipients-mails"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsEnvIsEmptyTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid",
-                "--apikey=myApiKey",
-                "--recipients.filepath=src/test/resources/utils/recipients-mails"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsEnvHasNoValueTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=",
-                "--apikey=myApiKey",
-                "--recipients.filepath=src/test/resources/utils/recipients-mails"
-        );
+        ApplicationArguments args = new DefaultApplicationArguments(envid, apiKey, recipientsFilepath);
         assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
     }
 
@@ -97,38 +79,6 @@ class ArgumentsCheckerTest {
     }
 
     @Test
-    void verifyArgsApiKeyDoesntExistsTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=myTestEnv",
-                "--recipients.filepath=src/test/resources/utils/recipients-mails"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsApikeyIsEmptyTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=myTestEnv",
-                "--apikey",
-                "--recipients.filepath=src/test/resources/utils/recipients-mails"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsApikeyHasNoValueTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=myTestEnv",
-                "--apikey=",
-                "--recipients.filepath=src/test/resources/utils/recipients-mails"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
     void verifyArgsApikeyIsDoubledTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
@@ -138,38 +88,6 @@ class ArgumentsCheckerTest {
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
         argsChecker.verifyArgs(args);
-    }
-
-    @Test
-    void verifyArgsFilePathDoesntExistsTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=myTestEnv",
-                "--apikey=myApiKey"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsFilePathIsEmptyTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=myTestEnv",
-                "--apikey=myApiKey",
-                "--recipients.filepath"
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
-    }
-
-    @Test
-    void verifyArgsFilePathHasNoValueTest() {
-        ArgumentsChecker argsChecker = new ArgumentsChecker();
-        ApplicationArguments args = new DefaultApplicationArguments(
-                "--envid=myTestEnv",
-                "--apikey=myApiKey",
-                "--recipients.filepath="
-        );
-        assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
     }
 
     @Test
