@@ -22,6 +22,10 @@ import java.nio.file.Path;
 @Slf4j
 public class ArgumentsChecker {
 
+    private static final String ENV_ID = "envid";
+    private static final String API_KEY = "apikey";
+    private static final String RECIPIENTS_FILEPATH = "recipients.filepath";
+
     /**
      * Contrôle la présence et la validité de chaque argument obligatoire
      * donné en ligne de commande.
@@ -34,35 +38,35 @@ public class ArgumentsChecker {
      */
     public void verifyArgs(ApplicationArguments args) throws RuntimeException {
         parseArgs(args);
-        checkFile(args.getOptionValues("recipients.filepath").get(0));
+        checkFile(args.getOptionValues(RECIPIENTS_FILEPATH).get(0));
     }
 
     private static void parseArgs(ApplicationArguments args) {
         if (args.getOptionNames().isEmpty()) {
             throw new ApimMissingArgumentException("No command line argument was found");
         }
-        if (!args.containsOption("envid")) {
+        if (!args.containsOption(ENV_ID)) {
             throw new ApimMissingArgumentException("Missing --envid argument");
-        } else if (args.getOptionValues("envid").isEmpty() ||
-                        args.getOptionValues("envid").get(0).trim().isEmpty()) {
+        } else if (args.getOptionValues(ENV_ID).isEmpty() ||
+                        args.getOptionValues(ENV_ID).get(0).trim().isEmpty()) {
             throw new ApimMissingArgumentException("Empty --envid argument");
         } else {
-            log.info("Checking APIs on environment: {}", args.getOptionValues("envid").get(0).trim());
+            log.info("Checking APIs on environment: {}", args.getOptionValues(ENV_ID).get(0).trim());
         }
 
-        if (!args.containsOption("apikey")) {
+        if (!args.containsOption(API_KEY)) {
             throw new ApimMissingArgumentException("Missing --apikey argument");
-        } else if (args.getOptionValues("apikey").isEmpty() ||
-                args.getOptionValues("apikey").get(0).trim().isEmpty()) {
+        } else if (args.getOptionValues(API_KEY).isEmpty() ||
+                args.getOptionValues(API_KEY).get(0).trim().isEmpty()) {
             throw new ApimMissingArgumentException("Empty --apikey argument");
         } else {
             log.info("API_KEY found");
         }
 
-        if (!args.containsOption("recipients.filepath")) {
+        if (!args.containsOption(RECIPIENTS_FILEPATH)) {
             throw new ApimMissingArgumentException("Missing --recipients.filepath argument");
-        } else if (args.getOptionValues("recipients.filepath").isEmpty() ||
-                args.getOptionValues("recipients.filepath").get(0).trim().isEmpty()) {
+        } else if (args.getOptionValues(RECIPIENTS_FILEPATH).isEmpty() ||
+                args.getOptionValues(RECIPIENTS_FILEPATH).get(0).trim().isEmpty()) {
             throw new ApimMissingArgumentException("Empty --recipients.filepath argument");
         } else {
             log.info("Recipients list filepath found");
