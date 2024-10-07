@@ -5,9 +5,12 @@ package fr.gouv.esante.apim.checkrules.model;
 
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
 import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
+import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
+import fr.gouv.esante.apim.client.model.LoggingGravitee;
 import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
 
 import fr.gouv.esante.apim.client.model.ProxyGravitee;
+import fr.gouv.esante.apim.client.model.ServicesGravitee;
 import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,16 +30,14 @@ import java.util.Set;
 public class GraviteeApiDefinition {
 
     String apiName;
-    String description;
-    String version;
-    Set<PlanEntityGravitee> plans;
-    Set<String> categories;
-    List<ApiEntrypointEntityGravitee> entrypoints;
     Set<String> groups;
-    ProxyGravitee proxy;
-    List<VirtualHostGravitee> virtualHosts;
-    String host;
+    Set<PlanEntityGravitee> plans;
     Set<String> tags;
+    List<ApiEntrypointEntityGravitee> entrypoints;
+    List<VirtualHostGravitee> virtualHosts;
+    HealthCheckServiceGravitee healthCheck;
+    LoggingGravitee logging;
+
 
     public RuleResult accept(ApiDefinitionQualityRule rule) {
         return rule.visit(this);

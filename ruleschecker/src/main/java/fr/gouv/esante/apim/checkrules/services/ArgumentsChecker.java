@@ -41,13 +41,13 @@ public class ArgumentsChecker {
         if (args.getOptionNames().isEmpty()) {
             throw new ApimMissingArgumentException("No command line argument was found");
         }
-        if (!args.containsOption("env")) {
-            throw new ApimMissingArgumentException("Missing --env argument");
-        } else if (args.getOptionValues("env").isEmpty() ||
-                        args.getOptionValues("env").get(0).trim().isEmpty()) {
-            throw new ApimMissingArgumentException("Empty --env argument");
+        if (!args.containsOption("envid")) {
+            throw new ApimMissingArgumentException("Missing --envid argument");
+        } else if (args.getOptionValues("envid").isEmpty() ||
+                        args.getOptionValues("envid").get(0).trim().isEmpty()) {
+            throw new ApimMissingArgumentException("Empty --envid argument");
         } else {
-            log.info("Checking APIs on environment: {}", args.getOptionValues("env").get(0).trim());
+            log.info("Checking APIs on environment: {}", args.getOptionValues("envid").get(0).trim());
         }
 
         if (!args.containsOption("apikey")) {

@@ -10,7 +10,6 @@ import fr.gouv.esante.apim.checkrules.services.ArgumentsChecker;
 import fr.gouv.esante.apim.checkrules.services.RulesChecker;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -28,19 +27,8 @@ import java.util.Map;
 @Slf4j
 public class CheckRulesRunner implements ApplicationRunner {
 
-    @Value("${env}")
-    private String envId;
-
-    @Value("${apikey}")
-    private String apiKey;
-
-    @Value("${recipients.filepath:local.file.path}")
-    private String recipients;
-
     private final ArgumentsChecker argsParser;
-
     private final RulesChecker rulesChecker;
-
     private final ApiDefinitionLoader loader;
 
 
@@ -54,18 +42,18 @@ public class CheckRulesRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         log.info("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
         argsParser.verifyArgs(args);
-        check();
+        reportCheckResults();
         log.info("Finished checking rules");
     }
 
-    private void check() {
+    private void reportCheckResults() {
         List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
-        Map<String, ApiDefinitionCheckResult> checkResults = checkRulesForEachApis(apis);
+        Map<String, ApiDefinitionCheckResult> checkResults = checkRulesForEachApi(apis);
         // Send notifications
-        log.info("Sending results to {} : \n{}", recipients, checkResults);
+        log.info("Generate report and send notifications :\n{}", checkResults);
     }
 
-    private Map<String, ApiDefinitionCheckResult> checkRulesForEachApis(List<GraviteeApiDefinition> apis) {
+    private Map<String, ApiDefinitionCheckResult> checkRulesForEachApi(List<GraviteeApiDefinition> apis) {
         Map<String, ApiDefinitionCheckResult> checkResults = new HashMap<>();
         for (GraviteeApiDefinition apiDefinition : apis) {
             checkResults.put(

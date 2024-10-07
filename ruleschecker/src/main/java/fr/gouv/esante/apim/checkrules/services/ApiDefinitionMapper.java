@@ -19,18 +19,17 @@ public class ApiDefinitionMapper {
     public GraviteeApiDefinition map(ApiEntityGravitee apiEntity) {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         apiDef.setApiName(apiEntity.getName());
-        apiDef.setDescription(apiEntity.getDescription());
-        apiDef.setVersion(apiEntity.getVersion());
-        apiDef.setPlans(apiEntity.getPlans());
-        apiDef.setCategories(apiEntity.getCategories());
-        apiDef.setEntrypoints(apiEntity.getEntrypoints());
         apiDef.setGroups(apiEntity.getGroups());
-        apiDef.setProxy(apiEntity.getProxy());
-        apiDef.setVirtualHosts(apiEntity.getProxy().getVirtualHosts());
-        if (apiEntity.getProxy().getVirtualHosts() == null) throw new AssertionError();
-        apiDef.setHost(apiEntity.getProxy().getVirtualHosts().get(0).getHost());
+        apiDef.setPlans(apiEntity.getPlans());
         apiDef.setTags(apiEntity.getTags());
+        apiDef.setEntrypoints(apiEntity.getEntrypoints());
+        apiDef.setVirtualHosts(apiEntity.getProxy().getVirtualHosts());
+        if (apiEntity.getServices() == null) {
+            apiDef.setHealthCheck(null);
+        } else {
+            apiDef.setHealthCheck(apiEntity.getServices().getHealthCheck());
+        }
+        apiDef.setLogging(apiEntity.getProxy().getLogging());
         return apiDef;
     }
-
 }

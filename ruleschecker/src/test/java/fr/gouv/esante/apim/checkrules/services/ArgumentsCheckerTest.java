@@ -24,7 +24,7 @@ class ArgumentsCheckerTest {
     void verifyArgsNominalTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -36,7 +36,7 @@ class ArgumentsCheckerTest {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
                 "--unusedArg1",
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--unusedArg2=",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails",
@@ -66,7 +66,7 @@ class ArgumentsCheckerTest {
     void verifyArgsEnvIsEmptyTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env",
+                "--envid",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -77,7 +77,7 @@ class ArgumentsCheckerTest {
     void verifyArgsEnvHasNoValueTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=",
+                "--envid=",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -89,7 +89,7 @@ class ArgumentsCheckerTest {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
                 "env",
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -100,7 +100,7 @@ class ArgumentsCheckerTest {
     void verifyArgsApiKeyDoesntExistsTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
         assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
@@ -110,7 +110,7 @@ class ArgumentsCheckerTest {
     void verifyArgsApikeyIsEmptyTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -121,7 +121,7 @@ class ArgumentsCheckerTest {
     void verifyArgsApikeyHasNoValueTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -132,7 +132,7 @@ class ArgumentsCheckerTest {
     void verifyArgsApikeyIsDoubledTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "apikey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
@@ -144,7 +144,7 @@ class ArgumentsCheckerTest {
     void verifyArgsFilePathDoesntExistsTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey"
         );
         assertThrows(ApimMissingArgumentException.class, () -> argsChecker.verifyArgs(args));
@@ -154,7 +154,7 @@ class ArgumentsCheckerTest {
     void verifyArgsFilePathIsEmptyTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath"
         );
@@ -165,7 +165,7 @@ class ArgumentsCheckerTest {
     void verifyArgsFilePathHasNoValueTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath="
         );
@@ -176,7 +176,7 @@ class ArgumentsCheckerTest {
     void verifyArgsFilePathIsDoubledTest() {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails",
                 "recipients.filepath"
@@ -188,7 +188,7 @@ class ArgumentsCheckerTest {
     void verifyArgsFileExistsAndIsReadableTest() throws ApimFileNotFoundException {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/recipients-mails"
         );
@@ -199,7 +199,7 @@ class ArgumentsCheckerTest {
     void verifyArgsFileDoesntExistsTest() throws ApimFileNotFoundException {
         ArgumentsChecker argsChecker = new ArgumentsChecker();
         ApplicationArguments args = new DefaultApplicationArguments(
-                "--env=myTestEnv",
+                "--envid=myTestEnv",
                 "--apikey=myApiKey",
                 "--recipients.filepath=src/test/resources/utils/not-existing-recipients-mails"
         );

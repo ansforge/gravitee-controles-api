@@ -1,12 +1,12 @@
 {
   "request": {
-    "urlPathTemplate": "/organizations/{org}/environments/{env}/apis",
+    "urlPathTemplate": "/organizations/{org}/environments/{envid}/apis",
     "method": "GET",
     "pathParameters": {
       "org": {
         "matches": "[A-Za-z0-9]*"
       },
-      "env": {
+      "envid": {
         "matches": "env400"
       }
     }

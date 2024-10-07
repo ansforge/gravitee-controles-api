@@ -34,7 +34,7 @@ public class ApiDefinitionLoader {
     /**
      * Identifiant de l'environnement où se trouve Gravitee
      */
-    @Value("${env}")
+    @Value("${envid}")
     private String envId;
 
     /**
