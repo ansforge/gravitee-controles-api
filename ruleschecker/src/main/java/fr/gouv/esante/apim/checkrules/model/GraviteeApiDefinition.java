@@ -9,8 +9,6 @@ import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
 import fr.gouv.esante.apim.client.model.LoggingGravitee;
 import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
 
-import fr.gouv.esante.apim.client.model.ProxyGravitee;
-import fr.gouv.esante.apim.client.model.ServicesGravitee;
 import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 import lombok.Getter;
 import lombok.Setter;
