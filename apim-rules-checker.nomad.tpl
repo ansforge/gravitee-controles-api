@@ -8,7 +8,7 @@
   type = "batch"
 
   parameterized {
-    meta_required = ["GRAVITEE_ENVIRONMENT"]
+    meta_required = ["GRAVITEE_ENVIRONMENT", "GRAVITEE_ENV_API_KEY"]
     payload       = "required"
   }
   
@@ -22,7 +22,7 @@
       driver = "docker"
       config {
         image   = "${image}:${tag}"
-        args    = ["$${NOMAD_META_GRAVITEE_ENVIRONMENT}", "local/recipients.lst"]
+        args    = ["--envid=$${NOMAD_META_GRAVITEE_ENVIRONMENT}", "--apikey=$${NOMAD_META_GRAVITEE_ENV_API_KEY}", "--recipients.filepath=local/recipients.lst"]
       }
        env {
           JAVA_TOOL_OPTIONS = "-Dspring.config.location=/secrets/application.properties -Xms256m -Xmx256m -XX:+UseG1GC"

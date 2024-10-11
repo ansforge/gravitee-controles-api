@@ -3,11 +3,11 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import fr.gouv.esante.apim.checkrules.model.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.VirtualHost;
 import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
-import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
-import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -36,15 +36,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -70,15 +70,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -99,15 +99,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         Set<String> tags = new HashSet<>();
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -133,8 +133,8 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -159,10 +159,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
+        List<Entrypoint> entrypoints = new ArrayList<>();
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -188,13 +188,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -220,15 +220,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -254,8 +254,8 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
@@ -281,14 +281,14 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
 
         apiDef.setTags(tags);
         apiDef.setEntrypoints(entrypoints);
@@ -311,15 +311,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         virtualHosts.add(virtualHost);
 
         apiDef.setTags(tags);
@@ -343,15 +343,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
@@ -377,15 +377,15 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         tags.add(publicTag);
         tags.add(privateTag);
 
-        List<ApiEntrypointEntityGravitee> entrypoints = new ArrayList<>();
-        ApiEntrypointEntityGravitee entrypoint = new ApiEntrypointEntityGravitee();
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
         String epHost = "testEpHost";
         entrypoint.setHost(epHost);
         entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
-        List<VirtualHostGravitee> virtualHosts = new ArrayList<>();
-        VirtualHostGravitee virtualHost = new VirtualHostGravitee();
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
         String vhHost = "testVhHost";
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);

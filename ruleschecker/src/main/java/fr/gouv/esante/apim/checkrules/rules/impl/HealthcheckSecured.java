@@ -3,11 +3,13 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import fr.gouv.esante.apim.checkrules.model.Filter;
+import fr.gouv.esante.apim.checkrules.model.Flow;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.Plan;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.Step;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
-import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
-import fr.gouv.esante.apim.client.model.PlanSecurityTypeGravitee;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public class HealthcheckSecured implements ApiDefinitionQualityRule {
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
         log.info("HealthcheckSecured visit");
-        Set<PlanEntityGravitee> plans = apiDefinition.getPlans();
+        Set<Plan> plans = apiDefinition.getPlans();
         boolean success = verify(plans);
         return new RuleResult(
                 getName(),
@@ -41,17 +43,74 @@ public class HealthcheckSecured implements ApiDefinitionQualityRule {
         );
     }
 
-    private boolean verify(Set<PlanEntityGravitee> plans) {
+    private boolean verify(Set<Plan> plans) {
+        // Controle qu'au moins un plan existe
         if (plans == null || plans.isEmpty()) {
             return false;
         }
-        List<PlanEntityGravitee> healthcheckPlans = plans.stream()
-                .filter(p -> p.getName().endsWith("-HealthCheck"))
-                .filter(p -> p.getSecurity() == PlanSecurityTypeGravitee.KEY_LESS)
-                // Une restriction d'accès doit exister...
-//                .filter(p -> !Objects.requireNonNull(p.getExcludedGroups()).isEmpty())
-//                .filter(p -> !Objects.requireNonNull(p.getSelectionRule()).isEmpty())
-                .toList();
-        return !healthcheckPlans.isEmpty();
+
+        // Controle qu'au moins un plan contient -HealthCheck dans son nom
+        for (Plan plan : plans) {
+            if (plan.getName().toLowerCase().contains("-healthcheck")) {
+                // Controle le type d'authentification qui doit etre KEY_LESS pour un plan healthcheck
+                if ("KEY_LESS".equals(plan.getAuthMechanism())) {
+                    // On cherche un flow unique
+                    if (plan.getFlows().size() == 1) {
+                        // On cherche un flow contenant au moins un pre-step
+                        for (Flow flow : plan.getFlows()) {
+                            if (!flow.getPreSteps().isEmpty()) {//
+                                // On cherche un pre-step ayant une policy ressource-filtering
+                                for (Step step : flow.getPreSteps()) {
+                                    if ("resource-filtering".equals(step.getPolicy())) {
+                                        // On vérifie qu'il y a une whitelist dans la configuration
+                                        List<Filter> whitelist = step.getConfiguration().getWhitelist();
+                                        if (whitelist != null && !whitelist.isEmpty()) {
+                                            // On controle que la whitelist ne contient qu'un seul endpoint
+                                            // accessible par une seule méthode
+                                            if (whitelist.size() == 1 && whitelist.get(0).getMethods().size() == 1) {
+                                                // On controle que la seule méthode HTTP accessible est GET
+                                                if ("GET".equals(whitelist.get(0).getMethods().get(0))) {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+//        // Controle qu'au moins un plan contient -HealthCheck dans son nom
+//        for (Plan plan : plans) {
+//            if (plan.getName().toLowerCase().contains("healthcheck")) {
+//                // Controle le type d'authentification qui doit etre KEY_LESS pour un plan healthcheck
+//                if (plan.getAuthMechanism().equals("KEY_LESS")) {
+//                    // On cherche un flow unique
+//                    if (plan.getFlows().size() == 1) {
+//                        // On cherche un flow contenant une policy ressource-filtering
+//                        for (Flow flow : plan.getFlows()) {
+//                            if (flow.getPolicy().equals("resource-filtering")) {
+//                                // On vérifie qu'il y a une whitelist dans la configuration du flow
+//                                List<Filter> whitelist = flow.getConfiguration().getWhitelist();
+//                                if (whitelist != null && !whitelist.isEmpty()) {
+//                                    // On controle que la whitelist ne contient qu'un seul endpoint
+//                                    // accessible par une seule méthode
+//                                    if (whitelist.size() == 1 && whitelist.get(0).getMethods().size() == 1) {
+//                                        // On controle que la seule méthode HTTP accessible est GET
+//                                        if (whitelist.get(0).getMethods().get(0).equals("GET")) {
+//                                            return true;
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        return false;
     }
+
 }

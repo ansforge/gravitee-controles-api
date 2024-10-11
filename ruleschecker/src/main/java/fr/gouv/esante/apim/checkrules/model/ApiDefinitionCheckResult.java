@@ -17,9 +17,9 @@ import java.util.List;
 public class ApiDefinitionCheckResult {
 
     /**
-     * Liste des résultats des vérifications de chaque règle
+     * Nom de l'API contrôlée
      */
-    private List<RuleResult> ruleResults;
+    private String apiDefinitionName;
 
     /**
      * Date et heure du début de la vérification de l'API
@@ -27,8 +27,8 @@ public class ApiDefinitionCheckResult {
     private String timestamp;
 
     /**
-     * Nom de l'API contrôlée
+     * Liste des résultats des vérifications de chaque règle
      */
-    private String apiDefinitionName;
+    private List<RuleResult> ruleResults;
 
 }

@@ -4,9 +4,10 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
-import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ class HealthcheckActivationTest extends HealthcheckActivation {
     @Test
     void testHealthCheckIsEnabled() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        HealthCheckServiceGravitee healthCheck = new HealthCheckServiceGravitee();
+        HealthCheckService healthCheck = new HealthCheckService();
         healthCheck.setEnabled(true);
         apiDef.setHealthCheck(healthCheck);
         HealthcheckActivation healthcheckActivation = new HealthcheckActivation();
@@ -47,7 +48,7 @@ class HealthcheckActivationTest extends HealthcheckActivation {
     @Test
     void testHealthCheckIsDisabled() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        HealthCheckServiceGravitee healthCheck = new HealthCheckServiceGravitee();
+        HealthCheckService healthCheck = new HealthCheckService();
         healthCheck.setEnabled(false);
         apiDef.setHealthCheck(healthCheck);
         HealthcheckActivation healthcheckActivation = new HealthcheckActivation();

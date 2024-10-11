@@ -19,17 +19,18 @@ public class RulesChecker {
 
     private final RulesLoader loader;
 
+
     public RulesChecker(RulesLoader loader) {
         this.loader = loader;
     }
 
     public ApiDefinitionCheckResult checkRules(GraviteeApiDefinition apiDefinition) {
-        ApiDefinitionCheckResult rulesResult = new ApiDefinitionCheckResult();
-        rulesResult.setApiDefinitionName(apiDefinition.getApiName());
-        rulesResult.setTimestamp(Instant.now().toString());
+        ApiDefinitionCheckResult apiChecksResult = new ApiDefinitionCheckResult();
+        apiChecksResult.setApiDefinitionName(apiDefinition.getApiName());
+        apiChecksResult.setTimestamp(Instant.now().toString());
         for (ApiDefinitionQualityRule rule : loader.getRules()) {
-            rulesResult.getRuleResults().add(apiDefinition.accept(rule));
+            apiChecksResult.getRuleResults().add(apiDefinition.accept(rule));
         }
-        return rulesResult;
+        return apiChecksResult;
     }
 }

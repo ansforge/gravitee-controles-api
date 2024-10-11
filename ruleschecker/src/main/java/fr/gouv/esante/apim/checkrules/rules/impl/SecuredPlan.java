@@ -4,12 +4,12 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.Plan;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
-import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
-import fr.gouv.esante.apim.client.model.PlanSecurityTypeGravitee;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.Set;
 
 @Slf4j
@@ -28,7 +28,7 @@ public class SecuredPlan implements ApiDefinitionQualityRule {
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
         log.info("SecuredPlan visit");
-        Set<PlanEntityGravitee> plans = apiDefinition.getPlans();
+        Set<Plan> plans = apiDefinition.getPlans();
         boolean success = verify(plans);
         return new RuleResult(
                 getName(),
@@ -37,14 +37,13 @@ public class SecuredPlan implements ApiDefinitionQualityRule {
         );
     }
 
-    private boolean verify(Set<PlanEntityGravitee> plans) {
+    private boolean verify(Set<Plan> plans) {
         boolean success = false;
         if (plans == null || plans.isEmpty()) {
             return false;
         }
-        for (PlanEntityGravitee plan : plans) {
-            if (plan.getSecurity() == PlanSecurityTypeGravitee.API_KEY
-                    || plan.getSecurity() == PlanSecurityTypeGravitee.OAUTH2) {
+        for (Plan plan : plans) {
+            if (Arrays.asList("API_KEY", "OAUTH2").contains(plan.getAuthMechanism())) {
                 success = true;
                 break;
             }

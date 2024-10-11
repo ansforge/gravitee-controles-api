@@ -3,18 +3,24 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import fr.gouv.esante.apim.checkrules.model.Configuration;
+import fr.gouv.esante.apim.checkrules.model.Filter;
+import fr.gouv.esante.apim.checkrules.model.Flow;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.Plan;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.Step;
 import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
-import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
-import fr.gouv.esante.apim.client.model.PlanSecurityTypeGravitee;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,12 +34,29 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
     @Test
     void testHealthCheckPlanIsSecured() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
-        PlanEntityGravitee plan = new PlanEntityGravitee();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
         plan.setName("testPlan-HealthCheck");
-        plan.setSecurity(PlanSecurityTypeGravitee.KEY_LESS);
+        plan.setAuthMechanism("KEY_LESS");
+
+        Flow flow = new Flow();
+        Step pre = new Step();
+        pre.setPolicy("resource-filtering");
+
+        Filter filter = new Filter();
+        filter.setMethods(List.of("GET"));
+        List<Filter> whitelist = List.of(filter);
+
+        Configuration configuration = new Configuration();
+        configuration.setWhitelist(whitelist);
+        configuration.setBlacklist(new ArrayList<>());
+
+        pre.setConfiguration(configuration);
+        flow.setPreSteps(Collections.singletonList(pre));
+        plan.setFlows(Collections.singletonList(flow));
         plans.add(plan);
         apiDef.setPlans(plans);
+
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
         RuleResult result = apiDef.accept(healthcheckSecured);
 
@@ -55,7 +78,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
     @Test
     void testPlansIsEmpty() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
+        Set<Plan> plans = new HashSet<>();
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
         RuleResult result = apiDef.accept(healthcheckSecured);
@@ -67,10 +90,10 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
     @Test
     void testHealthCheckPlanDoesntExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
-        PlanEntityGravitee plan = new PlanEntityGravitee();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
         plan.setName("testPlan-NotHealthCheck");
-        plan.setSecurity(PlanSecurityTypeGravitee.KEY_LESS);
+        plan.setAuthMechanism("KEY_LESS");
         plans.add(plan);
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
@@ -83,8 +106,8 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
     @Test
     void testHealthCheckPlanIsNotSecured() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
-        PlanEntityGravitee plan = new PlanEntityGravitee();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
         plan.setName("testPlan-HealthCheck");
         plans.add(plan);
         apiDef.setPlans(plans);

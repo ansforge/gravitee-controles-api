@@ -4,9 +4,9 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.Logging;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
-import fr.gouv.esante.apim.client.model.LoggingGravitee;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -25,7 +25,7 @@ public class LogsDisabled implements ApiDefinitionQualityRule {
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
         log.info("LogsDisabled visit");
-        LoggingGravitee logging = apiDefinition.getLogging();
+        Logging logging = apiDefinition.getLogging();
         boolean success = verify(logging);
         return new RuleResult(
                 getName(),
@@ -34,17 +34,17 @@ public class LogsDisabled implements ApiDefinitionQualityRule {
         );
     }
 
-    private boolean verify(LoggingGravitee logging) {
+    private boolean verify(Logging logging) {
         if (logging == null) {
             return false;
         }
-        if (logging.getContent() != LoggingGravitee.ContentEnum.NONE) {
+        if (!"NONE".equals(logging.getContent())) {
             return false;
         }
-        if (logging.getMode() != LoggingGravitee.ModeEnum.NONE) {
+        if (!"NONE".equals(logging.getMode())) {
             return false;
         }
-        if (logging.getScope() != LoggingGravitee.ScopeEnum.NONE) {
+        if (!"NONE".equals(logging.getScope())) {
             return false;
         }
         return true;

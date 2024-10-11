@@ -4,9 +4,9 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.Logging;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
-import fr.gouv.esante.apim.client.model.LoggingGravitee;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ class LogsDisabledTest extends LogsDisabled {
     @Test
     void testLogsAreDisabled() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        LoggingGravitee logging = new LoggingGravitee();
-        logging.setContent(LoggingGravitee.ContentEnum.NONE);
-        logging.setMode(LoggingGravitee.ModeEnum.NONE);
-        logging.setScope(LoggingGravitee.ScopeEnum.NONE);
+        Logging logging = new Logging();
+        logging.setContent("NONE");
+        logging.setMode("NONE");
+        logging.setScope("NONE");
         apiDef.setLogging(logging);
         LogsDisabled logsDisabled = new LogsDisabled();
         RuleResult result = apiDef.accept(logsDisabled);
@@ -50,10 +50,10 @@ class LogsDisabledTest extends LogsDisabled {
     @Test
     void testLogsContentIsNotNone() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        LoggingGravitee logging = new LoggingGravitee();
-        logging.setContent(LoggingGravitee.ContentEnum.HEADERS);
-        logging.setMode(LoggingGravitee.ModeEnum.NONE);
-        logging.setScope(LoggingGravitee.ScopeEnum.NONE);
+        Logging logging = new Logging();
+        logging.setContent("HEADERS");
+        logging.setMode("NONE");
+        logging.setScope("NONE");
         apiDef.setLogging(logging);
         LogsDisabled logsDisabled = new LogsDisabled();
         RuleResult result = apiDef.accept(logsDisabled);
@@ -65,10 +65,10 @@ class LogsDisabledTest extends LogsDisabled {
     @Test
     void testLogsModeIsNotNone() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        LoggingGravitee logging = new LoggingGravitee();
-        logging.setContent(LoggingGravitee.ContentEnum.NONE);
-        logging.setMode(LoggingGravitee.ModeEnum.CLIENT);
-        logging.setScope(LoggingGravitee.ScopeEnum.NONE);
+        Logging logging = new Logging();
+        logging.setContent("NONE");
+        logging.setMode("CLIENT");
+        logging.setScope("NONE");
         apiDef.setLogging(logging);
         LogsDisabled logsDisabled = new LogsDisabled();
         RuleResult result = apiDef.accept(logsDisabled);
@@ -80,10 +80,10 @@ class LogsDisabledTest extends LogsDisabled {
     @Test
     void testLogsScopeIsNotNone() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        LoggingGravitee logging = new LoggingGravitee();
-        logging.setContent(LoggingGravitee.ContentEnum.NONE);
-        logging.setMode(LoggingGravitee.ModeEnum.NONE);
-        logging.setScope(LoggingGravitee.ScopeEnum.REQUEST_RESPONSE);
+        Logging logging = new Logging();
+        logging.setContent("NONE");
+        logging.setMode("NONE");
+        logging.setScope("REQUEST_RESPONSE");
         apiDef.setLogging(logging);
         LogsDisabled logsDisabled = new LogsDisabled();
         RuleResult result = apiDef.accept(logsDisabled);

@@ -28,11 +28,13 @@ import java.util.Map;
 public class CheckRulesRunner implements ApplicationRunner {
 
     private final ArgumentsChecker argsParser;
-    private final RulesChecker rulesChecker;
     private final ApiDefinitionLoader loader;
+    private final RulesChecker rulesChecker;
 
 
-    public CheckRulesRunner(ArgumentsChecker argsParser, ApiDefinitionLoader loader, RulesChecker rulesChecker) {
+    public CheckRulesRunner(ArgumentsChecker argsParser,
+                            ApiDefinitionLoader loader,
+                            RulesChecker rulesChecker) {
         this.argsParser = argsParser;
         this.loader = loader;
         this.rulesChecker = rulesChecker;
@@ -48,9 +50,8 @@ public class CheckRulesRunner implements ApplicationRunner {
 
     private void reportCheckResults() {
         List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
-        Map<String, ApiDefinitionCheckResult> checkResults = checkRulesForEachApi(apis);
-        // Send notifications
-        log.info("Generate report and send notifications :\n{}", checkResults);
+        Map<String, ApiDefinitionCheckResult> globalCheckResults = checkRulesForEachApi(apis);
+        log.info("Global check results: {}", globalCheckResults);
     }
 
     private Map<String, ApiDefinitionCheckResult> checkRulesForEachApi(List<GraviteeApiDefinition> apis) {

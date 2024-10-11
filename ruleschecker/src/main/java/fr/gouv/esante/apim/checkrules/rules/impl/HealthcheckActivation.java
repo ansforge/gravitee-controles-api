@@ -4,9 +4,9 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
-import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -24,7 +24,7 @@ public class HealthcheckActivation implements ApiDefinitionQualityRule {
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
         log.info("HealthcheckActivation visit");
-        HealthCheckServiceGravitee healthCheck = apiDefinition.getHealthCheck();
+        HealthCheckService healthCheck = apiDefinition.getHealthCheck();
         boolean success = verify(healthCheck);
         return new RuleResult(
                 getName(),
@@ -33,10 +33,10 @@ public class HealthcheckActivation implements ApiDefinitionQualityRule {
         );
     }
 
-    private boolean verify(HealthCheckServiceGravitee healthCheck) {
+    private boolean verify(HealthCheckService healthCheck) {
         if (healthCheck == null) {
             return false;
         }
-        return Boolean.TRUE.equals(healthCheck.getEnabled());
+        return Boolean.TRUE.equals(healthCheck.isEnabled());
     }
 }

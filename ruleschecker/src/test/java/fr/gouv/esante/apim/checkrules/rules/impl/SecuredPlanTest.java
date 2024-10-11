@@ -4,10 +4,10 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.Plan;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
-import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
-import fr.gouv.esante.apim.client.model.PlanSecurityTypeGravitee;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,9 +27,9 @@ class SecuredPlanTest extends SecuredPlan {
     @Test
     void testSecuredPlanExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
-        PlanEntityGravitee plan = new PlanEntityGravitee();
-        plan.setSecurity(PlanSecurityTypeGravitee.API_KEY);
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
+        plan.setAuthMechanism("API_KEY");
         plans.add(plan);
         apiDef.setPlans(plans);
         SecuredPlan securedPlanRule = new SecuredPlan();
@@ -53,17 +53,17 @@ class SecuredPlanTest extends SecuredPlan {
     @Test
     void testSecuredPlanDoesNotExist() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
-        PlanEntityGravitee keyLessPlan = new PlanEntityGravitee();
-        keyLessPlan.setSecurity(PlanSecurityTypeGravitee.KEY_LESS);
+        Set<Plan> plans = new HashSet<>();
+        Plan keyLessPlan = new Plan();
+        keyLessPlan.setAuthMechanism("KEY_LESS");
         plans.add(keyLessPlan);
-        PlanEntityGravitee jwtPlan = new PlanEntityGravitee();
-        jwtPlan.setSecurity(PlanSecurityTypeGravitee.JWT);
+        Plan jwtPlan = new Plan();
+        jwtPlan.setAuthMechanism("JWT");
         plans.add(jwtPlan);
-        PlanEntityGravitee subscriptionPlan = new PlanEntityGravitee();
-        subscriptionPlan.setSecurity(PlanSecurityTypeGravitee.SUBSCRIPTION);
+        Plan subscriptionPlan = new Plan();
+        subscriptionPlan.setAuthMechanism("SUBSCRIPTION");
         plans.add(subscriptionPlan);
-        PlanEntityGravitee noSecurityPlan = new PlanEntityGravitee();
+        Plan noSecurityPlan = new Plan();
         plans.add(noSecurityPlan);
         apiDef.setPlans(plans);
         SecuredPlan securedPlanRule = new SecuredPlan();
@@ -75,17 +75,17 @@ class SecuredPlanTest extends SecuredPlan {
     @Test
     void testMultipleSecuredPlanExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<PlanEntityGravitee> plans = new HashSet<>();
-        PlanEntityGravitee noSecurityPlan = new PlanEntityGravitee();
+        Set<Plan> plans = new HashSet<>();
+        Plan noSecurityPlan = new Plan();
         plans.add(noSecurityPlan);
-        PlanEntityGravitee apiKeyPlan = new PlanEntityGravitee();
-        apiKeyPlan.setSecurity(PlanSecurityTypeGravitee.API_KEY);
+        Plan apiKeyPlan = new Plan();
+        apiKeyPlan.setAuthMechanism("API_KEY");
         plans.add(apiKeyPlan);
-        PlanEntityGravitee oAuth2Plan = new PlanEntityGravitee();
-        oAuth2Plan.setSecurity(PlanSecurityTypeGravitee.OAUTH2);
+        Plan oAuth2Plan = new Plan();
+        oAuth2Plan.setAuthMechanism("OAUTH2");
         plans.add(oAuth2Plan);
-        PlanEntityGravitee keyLessPlan = new PlanEntityGravitee();
-        keyLessPlan.setSecurity(PlanSecurityTypeGravitee.KEY_LESS);
+        Plan keyLessPlan = new Plan();
+        keyLessPlan.setAuthMechanism("KEY_LESS");
         plans.add(keyLessPlan);
         apiDef.setPlans(plans);
         SecuredPlan securedPlanRule = new SecuredPlan();

@@ -23,15 +23,18 @@ public class RuleResult {
      * Résultat de la vérification
      */
     private final boolean success;
+
     /**
      * Description verbeuse du résultat
      */
     private final String message;
+
     /**
      * Date de vérification de la règle au format GMT
      */
     private final String timestamp;
 
+    
     public RuleResult(String ruleName, boolean success, String message) {
         this.ruleName = ruleName;
         this.success = success;

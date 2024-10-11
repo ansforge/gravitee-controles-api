@@ -3,11 +3,11 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import fr.gouv.esante.apim.checkrules.model.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.VirtualHost;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
-import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
-import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
         log.info("SubdomainConfiguration visit");
         Set<String> tags = apiDefinition.getTags();
-        List<ApiEntrypointEntityGravitee> entrypoints = apiDefinition.getEntrypoints();
-        List<VirtualHostGravitee> virtualHosts = apiDefinition.getVirtualHosts();
+        List<Entrypoint> entrypoints = apiDefinition.getEntrypoints();
+        List<VirtualHost> virtualHosts = apiDefinition.getVirtualHosts();
         boolean success = verify(tags, entrypoints, virtualHosts);
 
         return new RuleResult(
@@ -42,8 +42,8 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
 
     private boolean verify(
             Set<String> tags,
-            List<ApiEntrypointEntityGravitee> entrypoints,
-            List<VirtualHostGravitee> virtualHosts
+            List<Entrypoint> entrypoints,
+            List<VirtualHost> virtualHosts
     ) {
         if (tags == null || tags.isEmpty()) {
             return false;
@@ -52,7 +52,7 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
         if (entrypoints == null || entrypoints.isEmpty()) {
             return false;
         }
-        for (ApiEntrypointEntityGravitee entrypoint : entrypoints) {
+        for (Entrypoint entrypoint : entrypoints) {
             if (entrypoint.getHost() == null || entrypoint.getHost().isEmpty()) {
                 return false;
             }
@@ -61,16 +61,16 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
         if (virtualHosts == null || virtualHosts.isEmpty()) {
             return false;
         }
-        for (VirtualHostGravitee virtualHost : virtualHosts) {
+        for (VirtualHost virtualHost : virtualHosts) {
             if (virtualHost.getHost() == null || virtualHost.getHost().isEmpty()) {
                 return false;
             }
         }
 
-        List<String> epHosts = entrypoints.stream().map(ApiEntrypointEntityGravitee::getHost).toList();
-        List<String> vhHosts = virtualHosts.stream().map(VirtualHostGravitee::getHost).toList();
+        List<String> epHosts = entrypoints.stream().map(Entrypoint::getHost).toList();
+        List<String> vhHosts = virtualHosts.stream().map(VirtualHost::getHost).toList();
         List<String> epOnlyHosts = epHosts.stream().filter(epHost -> !vhHosts.contains(epHost)).toList();
-        List<ApiEntrypointEntityGravitee> entrypointsWithoutVirtualHost = entrypoints.stream()
+        List<Entrypoint> entrypointsWithoutVirtualHost = entrypoints.stream()
                 .filter(ep -> epOnlyHosts.contains(ep.getHost())).toList();
 
         return entrypointsWithoutVirtualHost.isEmpty();
