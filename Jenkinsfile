@@ -4,7 +4,7 @@
 @Library('AnsPipeline') _
 
 env.MAIL_TMA = "lionel.poma.ext@esante.gouv.fr"
-AnsPipelineJdk17Mvn39Nomad(
+AnsPipelineJdk21Mvn39Nomad(
     svnCredentialsId:"jenkins-credentials",
     mailList:"${env.MAIL_TMA}",
     haveFrontModule: "false",
