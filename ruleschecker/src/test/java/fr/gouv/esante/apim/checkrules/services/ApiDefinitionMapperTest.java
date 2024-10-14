@@ -21,6 +21,8 @@ import fr.gouv.esante.apim.client.ApiClient;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 
+import fr.gouv.esante.apim.client.model.InstanceListItemGravitee;
+import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,8 +52,22 @@ class ApiDefinitionMapperTest {
         ApisApi apisApi = new ApisApi(client);
 
         ApiEntityGravitee apiEntity = apisApi.getApi("test-mapping-ok", "envId", "orgId");
+
+        List<TagEntityGravitee> tagEntities = new ArrayList<>();
+        TagEntityGravitee tagEntity = new TagEntityGravitee();
+        tagEntity.setName("test-tag");
+        tagEntity.setId("tagId");
+        tagEntity.setRestrictedGroups(List.of("group1", "group2"));
+        tagEntities.add(tagEntity);
+
+        List<InstanceListItemGravitee> gateways = new ArrayList<>();
+        InstanceListItemGravitee gateway = new InstanceListItemGravitee();
+        gateway.setHostname("localhost");
+        gateway.setTags(List.of("tagId"));
+        gateways.add(gateway);
+
         ApiDefinitionMapper mapper = new ApiDefinitionMapper();
-        GraviteeApiDefinition apiDef = mapper.map(apiEntity);
+        GraviteeApiDefinition apiDef = mapper.map(apiEntity, tagEntities, gateways);
 
         GraviteeApiDefinition expectedApiDef = new GraviteeApiDefinition();
         Set<String> groups = new HashSet<>();
@@ -92,7 +108,7 @@ class ApiDefinitionMapperTest {
 
         Entrypoint entrypoint = new Entrypoint();
         entrypoint.setHost("localhost");
-        entrypoint.setTags(Set.of("public"));
+        entrypoint.setTags(Set.of("test-tag"));
         entrypoint.setTarget("entryPath");
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setHost("localhost");
@@ -114,7 +130,7 @@ class ApiDefinitionMapperTest {
         expectedApiDef.setApiName("TestAPI-ex");
         expectedApiDef.setGroups(groups);
         expectedApiDef.setPlans(Set.of(accessPlan, healthcheckPlan));
-        expectedApiDef.setTags(Set.of("public"));
+        expectedApiDef.setTags(Set.of("test-tag"));
         expectedApiDef.setEntrypoints(List.of(entrypoint));
         expectedApiDef.setVirtualHosts(List.of(virtualHost));
         expectedApiDef.setHealthCheck(healthCheck);

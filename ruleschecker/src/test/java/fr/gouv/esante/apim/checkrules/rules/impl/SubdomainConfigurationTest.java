@@ -6,6 +6,7 @@ package fr.gouv.esante.apim.checkrules.rules.impl;
 import fr.gouv.esante.apim.checkrules.model.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.VirtualHost;
 import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
 
@@ -15,9 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,26 +30,25 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationIsOK() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        String vhHost = "testHost";
-        virtualHost.setHost(vhHost);
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
@@ -64,23 +63,16 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationNoTags() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        String vhHost = "testHost";
-        virtualHost.setHost(vhHost);
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
         virtualHosts.add(virtualHost);
 
         apiDef.setEntrypoints(entrypoints);
@@ -89,7 +81,6 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -97,29 +88,120 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationEmptyTags() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
+        List<ShardingTag> shardingTags = new ArrayList<>();
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        String vhHost = "testHost";
-        virtualHost.setHost(vhHost);
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationEmptyTagName() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/testPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationEmptyTagHostname() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/testPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationEmptyTagGroup() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(Collections.emptyList());
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/testPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -127,25 +209,25 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationNoEntrypoint() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        String vhHost = "testHost";
-        virtualHost.setHost(vhHost);
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -153,44 +235,44 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationEmptyEntrypoint() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        String vhHost = "testHost";
-        virtualHost.setHost(vhHost);
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/testPath");
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
 
     @Test
-    void testSubdomainConfigurationNoEPHost() {
+    void testSubdomainConfigurationNoEntryPointTarget() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        entrypoint.setTags(tags);
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
@@ -199,32 +281,30 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
 
     @Test
-    void testSubdomainConfigurationEmptyEPHost() {
+    void testSubdomainConfigurationEmptyEntryPointTarget() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
@@ -233,14 +313,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -248,26 +327,24 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationNoVirtualHost() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -275,29 +352,27 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationEmptyVirtualHost() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -305,31 +380,29 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationNoVHHost() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
@@ -337,17 +410,16 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
     @Test
     void testSubdomainConfigurationEmptyVHHost() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
@@ -356,41 +428,134 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         virtualHost.setHost(vhHost);
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
-        assertEquals(super.getName(), result.getRuleName());
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG, result.getMessage());
     }
 
     @Test
-    void testSubdomainConfigurationEPHostNotInVirtualHosts() {
+    void testSubdomainConfigurationNoVirtualHostPath() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Set<String> tags = new HashSet<>();
-        String publicTag = "testPublicTag";
-        String privateTag = "testPrivateTag";
-        tags.add(publicTag);
-        tags.add(privateTag);
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        String epHost = "testEpHost";
-        entrypoint.setHost(epHost);
-        entrypoint.setTags(tags);
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        String vhHost = "testVhHost";
-        virtualHost.setHost(vhHost);
+        virtualHost.setHost("/testHost");
         virtualHosts.add(virtualHost);
 
-        apiDef.setTags(tags);
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationEmptyVirtualHostPath() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/testPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("");
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationEntrypointNotProtected() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/unprotectedTestPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        virtualHost.setHost("/testHost");
+        virtualHost.setPath("/otherTestPath");
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationVirtualHostIsNotShardingTag() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setHostname("/testHost");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/testPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        virtualHost.setHost("/otherTestHost");
+        virtualHost.setPath("/testPath");
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 

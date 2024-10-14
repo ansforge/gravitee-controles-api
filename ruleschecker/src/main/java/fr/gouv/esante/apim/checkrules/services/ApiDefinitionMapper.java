@@ -12,6 +12,7 @@ import fr.gouv.esante.apim.checkrules.model.HealthCheckRequest;
 import fr.gouv.esante.apim.checkrules.model.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.Logging;
 import fr.gouv.esante.apim.checkrules.model.Plan;
+import fr.gouv.esante.apim.checkrules.model.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.Step;
 import fr.gouv.esante.apim.checkrules.model.VirtualHost;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
@@ -20,9 +21,11 @@ import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.FlowGravitee;
 import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
 import fr.gouv.esante.apim.client.model.HealthCheckStepGravitee;
+import fr.gouv.esante.apim.client.model.InstanceListItemGravitee;
 import fr.gouv.esante.apim.client.model.LoggingGravitee;
 import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
 import fr.gouv.esante.apim.client.model.StepGravitee;
+import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +45,9 @@ import java.util.Set;
 @Slf4j
 public class ApiDefinitionMapper {
 
-    public GraviteeApiDefinition map(ApiEntityGravitee apiEntity) {
+    public GraviteeApiDefinition map(ApiEntityGravitee apiEntity,
+                                     List<TagEntityGravitee> tagEntities,
+                                     List<InstanceListItemGravitee> gateways) {
 
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
 
@@ -59,6 +64,9 @@ public class ApiDefinitionMapper {
         }
 
         apiDef.setTags(apiEntity.getTags());
+        if (apiEntity.getTags() != null) {
+            apiDef.setShardingTags(mapShardingTags(apiEntity.getTags(), tagEntities, gateways));
+        }
 
         if (apiEntity.getEntrypoints() != null) {
             List<Entrypoint> entrypoints = new ArrayList<>();
@@ -162,6 +170,33 @@ public class ApiDefinitionMapper {
             }
         }
         return filters;
+    }
+
+    private List<ShardingTag> mapShardingTags(Set<String> apiTags,
+                                              List<TagEntityGravitee> tagEntities,
+                                              List<InstanceListItemGravitee> gateways) {
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        // On associe chaque tag de l'API à un domaine et un groupe d'utilisatuers
+        for (String apiTag : apiTags) {
+            ShardingTag shardingTag = new ShardingTag();
+            for (TagEntityGravitee tagEntity : tagEntities) {
+                // On cherche un sharding tag du même nom qu'un tag de l'API
+                if (tagEntity.getName().equals(apiTag)) {
+                    for (InstanceListItemGravitee gateway : gateways) {
+                        // On cherche à quel domaine est associé le sharding tag
+                        if (gateway.getTags() != null && gateway.getTags().contains(tagEntity.getId())) {
+                            shardingTag.setName(apiTag);
+                            shardingTag.setHostname(gateway.getHostname());
+                            shardingTag.setRestrictedGroups(tagEntity.getRestrictedGroups());
+                            shardingTags.add(shardingTag);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return shardingTags;
     }
 
     private Entrypoint mapEntrypoint(ApiEntrypointEntityGravitee entrypointGravitee) {

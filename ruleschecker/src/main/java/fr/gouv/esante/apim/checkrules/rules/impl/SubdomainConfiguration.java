@@ -6,12 +6,13 @@ package fr.gouv.esante.apim.checkrules.rules.impl;
 import fr.gouv.esante.apim.checkrules.model.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.VirtualHost;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 @Slf4j
@@ -28,10 +29,10 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
         log.info("SubdomainConfiguration visit");
-        Set<String> tags = apiDefinition.getTags();
+        List<ShardingTag> shardingTags = apiDefinition.getShardingTags();
         List<Entrypoint> entrypoints = apiDefinition.getEntrypoints();
         List<VirtualHost> virtualHosts = apiDefinition.getVirtualHosts();
-        boolean success = verify(tags, entrypoints, virtualHosts);
+        boolean success = verify(shardingTags, entrypoints, virtualHosts);
 
         return new RuleResult(
                 getName(),
@@ -41,19 +42,30 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
     }
 
     private boolean verify(
-            Set<String> tags,
+            List<ShardingTag> shardingTags,
             List<Entrypoint> entrypoints,
             List<VirtualHost> virtualHosts
     ) {
-        if (tags == null || tags.isEmpty()) {
+        if (shardingTags == null || shardingTags.isEmpty()) {
             return false;
+        }
+        for (ShardingTag shardingTag : shardingTags) {
+            if (shardingTag.getName() == null || shardingTag.getName().isEmpty()) {
+                return false;
+            }
+            if (shardingTag.getHostname() == null || shardingTag.getHostname().isEmpty()) {
+                return false;
+            }
+            if (shardingTag.getRestrictedGroups() == null || shardingTag.getRestrictedGroups().isEmpty()) {
+                return false;
+            }
         }
 
         if (entrypoints == null || entrypoints.isEmpty()) {
             return false;
         }
         for (Entrypoint entrypoint : entrypoints) {
-            if (entrypoint.getHost() == null || entrypoint.getHost().isEmpty()) {
+            if (entrypoint.getTarget() == null || entrypoint.getTarget().isEmpty()) {
                 return false;
             }
         }
@@ -65,14 +77,37 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
             if (virtualHost.getHost() == null || virtualHost.getHost().isEmpty()) {
                 return false;
             }
+            if (virtualHost.getPath() == null || virtualHost.getPath().isEmpty()) {
+                return false;
+            }
         }
 
-        List<String> epHosts = entrypoints.stream().map(Entrypoint::getHost).toList();
-        List<String> vhHosts = virtualHosts.stream().map(VirtualHost::getHost).toList();
-        List<String> epOnlyHosts = epHosts.stream().filter(epHost -> !vhHosts.contains(epHost)).toList();
-        List<Entrypoint> entrypointsWithoutVirtualHost = entrypoints.stream()
-                .filter(ep -> epOnlyHosts.contains(ep.getHost())).toList();
-
-        return entrypointsWithoutVirtualHost.isEmpty();
+        // On controle que chaque entrypoint est associé à un virtual host
+        List<String> virtualHostListeningPaths = virtualHosts.stream().map(VirtualHost::getPath).toList();
+        for (Entrypoint entrypoint : entrypoints) {
+            // La cible de l'entrypoint doit être le path protégé d'un des virtual host
+            if (!virtualHostListeningPaths.contains(entrypoint.getTarget())) {
+                return false;
+            }
+            // On vérifie que le host de chaque virtual host correspond au host d'un sharding tag de l'API
+            for (VirtualHost vhost : virtualHosts) {
+                // On cherche le virtual host correspondant à l'entrypoint
+                if (vhost.getPath().equals(entrypoint.getTarget())) {
+                    String host = vhost.getHost();
+                    List<ShardingTag> tagsForHost = new ArrayList<>();
+                    // On cherche les sharding tags qui ont le même host que le virtual host
+                    for (ShardingTag t : shardingTags) {
+                        if (t.getHostname().equals(host)) {
+                            tagsForHost.add(t);
+                        }
+                    }
+                    // On controle que le host du virtual host est associé à au moins un sharding tag de l'API
+                    if (tagsForHost.isEmpty()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

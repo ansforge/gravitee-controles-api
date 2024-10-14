@@ -14,7 +14,7 @@
   "disable_membership_notifications" : true,
   "entrypoints" : [ {
     "host" : "localhost",
-    "tags" : [ "public" ],
+    "tags" : [ "test-tag" ],
     "target" : "entryPath"
   } ],
   "execution_mode" : "v3",
@@ -461,7 +461,7 @@
     }
   },
   "state" : "STARTED",
-  "tags" : ["public"],
+  "tags" : ["test-tag"],
   "updated_at" : "2015-07-20T15:49:04-07:00",
   "version" : "v1.0",
   "visibility" : "PUBLIC",

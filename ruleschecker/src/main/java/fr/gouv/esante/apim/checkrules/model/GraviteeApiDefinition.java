@@ -26,6 +26,7 @@ public class GraviteeApiDefinition {
     Set<String> groups;
     Set<Plan> plans;
     Set<String> tags;
+    List<ShardingTag> shardingTags;
     List<Entrypoint> entrypoints;
     List<VirtualHost> virtualHosts;
     HealthCheckService healthCheck;

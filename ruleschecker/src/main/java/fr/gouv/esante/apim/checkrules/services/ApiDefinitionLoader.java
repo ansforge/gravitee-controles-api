@@ -4,11 +4,17 @@
 package fr.gouv.esante.apim.checkrules.services;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.client.BaseApi;
 import fr.gouv.esante.apim.client.api.ApisApi;
+import fr.gouv.esante.apim.client.api.ConfigurationApi;
+import fr.gouv.esante.apim.client.api.GatewayApi;
 import fr.gouv.esante.apim.client.auth.HttpBearerAuth;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.ApiListItemGravitee;
 import fr.gouv.esante.apim.client.model.ExecutionModeGravitee;
+import fr.gouv.esante.apim.client.model.PageInstanceListItemGravitee;
+import fr.gouv.esante.apim.client.model.TagEntityGravitee;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -50,6 +56,10 @@ public class ApiDefinitionLoader {
      */
     private final ApisApi apisApi;
 
+    private final ConfigurationApi configurationApi;
+
+    private final GatewayApi gatewayApi;
+
     /**
      * Service chargé de simplifier la définition des APIs
      * en amont du contrôle des règles d'implémentation
@@ -57,12 +67,29 @@ public class ApiDefinitionLoader {
     private final ApiDefinitionMapper mapper;
 
 
-    public ApiDefinitionLoader(ApisApi apisApi, ApiDefinitionMapper mapper) {
-        this.apisApi = setApiAuth(apisApi);
+    public ApiDefinitionLoader(ApisApi apisApi,
+                               ConfigurationApi configurationApi,
+                               GatewayApi gatewayApi,
+                               ApiDefinitionMapper mapper) {
+        this.apisApi = (ApisApi) setApiAuth(apisApi);
+        this.configurationApi = (ConfigurationApi) setApiAuth(configurationApi);
+        this.gatewayApi = (GatewayApi) setApiAuth(gatewayApi);
         this.mapper = mapper;
     }
 
     public List<GraviteeApiDefinition> loadApiDefinitions() {
+        List<TagEntityGravitee> tagEntities = configurationApi.getTags1(envId, orgId);
+
+        PageInstanceListItemGravitee gatewayInstances = gatewayApi.getInstances(
+                envId,
+                orgId,
+                false,
+                0L,
+                0L,
+                1,
+                100
+        );
+
         List<GraviteeApiDefinition> apiDefinitions = new ArrayList<>();
         try {
             List<ApiListItemGravitee> apisResponse = apisApi.getApis(
@@ -89,7 +116,7 @@ public class ApiDefinitionLoader {
                 ApiEntityGravitee apiEntity = apisApi.getApi(apiListItem.getId(), envId, orgId);
 
                 // Build an object GraviteeApiDefinition and add it to returned list
-                apiDefinitions.add(mapper.map(apiEntity));
+                apiDefinitions.add(mapper.map(apiEntity, tagEntities, gatewayInstances.getContent()));
             }
         } catch (Exception e) {
             log.error("CAUGHT ERROR");
@@ -100,9 +127,9 @@ public class ApiDefinitionLoader {
         return apiDefinitions;
     }
 
-    private ApisApi setApiAuth(ApisApi apisApi) {
-        HttpBearerAuth auth = (HttpBearerAuth) apisApi.getApiClient().getAuthentications().get("gravitee-auth");
+    private BaseApi setApiAuth(BaseApi api) {
+        HttpBearerAuth auth = (HttpBearerAuth) api.getApiClient().getAuthentications().get("gravitee-auth");
         auth.setBearerToken(apiKey);
-        return apisApi;
+        return api;
     }
 }
