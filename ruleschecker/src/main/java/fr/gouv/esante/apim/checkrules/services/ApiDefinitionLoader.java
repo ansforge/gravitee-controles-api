@@ -5,6 +5,7 @@ package fr.gouv.esante.apim.checkrules.services;
 
 import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
 import fr.gouv.esante.apim.client.api.ApisApi;
+import fr.gouv.esante.apim.client.auth.HttpBearerAuth;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.ApiListItemGravitee;
 import fr.gouv.esante.apim.client.model.ExecutionModeGravitee;
@@ -39,6 +40,7 @@ public class ApiDefinitionLoader {
 
     /**
      * Token d'accès à l'API de gestion de Gravitee
+     * Dépend de l'environnement ciblé
      */
     @Value("${apikey}")
     private String apiKey;
@@ -56,7 +58,7 @@ public class ApiDefinitionLoader {
 
 
     public ApiDefinitionLoader(ApisApi apisApi, ApiDefinitionMapper mapper) {
-        this.apisApi = apisApi;
+        this.apisApi = setApiAuth(apisApi);
         this.mapper = mapper;
     }
 
@@ -96,5 +98,11 @@ public class ApiDefinitionLoader {
         }
 
         return apiDefinitions;
+    }
+
+    private ApisApi setApiAuth(ApisApi apisApi) {
+        HttpBearerAuth auth = (HttpBearerAuth) apisApi.getApiClient().getAuthentications().get("gravitee-auth");
+        auth.setBearerToken(apiKey);
+        return apisApi;
     }
 }

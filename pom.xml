@@ -32,7 +32,6 @@
     <modules>
         <module>gravitee-client</module>
         <module>ruleschecker</module>
-<!--        <module>license</module>-->
     </modules>
     <dependencyManagement>
         <dependencies>
