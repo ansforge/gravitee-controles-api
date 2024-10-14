@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +121,9 @@ public class ApiDefinitionMapper {
     private Step mapStep(StepGravitee stepGravitee) {
         Step step = new Step();
         step.setPolicy(stepGravitee.getPolicy());
-        step.setConfiguration(mapConfig(stepGravitee.getConfiguration()));
+        if(stepGravitee.getConfiguration() != null) {
+            step.setConfiguration(mapConfig(stepGravitee.getConfiguration()));
+        }
         return step;
     }
 
@@ -140,7 +141,7 @@ public class ApiDefinitionMapper {
         List<Filter> blacklist = buildFilterList(blacklistObject);
 
         configuration.setWhitelist(whitelist);
-        configuration.setWhitelist(blacklist);
+        configuration.setBlacklist(blacklist);
         return configuration;
     }
 
@@ -150,14 +151,13 @@ public class ApiDefinitionMapper {
             // On essaie de construire un Filter à partir des objets de la liste d'entrée
             // en loggant les cas d'échec.
             try {
+                Map<String, Object> stringObjectMap = (Map<String, Object>) object;
                 Filter endpointFilter = new Filter();
-                endpointFilter.setPattern((String) object.getClass().getField("pattern").get(this));
-
-                String methods = (String) object.getClass().getField("methods").get(this);
-                endpointFilter.setMethods(Arrays.stream(methods.split(",")).toList());
+                endpointFilter.setPattern((String) stringObjectMap.get("pattern"));
+                endpointFilter.setMethods((ArrayList) stringObjectMap.get("methods"));
 
                 filters.add(endpointFilter);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+            } catch (Exception e) {
                 log.warn(e.getMessage());
             }
         }
@@ -212,6 +212,5 @@ public class ApiDefinitionMapper {
         logging.setScope(loggingGravitee.getScope() != null ? loggingGravitee.getScope().getValue() : null);
         return logging;
     }
-
 
 }

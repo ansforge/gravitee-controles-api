@@ -1,0 +1,469 @@
+{
+  "background" : "string",
+  "background_url" : "https://gravitee.mycompany.com/management/apis/6c530064-0b2c-4004-9300-640b2ce0047b/background",
+  "categories" : [ ],
+  "context_path" : "/my-awesome-api",
+  "created_at" : "2015-07-20T15:49:04-07:00",
+  "crossId" : "df83b2a4-cc3e-3f80-9f0d-c138c106c076",
+  "definition_context" : {
+    "mode" : "string",
+    "origin" : "string"
+  },
+  "deployed_at" : "2015-07-20T15:49:04-07:00",
+  "description" : "I can use a hundred characters to describe this API.",
+  "disable_membership_notifications" : true,
+  "entrypoints" : [ {
+    "host" : "localhost",
+    "tags" : [ "public" ],
+    "target" : "entryPath"
+  } ],
+  "execution_mode" : "v3",
+  "flow_mode" : "BEST_MATCH",
+  "flows" : [ {
+    "condition" : "string",
+    "consumers" : [ {
+      "consumerId" : "string",
+      "consumerType" : "TAG"
+    } ],
+    "enabled" : true,
+    "methods" : [ "CONNECT" ],
+    "name" : "string",
+    "path-operator" : {
+      "operator" : "STARTS_WITH",
+      "path" : "string"
+    },
+    "post" : [ {
+      "condition" : "string",
+      "description" : "string",
+      "enabled" : true,
+      "name" : "string",
+      "policy" : "string"
+    } ],
+    "pre" : [ {
+      "condition" : "string",
+      "description" : "string",
+      "enabled" : true,
+      "name" : "string",
+      "policy" : "string"
+    } ]
+  } ],
+  "gravitee" : "string",
+  "groups" : ["group1", "group2"],
+  "id" : "00f8c9e7-78fc-4907-b8c9-e778fc790750",
+  "labels" : [ ],
+  "lifecycle_state" : "CREATED",
+  "name" : "TestAPI-ex",
+  "owner" : {
+    "displayName" : "John Doe",
+    "email" : "contact@gravitee.io",
+    "id" : "005197cc-cc84-86a6-a75a-88f9772c67db",
+    "type" : "USER"
+  },
+  "path_mappings" : [ ],
+  "paths" : {
+    "additionalProp1" : [ {
+      "description" : "string",
+      "enabled" : true,
+      "methods" : [ "CONNECT" ]
+    } ],
+    "additionalProp2" : [ {
+      "description" : "string",
+      "enabled" : true,
+      "methods" : [ "CONNECT" ]
+    } ],
+    "additionalProp3" : [ {
+      "description" : "string",
+      "enabled" : true,
+      "methods" : [ "CONNECT" ]
+    } ]
+  },
+  "picture" : "string",
+  "picture_url" : "https://gravitee.mycompany.com/management/apis/6c530064-0b2c-4004-9300-640b2ce0047b/picture",
+  "plans" : [{
+    "api" : "string",
+    "characteristics" : [ "string" ],
+    "closed_at" : "2015-07-20T15:49:04-07:00",
+    "comment_message" : "string",
+    "comment_required" : true,
+    "created_at" : "2015-07-20T15:49:04-07:00",
+    "crossId" : "string",
+    "description" : "string",
+    "excluded_groups" : [ "string" ],
+    "flows" : [ {
+      "condition" : "string",
+      "consumers" : [ {
+        "consumerId" : "string",
+        "consumerType" : "TAG"
+      } ],
+      "enabled" : true,
+      "methods" : [ "CONNECT" ],
+      "name" : "string",
+      "path-operator" : {
+        "operator" : "STARTS_WITH",
+        "path" : "string"
+      }
+    } ],
+    "general_conditions" : "string",
+    "id" : "string",
+    "name" : "access-plan",
+    "order" : 0,
+    "paths" : {
+      "additionalProp1" : [ {
+        "description" : "string",
+        "enabled" : true,
+        "methods" : [ "CONNECT" ]
+      } ],
+      "additionalProp2" : [ {
+        "description" : "string",
+        "enabled" : true,
+        "methods" : [ "CONNECT" ]
+      } ],
+      "additionalProp3" : [ {
+        "description" : "string",
+        "enabled" : true,
+        "methods" : [ "CONNECT" ]
+      } ]
+    },
+    "published_at" : "2015-07-20T15:49:04-07:00",
+    "security" : "JWT",
+    "securityDefinition" : "string",
+    "selection_rule" : "string",
+    "status" : "STAGING",
+    "tags" : [ "string" ],
+    "type" : "API",
+    "updated_at" : "2015-07-20T15:49:04-07:00",
+    "validation" : "AUTO"
+  }, {
+    "api" : "string",
+    "characteristics" : [ "string" ],
+    "closed_at" : "2015-07-20T15:49:04-07:00",
+    "comment_message" : "string",
+    "comment_required" : true,
+    "created_at" : "2015-07-20T15:49:04-07:00",
+    "crossId" : "string",
+    "description" : "string",
+    "excluded_groups" : [ "string" ],
+    "flows" : [ {
+      "condition" : "string",
+      "consumers" : [ {
+        "consumerId" : "string",
+        "consumerType" : "TAG"
+      } ],
+      "enabled" : true,
+      "methods" : [ "CONNECT" ],
+      "name" : "string",
+      "path-operator" : {
+        "operator" : "STARTS_WITH",
+        "path" : "string"
+      },
+      "pre" : [ {
+        "condition" : "string",
+        "configuration" : {"whitelist":[{"methods":["GET"],"pattern":"/healthcheck"}],"blacklist":[]},
+        "description" : "string",
+        "enabled" : true,
+        "name" : "string",
+        "policy" : "resource-filtering"
+      } ]
+    } ],
+    "general_conditions" : "string",
+    "id" : "string",
+    "name" : "plan-HealthCheck",
+    "order" : 0,
+    "paths" : {
+      "additionalProp1" : [ {
+        "description" : "string",
+        "enabled" : true,
+        "methods" : [ "CONNECT" ]
+      } ],
+      "additionalProp2" : [ {
+        "description" : "string",
+        "enabled" : true,
+        "methods" : [ "CONNECT" ]
+      } ],
+      "additionalProp3" : [ {
+        "description" : "string",
+        "enabled" : true,
+        "methods" : [ "CONNECT" ]
+      } ]
+    },
+    "published_at" : "2015-07-20T15:49:04-07:00",
+    "security" : "KEY_LESS",
+    "securityDefinition" : "string",
+    "selection_rule" : "string",
+    "status" : "STAGING",
+    "tags" : [ "string" ],
+    "type" : "API",
+    "updated_at" : "2015-07-20T15:49:04-07:00",
+    "validation" : "AUTO"
+  } ],
+  "properties" : [ {
+    "dynamic" : true,
+    "encrypted" : true,
+    "key" : "string",
+    "value" : "string"
+  } ],
+  "proxy" : {
+    "cors" : {
+      "allowCredentials" : true,
+      "allowHeaders" : [ "string" ],
+      "allowMethods" : [ "string" ],
+      "allowOrigin" : [ "string" ],
+      "enabled" : true,
+      "exposeHeaders" : [ "string" ],
+      "maxAge" : 0,
+      "runPolicies" : true
+    },
+    "failover" : {
+      "cases" : [ "TIMEOUT" ],
+      "maxAttempts" : 0,
+      "retryTimeout" : 0
+    },
+    "groups" : [ {
+      "endpoints" : [ {
+        "backup" : true,
+        "healthcheck" : {
+          "enabled" : true,
+          "inherit" : true,
+          "schedule" : "string",
+          "steps" : [ {
+            "name" : "string",
+            "request" : {
+              "body" : "string",
+              "fromRoot" : true,
+              "headers" : [ {
+                "name" : "string",
+                "value" : "string"
+              } ],
+              "method" : "CONNECT",
+              "path" : "string"
+            },
+            "response" : {
+              "assertions" : [ "string" ]
+            }
+          } ]
+        },
+        "inherit" : true,
+        "name" : "string",
+        "target" : "string",
+        "tenants" : [ "string" ],
+        "type" : "string",
+        "weight" : 0
+      } ],
+      "headers" : [ {
+        "name" : "string",
+        "value" : "string"
+      } ],
+      "http" : {
+        "clearTextUpgrade" : true,
+        "connectTimeout" : 0,
+        "followRedirects" : true,
+        "idleTimeout" : 0,
+        "keepAlive" : true,
+        "maxConcurrentConnections" : 0,
+        "pipelining" : true,
+        "propagateClientAcceptEncoding" : true,
+        "readTimeout" : 0,
+        "useCompression" : true,
+        "version" : "HTTP_1_1"
+      },
+      "load_balancing" : {
+        "type" : "ROUND_ROBIN"
+      },
+      "name" : "string",
+      "proxy" : {
+        "enabled" : true,
+        "host" : "string",
+        "password" : "string",
+        "port" : 0,
+        "type" : "HTTP",
+        "useSystemProxy" : true,
+        "username" : "string"
+      },
+      "services" : {
+        "discovery" : {
+          "enabled" : true,
+          "provider" : "string"
+        },
+        "dynamic-property" : {
+          "enabled" : true,
+          "provider" : "HTTP",
+          "schedule" : "string"
+        },
+        "health-check" : {
+          "enabled" : true,
+          "schedule" : "string",
+          "steps" : [ {
+            "name" : "string",
+            "request" : {
+              "body" : "string",
+              "fromRoot" : true,
+              "headers" : [ {
+                "name" : "string",
+                "value" : "string"
+              } ],
+              "method" : "CONNECT",
+              "path" : "string"
+            },
+            "response" : {
+              "assertions" : [ "string" ]
+            }
+          } ]
+        }
+      },
+      "ssl" : {
+        "hostnameVerifier" : true,
+        "keyStore" : {
+          "type" : "PEM"
+        },
+        "trustAll" : true,
+        "trustStore" : {
+          "type" : "PEM"
+        }
+      }
+    } ],
+    "logging" : {
+      "condition" : "string",
+      "content" : "NONE",
+      "mode" : "NONE",
+      "scope" : "NONE"
+    },
+    "preserve_host" : true,
+    "strip_context_path" : true,
+    "virtual_hosts" : [ {
+      "host" : "localhost",
+      "override_entrypoint" : true,
+      "path" : "vhostPath"
+    } ]
+  },
+  "resources" : [ {
+    "enabled" : true,
+    "name" : "string",
+    "type" : "string"
+  } ],
+  "response_templates" : {
+    "additionalProp1" : {
+      "additionalProp1" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      },
+      "additionalProp2" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      },
+      "additionalProp3" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      }
+    },
+    "additionalProp2" : {
+      "additionalProp1" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      },
+      "additionalProp2" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      },
+      "additionalProp3" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      }
+    },
+    "additionalProp3" : {
+      "additionalProp1" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      },
+      "additionalProp2" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      },
+      "additionalProp3" : {
+        "body" : "string",
+        "headers" : {
+          "additionalProp1" : "string",
+          "additionalProp2" : "string",
+          "additionalProp3" : "string"
+        },
+        "status" : 0
+      }
+    }
+  },
+  "services" : {
+    "discovery" : {
+      "enabled" : true,
+      "provider" : "string"
+    },
+    "dynamic-property" : {
+      "enabled" : true,
+      "provider" : "HTTP",
+      "schedule" : "string"
+    },
+    "health-check" : {
+      "enabled" : true,
+      "schedule" : "string",
+      "steps" : [ {
+        "name" : "string",
+        "request" : {
+          "body" : "string",
+          "fromRoot" : true,
+          "headers" : [ {
+            "name" : "string",
+            "value" : "string"
+          } ],
+          "method" : "GET",
+          "path" : "/actuator/healthcheck"
+        },
+        "response" : {
+          "assertions" : [ "string" ]
+        }
+      } ]
+    }
+  },
+  "state" : "STARTED",
+  "tags" : ["public"],
+  "updated_at" : "2015-07-20T15:49:04-07:00",
+  "version" : "v1.0",
+  "visibility" : "PUBLIC",
+  "workflow_state" : "DRAFT"
+}

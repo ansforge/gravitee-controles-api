@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Getter
@@ -17,4 +18,16 @@ public class Plan {
     private String authMechanism;
     private List<Flow> flows;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Plan plan = (Plan) o;
+        return Objects.equals(name, plan.name) && Objects.equals(authMechanism, plan.authMechanism) && Objects.equals(flows, plan.flows);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, authMechanism, flows);
+    }
 }
