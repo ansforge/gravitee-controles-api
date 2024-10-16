@@ -10,6 +10,10 @@ import fr.gouv.esante.apim.client.api.GatewayApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import java.util.Properties;
 
 
 @Configuration
@@ -39,5 +43,22 @@ public class AppConfig {
     public GatewayApi gatewayApi() {
         return new GatewayApi(apiClient());
     }
+
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        // Configuration placeholder, exemple de Gmail
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.hhost");
+        mailSender.setPort(587);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
+
 
 }

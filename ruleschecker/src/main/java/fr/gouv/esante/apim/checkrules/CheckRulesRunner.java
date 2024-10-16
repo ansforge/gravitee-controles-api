@@ -10,12 +10,15 @@ import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionLoad
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ArgumentsChecker;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesChecker;
 
+import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
+import fr.gouv.esante.apim.checkrules.services.notification.Notifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -49,14 +52,15 @@ public class CheckRulesRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         log.info("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
         argsParser.verifyArgs(args);
-        reportCheckResults();
-        log.info("Finished checking rules");
+        Report report = reportCheckResults();
+        log.info("Finished checking rules, preparing to send notifications : {}", report);
+        Notifier emailNotifier = new EmailNotifier();
+        emailNotifier.notify(report);
     }
 
-    private void reportCheckResults() {
+    private Report reportCheckResults() {
         List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
-        Map<String, ApiDefinitionCheckResult> globalCheckResults = checkRulesForEachApi(apis);
-        log.info("Global check results: {}", globalCheckResults);
+        return new Report(checkRulesForEachApi(apis), Instant.now().toString(), envId);
     }
 
     private Map<String, ApiDefinitionCheckResult> checkRulesForEachApi(List<GraviteeApiDefinition> apis) {

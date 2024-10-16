@@ -33,7 +33,7 @@ public class ArgumentsChecker {
      * des arguments attendus si au moins l'un d'entre eux est manquant ou
      * a une valeur vide ou non valide dans le cas du fichier d'adresses mail.
      *
-     * @param args
+     * @param args - Arguments donnés en ligne de commande
      * @throws ApimFileNotFoundException
      */
     public void verifyArgs(ApplicationArguments args) throws RuntimeException {
