@@ -3,11 +3,11 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
-import fr.gouv.esante.apim.checkrules.model.Entrypoint;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.model.RuleResult;
-import fr.gouv.esante.apim.checkrules.model.ShardingTag;
-import fr.gouv.esante.apim.checkrules.model.VirtualHost;
+import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
+import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
+import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
 import lombok.extern.slf4j.Slf4j;
 

@@ -5,18 +5,19 @@ package fr.gouv.esante.apim.checkrules.services;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import fr.gouv.esante.apim.checkrules.model.Configuration;
-import fr.gouv.esante.apim.checkrules.model.Entrypoint;
-import fr.gouv.esante.apim.checkrules.model.Filter;
-import fr.gouv.esante.apim.checkrules.model.Flow;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.model.HealthCheckRequest;
-import fr.gouv.esante.apim.checkrules.model.HealthCheckService;
-import fr.gouv.esante.apim.checkrules.model.Logging;
-import fr.gouv.esante.apim.checkrules.model.Plan;
-import fr.gouv.esante.apim.checkrules.model.Step;
-import fr.gouv.esante.apim.checkrules.model.VirtualHost;
+import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
+import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
+import fr.gouv.esante.apim.checkrules.model.definition.Filter;
+import fr.gouv.esante.apim.checkrules.model.definition.Flow;
+import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckRequest;
+import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckService;
+import fr.gouv.esante.apim.checkrules.model.definition.Logging;
+import fr.gouv.esante.apim.checkrules.model.definition.Plan;
+import fr.gouv.esante.apim.checkrules.model.definition.Step;
+import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 import fr.gouv.esante.apim.client.ApiClient;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
@@ -37,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @WireMockTest
-@SpringBootTest(classes=ApiDefinitionMapper.class)
+@SpringBootTest(classes= ApiDefinitionMapper.class)
 @ActiveProfiles({ "test" })
 @Slf4j
 class ApiDefinitionMapperTest {

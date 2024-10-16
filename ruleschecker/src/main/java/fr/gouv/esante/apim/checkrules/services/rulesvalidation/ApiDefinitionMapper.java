@@ -1,20 +1,20 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.services;
+package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
-import fr.gouv.esante.apim.checkrules.model.Configuration;
-import fr.gouv.esante.apim.checkrules.model.Entrypoint;
-import fr.gouv.esante.apim.checkrules.model.Filter;
-import fr.gouv.esante.apim.checkrules.model.Flow;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.model.HealthCheckRequest;
-import fr.gouv.esante.apim.checkrules.model.HealthCheckService;
-import fr.gouv.esante.apim.checkrules.model.Logging;
-import fr.gouv.esante.apim.checkrules.model.Plan;
-import fr.gouv.esante.apim.checkrules.model.ShardingTag;
-import fr.gouv.esante.apim.checkrules.model.Step;
-import fr.gouv.esante.apim.checkrules.model.VirtualHost;
+import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
+import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
+import fr.gouv.esante.apim.checkrules.model.definition.Filter;
+import fr.gouv.esante.apim.checkrules.model.definition.Flow;
+import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckRequest;
+import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckService;
+import fr.gouv.esante.apim.checkrules.model.definition.Logging;
+import fr.gouv.esante.apim.checkrules.model.definition.Plan;
+import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
+import fr.gouv.esante.apim.checkrules.model.definition.Step;
+import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 
 import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;

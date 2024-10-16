@@ -1,32 +1,31 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.model;
+package fr.gouv.esante.apim.checkrules.model.definition;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 
 @Getter
 @Setter
-public class Filter {
+public class Step {
 
-    private List<String> methods;
-    private String pattern;
+    private String policy;
+    private Configuration configuration;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Filter filter = (Filter) o;
-        return Objects.equals(methods, filter.methods) && Objects.equals(pattern, filter.pattern);
+        Step step = (Step) o;
+        return Objects.equals(policy, step.policy) && Objects.equals(configuration, step.configuration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(methods, pattern);
+        return Objects.hash(policy, configuration);
     }
 }

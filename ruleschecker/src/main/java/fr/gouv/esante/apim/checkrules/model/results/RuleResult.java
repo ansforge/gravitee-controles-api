@@ -1,8 +1,10 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.model;
+package fr.gouv.esante.apim.checkrules.model.results;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -36,9 +38,31 @@ public class RuleResult {
 
     
     public RuleResult(String ruleName, boolean success, String message) {
+        this(ruleName, success, message, Instant.now().toString());
+    }
+
+    /**
+     * Constructeur dédié aux tests
+     *
+     * @param ruleName
+     * @param success
+     * @param message
+     * @param timestamp
+     */
+    public RuleResult(String ruleName, boolean success, String message, String timestamp) {
         this.ruleName = ruleName;
         this.success = success;
         this.message = message;
-        this.timestamp = Instant.now().toString();
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return super.toString();
+        }
     }
 }

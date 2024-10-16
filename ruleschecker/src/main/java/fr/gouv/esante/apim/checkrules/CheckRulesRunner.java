@@ -3,13 +3,15 @@
  */
 package fr.gouv.esante.apim.checkrules;
 
-import fr.gouv.esante.apim.checkrules.model.ApiDefinitionCheckResult;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.services.ApiDefinitionLoader;
-import fr.gouv.esante.apim.checkrules.services.ArgumentsChecker;
-import fr.gouv.esante.apim.checkrules.services.RulesChecker;
+import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
+import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.results.Report;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionLoader;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ArgumentsChecker;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesChecker;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,9 @@ public class CheckRulesRunner implements ApplicationRunner {
     private final ArgumentsChecker argsParser;
     private final ApiDefinitionLoader loader;
     private final RulesChecker rulesChecker;
+
+    @Value("${envid}")
+    private String envId;
 
 
     public CheckRulesRunner(ArgumentsChecker argsParser,

@@ -1,8 +1,10 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.model;
+package fr.gouv.esante.apim.checkrules.model.results;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,5 +32,15 @@ public class ApiDefinitionCheckResult {
      * Liste des résultats des vérifications de chaque règle
      */
     private List<RuleResult> ruleResults;
+
+    @Override
+    public String toString() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return super.toString();
+        }
+    }
 
 }

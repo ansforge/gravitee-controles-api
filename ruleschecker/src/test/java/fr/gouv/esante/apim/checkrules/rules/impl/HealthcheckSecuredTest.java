@@ -3,14 +3,14 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
-import fr.gouv.esante.apim.checkrules.model.Configuration;
-import fr.gouv.esante.apim.checkrules.model.Filter;
-import fr.gouv.esante.apim.checkrules.model.Flow;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.model.Plan;
-import fr.gouv.esante.apim.checkrules.model.RuleResult;
-import fr.gouv.esante.apim.checkrules.model.Step;
-import fr.gouv.esante.apim.checkrules.services.ApiDefinitionMapper;
+import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
+import fr.gouv.esante.apim.checkrules.model.definition.Filter;
+import fr.gouv.esante.apim.checkrules.model.definition.Flow;
+import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.definition.Plan;
+import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
+import fr.gouv.esante.apim.checkrules.model.definition.Step;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

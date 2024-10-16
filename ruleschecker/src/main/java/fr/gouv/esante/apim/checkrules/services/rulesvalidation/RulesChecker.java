@@ -1,10 +1,10 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.services;
+package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
-import fr.gouv.esante.apim.checkrules.model.ApiDefinitionCheckResult;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
+import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
 
 import org.springframework.stereotype.Service;
