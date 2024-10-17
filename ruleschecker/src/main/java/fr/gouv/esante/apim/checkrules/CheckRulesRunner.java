@@ -11,7 +11,6 @@ import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ArgumentsChecker;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesChecker;
 
 import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
-import fr.gouv.esante.apim.checkrules.services.notification.Notifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -35,6 +34,7 @@ public class CheckRulesRunner implements ApplicationRunner {
     private final ArgumentsChecker argsParser;
     private final ApiDefinitionLoader loader;
     private final RulesChecker rulesChecker;
+    private final EmailNotifier emailNotifier;
 
     @Value("${envid}")
     private String envId;
@@ -42,19 +42,22 @@ public class CheckRulesRunner implements ApplicationRunner {
 
     public CheckRulesRunner(ArgumentsChecker argsParser,
                             ApiDefinitionLoader loader,
-                            RulesChecker rulesChecker) {
+                            RulesChecker rulesChecker, EmailNotifier emailNotifier) {
         this.argsParser = argsParser;
         this.loader = loader;
         this.rulesChecker = rulesChecker;
+        this.emailNotifier = emailNotifier;
     }
 
     @Override
     public void run(ApplicationArguments args) {
         log.info("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
+        // Récupération et validation des arguments d'entrée
         argsParser.verifyArgs(args);
+        // Lancement des vérifications des règles et génération du rapport
         Report report = reportCheckResults();
         log.info("Finished checking rules, preparing to send notifications : {}", report);
-        Notifier emailNotifier = new EmailNotifier();
+        // Préparation et envoi des notifications par mail
         emailNotifier.notify(report);
     }
 

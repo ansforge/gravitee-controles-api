@@ -24,17 +24,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+
+/**
+ * Implémentation de Notifier.
+ * Se charge d'envoyer un email contenant les résultats
+ * de la vérification des règles à une liste de destinataires.
+ * Chaque adresse de destinataire est validée contre la norme
+ * RFC_5322.
+ */
 @Service
 @Slf4j
 public class EmailNotifier implements Notifier {
-
-
+    
     /**
      * Allows almost all characters in the email address, excpet the pipe character (|) and single quote (‘),
      * as these present a potential SQL injection risk when passed from the client site to the server
      */
     private static final String RFC_5322_PATTERN = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-
 
     @Autowired
     private JavaMailSender emailSender;
@@ -44,12 +50,12 @@ public class EmailNotifier implements Notifier {
 
 
     public void notify(Report report) {
-        // Get recipients
+        // On récupère les destinataires et on vérifie que chaque adresse est valide
         List<String> recipientsList = parseRecipientsList()
                 .stream()
                 .filter(this::verifyEmailAddress)
                 .toList();
-        // Send individual mail to each recipient
+        // Envoi de l'email à chaque destinataire
         Email email = new Email(report);
         for (String recipient : recipientsList) {
             sendMail(email, recipient);

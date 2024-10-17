@@ -22,10 +22,18 @@ public class AppConfig {
     @Value("${apim.management.url}")
     private String apimUrl;
 
+    /**
+     * Token d'accès à l'API de gestion de Gravitee
+     * Dépend de l'environnement ciblé
+     */
+    @Value("${apikey}")
+    private String apiKey;
+
     @Bean
     public ApiClient apiClient() {
         ApiClient apiClient = new ApiClient();
         apiClient.setBasePath(apimUrl);
+        apiClient.setBearerToken(apiKey);
         return apiClient;
     }
 

@@ -37,7 +37,7 @@
       template {
         data = <<EOT
 logging.level.root=INFO
-apim.management.url={{ range service "gravitee-apim-management-api" }}http://{{.Address}}:{{Port}}{{end}}/management
+apim.management.url={{ range service "gravitee-apim-management-api" }}http://{{.Address}}:{{.Port}}{{end}}/management
 spring.mail.host={{ with secret "services-infrastructure/smtp" }}{{.Data.data.host}}{{end}}
 spring.mail.port={{ with secret "services-infrastructure/smtp" }}{{.Data.data.port}}{{end}}
         EOT

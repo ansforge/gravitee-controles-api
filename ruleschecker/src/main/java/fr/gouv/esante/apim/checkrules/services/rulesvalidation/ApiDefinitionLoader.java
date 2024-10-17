@@ -4,7 +4,6 @@
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
-import fr.gouv.esante.apim.client.BaseApi;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.api.ConfigurationApi;
 import fr.gouv.esante.apim.client.api.GatewayApi;
@@ -44,13 +43,6 @@ public class ApiDefinitionLoader {
     private String envId;
 
     /**
-     * Token d'accès à l'API de gestion de Gravitee
-     * Dépend de l'environnement ciblé
-     */
-    @Value("${apikey}")
-    private String apiKey;
-
-    /**
      * Client API
      */
     private final ApisApi apisApi;
@@ -70,9 +62,9 @@ public class ApiDefinitionLoader {
                                ConfigurationApi configurationApi,
                                GatewayApi gatewayApi,
                                ApiDefinitionMapper mapper) {
-        this.apisApi = (ApisApi) setApiAuth(apisApi);
-        this.configurationApi = (ConfigurationApi) setApiAuth(configurationApi);
-        this.gatewayApi = (GatewayApi) setApiAuth(gatewayApi);
+        this.apisApi = apisApi;
+        this.configurationApi = configurationApi;
+        this.gatewayApi = gatewayApi;
         this.mapper = mapper;
     }
 
@@ -124,11 +116,5 @@ public class ApiDefinitionLoader {
         }
 
         return apiDefinitions;
-    }
-
-    private BaseApi setApiAuth(BaseApi api) {
-        String auth = String.format("Bearer %s", apiKey);
-        api.getApiClient().addDefaultHeader("Authorization", auth);
-        return api;
     }
 }

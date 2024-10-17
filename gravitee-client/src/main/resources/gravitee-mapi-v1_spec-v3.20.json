@@ -48232,7 +48232,7 @@
     "securitySchemes": {
       "gravitee-auth": {
         "type": "http",
-        "scheme": "basic"
+        "scheme": "bearer"
       }
     }
   }
