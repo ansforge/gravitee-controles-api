@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public class ApiDefinitionCheckResult {
     /**
      * Liste des résultats des vérifications de chaque règle
      */
-    private List<RuleResult> ruleResults;
+    private List<RuleResult> ruleResults = new ArrayList<>();
 
     @Override
     public String toString() {

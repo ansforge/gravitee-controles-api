@@ -1,13 +1,14 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.rules.impl;
+package fr.gouv.esante.apim.checkrules.rules.test;
 
 import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
+import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
 import lombok.extern.slf4j.Slf4j;

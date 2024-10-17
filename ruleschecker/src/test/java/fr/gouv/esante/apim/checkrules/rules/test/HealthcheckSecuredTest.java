@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2024-2024, ANS. All rights reserved.
  */
-package fr.gouv.esante.apim.checkrules.rules.impl;
+package fr.gouv.esante.apim.checkrules.rules.test;
 
 import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
@@ -10,6 +10,7 @@ import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Plan;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
+import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
 import lombok.extern.slf4j.Slf4j;

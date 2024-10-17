@@ -8,7 +8,6 @@ import fr.gouv.esante.apim.client.BaseApi;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.api.ConfigurationApi;
 import fr.gouv.esante.apim.client.api.GatewayApi;
-import fr.gouv.esante.apim.client.auth.HttpBearerAuth;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.ApiListItemGravitee;
 import fr.gouv.esante.apim.client.model.ExecutionModeGravitee;
@@ -128,8 +127,8 @@ public class ApiDefinitionLoader {
     }
 
     private BaseApi setApiAuth(BaseApi api) {
-        HttpBearerAuth auth = (HttpBearerAuth) api.getApiClient().getAuthentications().get("gravitee-auth");
-        auth.setBearerToken(apiKey);
+        String auth = String.format("Bearer %s", apiKey);
+        api.getApiClient().addDefaultHeader("Authorization", auth);
         return api;
     }
 }
