@@ -1,3 +1,6 @@
+/*
+ * (c) Copyright 2024-2024, ANS. All rights reserved.
+ */
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
