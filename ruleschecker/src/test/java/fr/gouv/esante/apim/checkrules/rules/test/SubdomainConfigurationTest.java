@@ -81,9 +81,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nAucun sharding tag n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -108,9 +109,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nAucun sharding tag n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -139,9 +141,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de nom";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -170,9 +173,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de domaine associé";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -202,9 +206,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de restriction d'accès";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -228,9 +233,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nAucun entrypoint n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -257,9 +263,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nAucun entrypoint n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -288,9 +295,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn entrypoint de cette API n'a pas de cible";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -320,9 +328,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\n" + "Un entrypoint de cette API n'a pas de cible";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -345,9 +354,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nAucun virtual host n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -373,9 +383,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nAucun virtual host n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -403,9 +414,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn virtual host de cette API n'a pas de domaine associé";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -435,9 +447,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn virtual host de cette API n'a pas de domaine associé";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -466,9 +479,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn virtual host de cette API ne protège aucun path";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -498,9 +512,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn virtual host de cette API ne protège aucun path";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -530,9 +545,11 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nUn des entrypoint de l'API n'est pas protégé par un virtual host :\n"
+                + entrypoint.getTarget();
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -562,8 +579,9 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
         RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = " :\nLe domaine du sharding tag ne correspond pas à celui du virtual host";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 }

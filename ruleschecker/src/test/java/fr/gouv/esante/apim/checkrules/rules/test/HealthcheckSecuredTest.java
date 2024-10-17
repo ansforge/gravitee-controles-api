@@ -71,9 +71,10 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
         RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nAucun plan n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -83,9 +84,10 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
         RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nAucun plan n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -99,9 +101,10 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
         RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nAucun plan se terminant par -HealthCheck n'est associé à cette API";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
@@ -114,9 +117,142 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
         RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nLe type d'authentification du plan healthcheck doit être KEY_LESS";
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
+    }
+
+    @Test
+    void testHealthCheckPlanNoFiltering() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
+        plan.setName("testPlan-HealthCheck");
+        plan.setAuthMechanism("KEY_LESS");
+
+        Flow flow = new Flow();
+        Step pre = new Step();
+        pre.setPolicy("");
+
+        Filter filter = new Filter();
+        filter.setMethods(List.of("GET"));
+        List<Filter> whitelist = List.of(filter);
+
+        Configuration configuration = new Configuration();
+        configuration.setWhitelist(whitelist);
+        configuration.setBlacklist(new ArrayList<>());
+
+        pre.setConfiguration(configuration);
+        flow.setPreSteps(Collections.singletonList(pre));
+        plan.setFlows(Collections.singletonList(flow));
+        plans.add(plan);
+        apiDef.setPlans(plans);
+
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nLe plan healthcheck doit inclure une restriction" +
+                " de type Resource Filtering";
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
+    }
+
+    @Test
+    void testHealthCheckPlanEmptyWhitelist() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
+        plan.setName("testPlan-HealthCheck");
+        plan.setAuthMechanism("KEY_LESS");
+
+        Flow flow = new Flow();
+        Step pre = new Step();
+        pre.setPolicy("resource-filtering");
+
+        Configuration configuration = new Configuration();
+        configuration.setWhitelist(new ArrayList<>());
+        configuration.setBlacklist(new ArrayList<>());
+
+        pre.setConfiguration(configuration);
+        flow.setPreSteps(Collections.singletonList(pre));
+        plan.setFlows(Collections.singletonList(flow));
+        plans.add(plan);
+        apiDef.setPlans(plans);
+
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nLa whitelist du plan healthcheck est vide";
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
+    }
+
+    @Test
+    void testHealthCheckPlanWhitelistNotStrictEnough() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
+        plan.setName("testPlan-HealthCheck");
+        plan.setAuthMechanism("KEY_LESS");
+
+        Flow flow = new Flow();
+        Step pre = new Step();
+        pre.setPolicy("resource-filtering");
+
+        Filter filter = new Filter();
+        filter.setMethods(List.of("GET"));
+        List<Filter> whitelist = List.of(filter, filter);
+
+        Configuration configuration = new Configuration();
+        configuration.setWhitelist(whitelist);
+        configuration.setBlacklist(new ArrayList<>());
+
+        pre.setConfiguration(configuration);
+        flow.setPreSteps(Collections.singletonList(pre));
+        plan.setFlows(Collections.singletonList(flow));
+        plans.add(plan);
+        apiDef.setPlans(plans);
+
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nLa whitelist du plan healthcheck ne doit autoriser l'accès qu'au endpoit healthcheck";
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
+    }
+
+    @Test
+    void testHealthCheckPlanWhitelistMustOnlyUseGET() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        Set<Plan> plans = new HashSet<>();
+        Plan plan = new Plan();
+        plan.setName("testPlan-HealthCheck");
+        plan.setAuthMechanism("KEY_LESS");
+
+        Flow flow = new Flow();
+        Step pre = new Step();
+        pre.setPolicy("resource-filtering");
+
+        Filter filter = new Filter();
+        filter.setMethods(List.of("POST"));
+        List<Filter> whitelist = List.of(filter);
+
+        Configuration configuration = new Configuration();
+        configuration.setWhitelist(whitelist);
+        configuration.setBlacklist(new ArrayList<>());
+
+        pre.setConfiguration(configuration);
+        flow.setPreSteps(Collections.singletonList(pre));
+        plan.setFlows(Collections.singletonList(flow));
+        plans.add(plan);
+        apiDef.setPlans(plans);
+
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        RuleResult result = apiDef.accept(healthcheckSecured);
+        String errorDetails = " :\nLe endpoint healthcheck ne doit être accessible qu'en GET";
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
 }

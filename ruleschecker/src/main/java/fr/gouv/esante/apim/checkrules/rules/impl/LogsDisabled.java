@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LogsDisabled implements ApiDefinitionQualityRule {
 
-    protected static final String FAILURE_MSG = "Aucun healthcheck n'est actif sur cette API";
-    protected static final String SUCCESS_MSG = "Healthcheck correctement activé sur cette API";
+    protected static final String FAILURE_MSG = "Le logging n'est pas désactivé sur cette API";
+    protected static final String SUCCESS_MSG = "Le logging est correctement désactivé sur cette API";
 
 
     @Override
