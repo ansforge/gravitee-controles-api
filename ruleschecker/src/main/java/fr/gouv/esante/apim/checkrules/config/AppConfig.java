@@ -29,6 +29,13 @@ public class AppConfig {
     @Value("${apikey}")
     private String apiKey;
 
+    @Value("${spring.mail.host}")
+    private String mailHost;
+
+    @Value("${spring.mail.port}")
+    private int mailPort;
+
+
     @Bean
     public ApiClient apiClient() {
         ApiClient apiClient = new ApiClient();
@@ -54,10 +61,9 @@ public class AppConfig {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
-        // Configuration placeholder, exemple de Gmail
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.hhost");
-        mailSender.setPort(587);
+        mailSender.setHost(mailHost);
+        mailSender.setPort(mailPort);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
