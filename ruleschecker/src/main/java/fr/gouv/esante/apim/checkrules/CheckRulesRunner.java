@@ -49,6 +49,14 @@ public class CheckRulesRunner implements ApplicationRunner {
         this.emailNotifier = emailNotifier;
     }
 
+    /**
+     * Méthode principale de l'application :
+     *  - Vérifie les arguments donnés en ligne de commande
+     *  - Vérifie les règles sur chaque API
+     *  - Envoie le rapport des vérifications par notifications
+     *
+     * @param args incoming application arguments
+     */
     @Override
     public void run(ApplicationArguments args) {
         log.info("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
@@ -61,11 +69,25 @@ public class CheckRulesRunner implements ApplicationRunner {
         emailNotifier.notify(report);
     }
 
+    /**
+     * Contruction du rapport de résultat des vérifications
+     * Appels vers l'API Management de l'APIM pour récupérer
+     * les définitions des APIs et d'autres données nécessaires.
+     * Puis vérification de la conformité aux règles de chaque API.
+     * Construction du rapport des résultats
+     *
+     */
     private Report reportCheckResults() {
         List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
         return new Report(checkRulesForEachApi(apis), Instant.now().toString(), envId);
     }
 
+    /**
+     * Vérification des règles d'implémentation d'une API dans l'APIM.
+     *
+     * @param apis List of API definitions to check
+     * @return checkresults
+     */
     private Map<String, ApiDefinitionCheckResult> checkRulesForEachApi(List<GraviteeApiDefinition> apis) {
         Map<String, ApiDefinitionCheckResult> checkResults = new HashMap<>();
         for (GraviteeApiDefinition apiDefinition : apis) {
