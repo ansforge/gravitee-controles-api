@@ -70,7 +70,7 @@ public class ApiDefinitionLoader {
 
     public List<GraviteeApiDefinition> loadApiDefinitions() {
         List<TagEntityGravitee> tagEntities = configurationApi.getTags1(envId, orgId);
-        log.debug("Found {} Sharding tags on environment {}", tagEntities.size(), envId);
+        log.info("Found {} Sharding tags on environment {}", tagEntities.size(), envId);
 
         PageInstanceListItemGravitee gatewayInstances = gatewayApi.getInstances(
                 envId,
@@ -81,7 +81,7 @@ public class ApiDefinitionLoader {
                 1,
                 100
         );
-        log.debug("Found {} Gateway instances", gatewayInstances.getTotalElements());
+        log.info("Found {} Gateway instances", gatewayInstances.getTotalElements());
 
         List<GraviteeApiDefinition> apiDefinitions = new ArrayList<>();
         try {
@@ -103,7 +103,7 @@ public class ApiDefinitionLoader {
                     "",
                     Collections.emptyList()
             );
-            log.debug("Found {} API definitions", apisResponse.size());
+            log.info("Found {} API definitions", apisResponse.size());
 
             for (ApiListItemGravitee apiListItem : apisResponse) {
                 // Get each individual API Definition

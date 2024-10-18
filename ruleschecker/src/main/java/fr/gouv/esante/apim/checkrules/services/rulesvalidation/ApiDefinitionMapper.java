@@ -49,6 +49,7 @@ public class ApiDefinitionMapper {
                                      List<TagEntityGravitee> tagEntities,
                                      List<InstanceListItemGravitee> gateways) {
 
+        log.info("Mapping de la définition de l'API {}", apiEntity.getName());
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
 
         apiDef.setApiName(apiEntity.getName());
