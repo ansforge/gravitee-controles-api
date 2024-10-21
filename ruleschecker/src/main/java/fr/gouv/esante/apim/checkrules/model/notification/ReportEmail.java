@@ -21,7 +21,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Slf4j
-public class Email {
+public class ReportEmail {
 
     private String from;
     private String subject;
@@ -29,7 +29,7 @@ public class Email {
     private File attachment;
 
 
-    public Email(Report report) {
+    public ReportEmail(Report report) {
         this.from = "noreply@esante.gouv.fr";
         this.subject = writeEmailSubject(report);
         this.body = writeEmailBody(report);
@@ -66,7 +66,7 @@ public class Email {
         return sb.toString();
     }
 
-    public File buildAttachment(Report report) {
+    private File buildAttachment(Report report) {
         // Write report in temp file
         File tempFile = null;
         try {

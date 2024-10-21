@@ -3,7 +3,7 @@
  */
 package fr.gouv.esante.apim.checkrules.services.notification;
 
-import fr.gouv.esante.apim.checkrules.model.notification.Email;
+import fr.gouv.esante.apim.checkrules.model.notification.ReportEmail;
 import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles({ "test" })
 @Slf4j
-class EmailTest {
+class ReportEmailTest {
 
     @Test
     public void notifyEmailCheckFailureTest() throws IOException {
@@ -54,7 +54,7 @@ class EmailTest {
         String expectedReport = Files.readAllLines(Paths.get("src/test/resources/__files/report-ko.json")).get(0);
         // Construction du mail correspondant au rapport assemblé
         Report report = new Report(apiResultsMap, now, "test env");
-        Email email = new Email(report);
+        ReportEmail email = new ReportEmail(report);
 
         assertNotNull(email);
         assertEquals("noreply@esante.gouv.fr", email.getFrom());
@@ -93,7 +93,7 @@ class EmailTest {
         String expectedReport = Files.readAllLines(Paths.get("src/test/resources/__files/report-ok.json")).get(0);
         // Construction du mail correspondant au rapport assemblé
         Report report = new Report(apiResultsMap, now, "test env");
-        Email email = new Email(report);
+        ReportEmail email = new ReportEmail(report);
 
         // L'objet du mail dépend du résultat des contrôles
         assertEquals(expectedSubject, email.getSubject());

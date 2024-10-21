@@ -3,6 +3,7 @@
  */
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
+import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.api.ConfigurationApi;
@@ -16,6 +17,7 @@ import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,9 +70,12 @@ public class ApiDefinitionLoader {
         this.mapper = mapper;
     }
 
-    public List<GraviteeApiDefinition> loadApiDefinitions() {
+    public List<GraviteeApiDefinition> loadApiDefinitions() throws ApimRulecheckerException {
         List<TagEntityGravitee> tagEntities = configurationApi.getTags1(envId, orgId);
         log.info("Found {} Sharding tags on environment {}", tagEntities.size(), envId);
+        if (tagEntities.isEmpty()) {
+            throw new ApimRulecheckerException("No Sharding tags found on environment " + envId);
+        }
 
         PageInstanceListItemGravitee gatewayInstances = gatewayApi.getInstances(
                 envId,
@@ -82,6 +87,9 @@ public class ApiDefinitionLoader {
                 100
         );
         log.info("Found {} Gateway instances", gatewayInstances.getTotalElements());
+        if (gatewayInstances.getTotalElements() == 0) {
+            throw new ApimRulecheckerException("No Gateway instances found on environment " + envId);
+        }
 
         List<GraviteeApiDefinition> apiDefinitions = new ArrayList<>();
         try {
@@ -104,6 +112,9 @@ public class ApiDefinitionLoader {
                     Collections.emptyList()
             );
             log.info("Found {} API definitions", apisResponse.size());
+            if (apisResponse.isEmpty()) {
+                throw new ApimRulecheckerException("No API definitions found on environment " + envId);
+            }
 
             for (ApiListItemGravitee apiListItem : apisResponse) {
                 // Get each individual API Definition
@@ -112,9 +123,9 @@ public class ApiDefinitionLoader {
                 // Build an object GraviteeApiDefinition and add it to returned list
                 apiDefinitions.add(mapper.map(apiEntity, tagEntities, gatewayInstances.getContent()));
             }
-        } catch (Exception e) {
-            log.error("CAUGHT ERROR");
-            log.error(e.getMessage());
+        } catch (RestClientException e) {
+            log.error("Error while querying APIM API :", e);
+            throw new ApimRulecheckerException("Error while querying APIM API", e);
         }
 
         return apiDefinitions;

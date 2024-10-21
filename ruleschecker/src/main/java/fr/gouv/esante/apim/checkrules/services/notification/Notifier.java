@@ -4,6 +4,7 @@
 package fr.gouv.esante.apim.checkrules.services.notification;
 
 
+import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 
 /**
@@ -13,5 +14,7 @@ import fr.gouv.esante.apim.checkrules.model.results.Report;
 public interface Notifier {
 
     void notify(Report report);
+
+    void notifyError(ApimRulecheckerException e, String envId);
 
 }

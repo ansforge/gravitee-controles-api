@@ -3,7 +3,9 @@
  */
 package fr.gouv.esante.apim.checkrules.services.notification;
 
-import fr.gouv.esante.apim.checkrules.model.notification.Email;
+import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
+import fr.gouv.esante.apim.checkrules.model.notification.ErrorEmail;
+import fr.gouv.esante.apim.checkrules.model.notification.ReportEmail;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 
 import jakarta.mail.MessagingException;
@@ -56,13 +58,27 @@ public class EmailNotifier implements Notifier {
                 .filter(this::verifyEmailAddress)
                 .toList();
         // Envoi de l'email à chaque destinataire
-        Email email = new Email(report);
+        ReportEmail email = new ReportEmail(report);
         for (String recipient : recipientsList) {
             sendMail(email, recipient);
         }
     }
 
-    private void sendMail(Email email, String to) {
+    @Override
+    public void notifyError(ApimRulecheckerException e, String envId) {
+        // On récupère les destinataires et on vérifie que chaque adresse est valide
+        List<String> recipientsList = parseRecipientsList()
+                .stream()
+                .filter(this::verifyEmailAddress)
+                .toList();
+        // Envoi de l'email à chaque destinataire
+        ErrorEmail email = new ErrorEmail(e, envId);
+        for (String recipient : recipientsList) {
+            sendError(email, recipient);
+        }
+    }
+
+    private void sendMail(ReportEmail email, String to) {
         MimeMessage message = emailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -74,6 +90,20 @@ public class EmailNotifier implements Notifier {
             emailSender.send(message);
         } catch (MessagingException e) {
             log.error("Erreur lors de la création du mail de rapport", e);
+        }
+    }
+
+    private void sendError(ErrorEmail email, String to) {
+        MimeMessage message = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(email.getFrom());
+            helper.setTo(to);
+            helper.setSubject(email.getSubject());
+            helper.setText(email.getBody());
+            emailSender.send(message);
+        } catch (MessagingException e) {
+            log.error("Erreur lors de la création du mail d'erreur", e);
         }
     }
 

@@ -3,6 +3,7 @@
  */
 package fr.gouv.esante.apim.checkrules;
 
+import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
 import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
@@ -63,10 +64,17 @@ public class CheckRulesRunner implements ApplicationRunner {
         // Récupération et validation des arguments d'entrée
         argsParser.verifyArgs(args);
         // Lancement des vérifications des règles et génération du rapport
-        Report report = reportCheckResults();
-        log.info("Finished checking rules, preparing to send notifications : {}", report);
-        // Préparation et envoi des notifications par mail
-        emailNotifier.notify(report);
+        Report report;
+        try {
+            report = reportCheckResults();
+            log.info("Finished checking rules, preparing to send notifications : {}", report);
+            // Préparation et envoi des notifications par mail
+            emailNotifier.notify(report);
+        } catch (ApimRulecheckerException e) {
+            // Envoi de l'email d'erreur aux destinataires
+            emailNotifier.notifyError(e, envId);
+        }
+
     }
 
     /**
@@ -77,7 +85,7 @@ public class CheckRulesRunner implements ApplicationRunner {
      * Construction du rapport des résultats
      *
      */
-    private Report reportCheckResults() {
+    private Report reportCheckResults() throws ApimRulecheckerException {
         List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
         return new Report(checkRulesForEachApi(apis), Instant.now().toString(), envId);
     }

@@ -14,7 +14,7 @@ import java.nio.file.Path;
 
 
 /**
- * Service controllant l'existence des arguments
+ * Service controlant l'existence des arguments
  * donnés en ligne de commande au démarrage
  * de l'application.
  */
@@ -33,8 +33,8 @@ public class ArgumentsChecker {
      * des arguments attendus si au moins l'un d'entre eux est manquant ou
      * a une valeur vide ou non valide dans le cas du fichier d'adresses mail.
      *
-     * @param args - Arguments donnés en ligne de commande
-     * @throws ApimFileNotFoundException
+     * @param args Arguments donnés en ligne de commande
+     * @throws ApimFileNotFoundException Exception métier si les arguments sont invalides
      */
     public void verifyArgs(ApplicationArguments args) throws RuntimeException {
         parseArgs(args);
