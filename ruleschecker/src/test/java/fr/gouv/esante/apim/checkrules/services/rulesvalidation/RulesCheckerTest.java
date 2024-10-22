@@ -24,7 +24,9 @@ import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
 
+import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -148,7 +150,10 @@ class RulesCheckerTest {
         apiResultsMap.put(apiResult.getApiDefinitionName(), apiResult);
 
         // Test
-        RulesLoader loader = new RulesLoader();
+        final RulesLoader[] loader = new RulesLoader[1];
+        Assertions.assertDoesNotThrow(() -> {
+            loader[0] = new RulesLoader(new EmailNotifier());
+        });
         Set<ApiDefinitionQualityRule> rules = new HashSet<>();
         List<String> rulesNames = List.of(
                 "GroupAssignment",
@@ -164,8 +169,8 @@ class RulesCheckerTest {
                     .getDeclaredConstructor().newInstance();
             rules.add(apiDefinitionQualityRule);
         }
-        loader.setRules(rules);
-        RulesChecker checker = new RulesChecker(loader);
+        loader[0].setRules(rules);
+        RulesChecker checker = new RulesChecker(loader[0]);
         ApiDefinitionCheckResult checkResult = checker.checkRules(apiDef);
         log.info("checkResult :\n{}", checkResult.toString());
     }

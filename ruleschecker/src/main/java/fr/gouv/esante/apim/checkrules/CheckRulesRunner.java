@@ -66,7 +66,12 @@ public class CheckRulesRunner implements ApplicationRunner {
         // Lancement des vérifications des règles et génération du rapport
         Report report;
         try {
-            report = reportCheckResults();
+            // Chargement de toutes les définitions d'API de l'APIM
+            List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
+            // Controle de la conformité des APIs
+            Map<String, ApiDefinitionCheckResult> results = checkRulesForEachApi(apis);
+            // Génération du rapport de controle
+            report = new Report(results, Instant.now().toString(), envId);
             log.info("Finished checking rules, preparing to send notifications : {}", report);
             // Préparation et envoi des notifications par mail
             emailNotifier.notify(report);
@@ -74,20 +79,6 @@ public class CheckRulesRunner implements ApplicationRunner {
             // Envoi de l'email d'erreur aux destinataires
             emailNotifier.notifyError(e, envId);
         }
-
-    }
-
-    /**
-     * Contruction du rapport de résultat des vérifications
-     * Appels vers l'API Management de l'APIM pour récupérer
-     * les définitions des APIs et d'autres données nécessaires.
-     * Puis vérification de la conformité aux règles de chaque API.
-     * Construction du rapport des résultats
-     *
-     */
-    private Report reportCheckResults() throws ApimRulecheckerException {
-        List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();
-        return new Report(checkRulesForEachApi(apis), Instant.now().toString(), envId);
     }
 
     /**
