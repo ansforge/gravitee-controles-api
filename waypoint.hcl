@@ -37,19 +37,19 @@ app "apim-rules-checker" {
         tag = var.tag
         datacenter = var.datacenter
         nomad_namespace = "${workspace.name}"
-        nomad_jobname = var.nomad_jobname
       })
     }
   }
 }
 
-variable "nomad_jobname" {
+variable cron_expression {
   type = string
-  default = "apim-checkrules"
+  default = "0 3 * * * * "
 }
+
 variable datacenter {
   type = string
-  default = ""
+  default = "*"
   env     = ["NOMAD_DC"]
 }
 
