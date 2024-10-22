@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +42,7 @@ import java.util.Set;
 
 
 @WireMockTest
-@SpringBootTest(classes= {RulesChecker.class, RulesLoader.class,
+@SpringBootTest(classes= {RulesChecker.class, RulesLoader.class, EmailNotifier.class, JavaMailSenderImpl.class,
                         GroupAssignment.class,
                         HealthCheckService.class,
                         HealthCheckRequest.class,
