@@ -50,6 +50,9 @@ public class EmailNotifier implements Notifier {
     @Value("${recipients.filepath}")
     private String recipients;
 
+    @Value("${email.sender:noreply@gouv.esante.fr}")
+    private String from;
+
 
     public void notify(Report report) {
         // On récupère les destinataires et on vérifie que chaque adresse est valide
@@ -58,7 +61,7 @@ public class EmailNotifier implements Notifier {
                 .filter(this::verifyEmailAddress)
                 .toList();
         // Envoi de l'email à chaque destinataire
-        ReportEmail email = new ReportEmail(report);
+        ReportEmail email = new ReportEmail(report, from);
         for (String recipient : recipientsList) {
             sendMail(email, recipient);
         }
@@ -72,7 +75,7 @@ public class EmailNotifier implements Notifier {
                 .filter(this::verifyEmailAddress)
                 .toList();
         // Envoi de l'email à chaque destinataire
-        ErrorEmail email = new ErrorEmail(e, envId);
+        ErrorEmail email = new ErrorEmail(e, from, envId);
         for (String recipient : recipientsList) {
             sendError(email, recipient);
         }

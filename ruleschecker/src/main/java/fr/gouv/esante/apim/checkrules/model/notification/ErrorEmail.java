@@ -16,8 +16,8 @@ public class ErrorEmail {
     private String subject;
     private String body;
 
-    public ErrorEmail(ApimRulecheckerException exception, String envId) {
-        this.from = "noreply@esante.gouv.fr";
+    public ErrorEmail(ApimRulecheckerException exception, String from, String envId) {
+        this.from = from;
         this.subject = writeEmailSubject(envId);
         this.body = writeEmailBody(exception);
     }

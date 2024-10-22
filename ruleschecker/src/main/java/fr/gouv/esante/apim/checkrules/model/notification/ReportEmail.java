@@ -29,8 +29,8 @@ public class ReportEmail {
     private File attachment;
 
 
-    public ReportEmail(Report report) {
-        this.from = "noreply@esante.gouv.fr";
+    public ReportEmail(Report report, String from) {
+        this.from = from;
         this.subject = writeEmailSubject(report);
         this.body = writeEmailBody(report);
         this.attachment = buildAttachment(report);

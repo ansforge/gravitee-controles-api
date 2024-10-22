@@ -54,7 +54,8 @@ class ReportEmailTest {
         String expectedReport = Files.readAllLines(Paths.get("src/test/resources/__files/report-ko.json")).get(0);
         // Construction du mail correspondant au rapport assemblé
         Report report = new Report(apiResultsMap, now, "test env");
-        ReportEmail email = new ReportEmail(report);
+        String from = "noreply@esante.gouv.fr";
+        ReportEmail email = new ReportEmail(report, from);
 
         assertNotNull(email);
         assertEquals("noreply@esante.gouv.fr", email.getFrom());
@@ -93,7 +94,8 @@ class ReportEmailTest {
         String expectedReport = Files.readAllLines(Paths.get("src/test/resources/__files/report-ok.json")).get(0);
         // Construction du mail correspondant au rapport assemblé
         Report report = new Report(apiResultsMap, now, "test env");
-        ReportEmail email = new ReportEmail(report);
+        String from = "noreply@esante.gouv.fr";
+        ReportEmail email = new ReportEmail(report, from);
 
         // L'objet du mail dépend du résultat des contrôles
         assertEquals(expectedSubject, email.getSubject());

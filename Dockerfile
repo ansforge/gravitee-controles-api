@@ -9,4 +9,4 @@ COPY ./ruleschecker/target/check-apim-rules-ruleschecker-*.jar /usr/app/apim-rul
 RUN chmod +x /usr/app/apim-ruleschecker.jar
 USER daemon
 ENTRYPOINT ["java","-jar","/usr/app/apim-ruleschecker.jar"]
-CMD ["--envid=DEFAULT", "--apikey=apikey", "--recipients.filepath=filepath"]
+CMD ["--envid=DEFAULT", "--apikey=apikey", "--recipients.filepath=filepath", "--email.sender=noreply@esante.gouv.fr"]
