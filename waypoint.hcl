@@ -37,6 +37,7 @@ app "apim-rules-checker" {
         tag = var.tag
         datacenter = var.datacenter
         nomad_namespace = "${workspace.name}"
+        cron_expression = var.cron_expression
       })
     }
   }
