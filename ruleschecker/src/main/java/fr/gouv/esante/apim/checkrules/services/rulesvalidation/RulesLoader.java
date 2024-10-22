@@ -28,7 +28,7 @@ import java.util.Set;
 @Slf4j
 public class RulesLoader {
 
-    @Value("${envId}")
+    @Value("${envid}")
     private String envId;
 
     private static final String PACKAGE_NAME = "fr.gouv.esante.apim.checkrules.rules.impl";
