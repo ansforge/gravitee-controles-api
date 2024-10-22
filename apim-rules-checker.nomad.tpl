@@ -21,7 +21,7 @@
       driver = "docker"
       config {
         image   = "${image}:${tag}"
-        args    = ["--envid=DEFAULT", "--apikey=$${GRAVITEE_ENV_API_KEY}", "--recipients.filepath=local/recipients.lst", --email.sender=$${EMAIL_SENDER}]
+        args    = ["--envid=DEFAULT", "--apikey=$${GRAVITEE_ENV_API_KEY}", "--recipients.filepath=local/recipients.lst", "--email.sender=$${EMAIL_SENDER}"]
       }
       env {
         JAVA_TOOL_OPTIONS = "-Dspring.config.location=classpath:/application.properties,file:/secrets/application.properties -Xms256m -Xmx256m -XX:+UseG1GC"
