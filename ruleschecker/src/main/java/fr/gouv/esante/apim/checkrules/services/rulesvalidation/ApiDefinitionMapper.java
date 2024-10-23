@@ -16,7 +16,6 @@ import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
-
 import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.FlowGravitee;
 import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;

@@ -5,22 +5,25 @@ package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
-import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
+import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Component
 @Getter
 @Setter
 @Slf4j
-public class SubdomainConfiguration implements ApiDefinitionQualityRule {
+public class SubdomainConfiguration extends AbstractRule {
 
     protected static final String FAILURE_MSG = "Erreur dans la configuration de sous-domaine d'accès à cette API";
     protected static final String SUCCESS_MSG = "Sous-domaine d'accès à cette API correctement configuré";
@@ -28,6 +31,12 @@ public class SubdomainConfiguration implements ApiDefinitionQualityRule {
      * Détails sur la cause de l'échec du contrôle
      */
     private String detailErrorMessage = "";
+
+    @Autowired
+    public SubdomainConfiguration(RulesRegistry registry) {
+        super(registry);
+        super.register(this);
+    }
 
     @Override
     public String getName() {

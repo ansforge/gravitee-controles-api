@@ -13,8 +13,10 @@ import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -27,10 +29,15 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest(classes = {HealthcheckSecuredTest.class, ApiDefinitionMapper.class})
+@SpringBootTest(classes = {HealthcheckSecuredTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
 @ActiveProfiles({ "test" })
 @Slf4j
 class HealthcheckSecuredTest extends HealthcheckSecured {
+
+    @Autowired
+    public HealthcheckSecuredTest(RulesRegistry registry) {
+        super(registry);
+    }
 
     @Test
     void testHealthCheckPlanIsSecured() {
@@ -58,7 +65,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plans.add(plan);
         apiDef.setPlans(plans);
 
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
 
         assertEquals(super.getName(), result.getRuleName());
@@ -69,7 +76,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
     @Test
     void testNoPlanExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nAucun plan n'est associé à cette API";
 
@@ -82,7 +89,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         Set<Plan> plans = new HashSet<>();
         apiDef.setPlans(plans);
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nAucun plan n'est associé à cette API";
 
@@ -99,7 +106,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plan.setAuthMechanism("KEY_LESS");
         plans.add(plan);
         apiDef.setPlans(plans);
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nAucun plan se terminant par -HealthCheck n'est associé à cette API";
 
@@ -115,7 +122,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plan.setName("testPlan-HealthCheck");
         plans.add(plan);
         apiDef.setPlans(plans);
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nLe type d'authentification du plan healthcheck doit être KEY_LESS";
 
@@ -149,7 +156,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plans.add(plan);
         apiDef.setPlans(plans);
 
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nLe plan healthcheck doit inclure une restriction" +
                 " de type Resource Filtering";
@@ -180,7 +187,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plans.add(plan);
         apiDef.setPlans(plans);
 
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nLa whitelist du plan healthcheck est vide";
 
@@ -214,7 +221,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plans.add(plan);
         apiDef.setPlans(plans);
 
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nLa whitelist du plan healthcheck ne doit autoriser l'accès qu'au endpoit healthcheck";
 
@@ -248,7 +255,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         plans.add(plan);
         apiDef.setPlans(plans);
 
-        HealthcheckSecured healthcheckSecured = new HealthcheckSecured();
+        HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
         String errorDetails = " :\nLe endpoint healthcheck ne doit être accessible qu'en GET";
         assertFalse(result.isSuccess());

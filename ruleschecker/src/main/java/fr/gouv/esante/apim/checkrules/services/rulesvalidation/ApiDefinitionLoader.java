@@ -13,7 +13,6 @@ import fr.gouv.esante.apim.client.model.ApiListItemGravitee;
 import fr.gouv.esante.apim.client.model.ExecutionModeGravitee;
 import fr.gouv.esante.apim.client.model.PageInstanceListItemGravitee;
 import fr.gouv.esante.apim.client.model.TagEntityGravitee;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -86,6 +85,7 @@ public class ApiDefinitionLoader {
                 1,
                 100
         );
+        assert gatewayInstances != null;
         log.info("Found {} Gateway instances", gatewayInstances.getTotalElements());
         if (gatewayInstances.getTotalElements() == 0) {
             throw new ApimRulecheckerException("No Gateway instances found on environment " + envId);

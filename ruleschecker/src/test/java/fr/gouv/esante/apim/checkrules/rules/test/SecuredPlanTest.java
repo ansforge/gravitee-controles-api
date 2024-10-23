@@ -9,8 +9,10 @@ import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -20,10 +22,15 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest(classes = {SecuredPlanTest.class, ApiDefinitionMapper.class})
+@SpringBootTest(classes = {SecuredPlanTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
 @ActiveProfiles({ "test" })
 @Slf4j
 class SecuredPlanTest extends SecuredPlan {
+
+    @Autowired
+    public SecuredPlanTest(RulesRegistry registry) {
+        super(registry);
+    }
 
     @Test
     void testSecuredPlanExists() {
@@ -33,7 +40,7 @@ class SecuredPlanTest extends SecuredPlan {
         plan.setAuthMechanism("API_KEY");
         plans.add(plan);
         apiDef.setPlans(plans);
-        SecuredPlan securedPlanRule = new SecuredPlan();
+        SecuredPlan securedPlanRule = new SecuredPlan(new RulesRegistry());
         RuleResult result = apiDef.accept(securedPlanRule);
 
         assertEquals(super.getName(), result.getRuleName());
@@ -44,7 +51,7 @@ class SecuredPlanTest extends SecuredPlan {
     @Test
     void testNoPlanExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        SecuredPlan securedPlanRule = new SecuredPlan();
+        SecuredPlan securedPlanRule = new SecuredPlan(new RulesRegistry());
         RuleResult result = apiDef.accept(securedPlanRule);
 
         assertFalse(result.isSuccess());
@@ -67,7 +74,7 @@ class SecuredPlanTest extends SecuredPlan {
         Plan noSecurityPlan = new Plan();
         plans.add(noSecurityPlan);
         apiDef.setPlans(plans);
-        SecuredPlan securedPlanRule = new SecuredPlan();
+        SecuredPlan securedPlanRule = new SecuredPlan(new RulesRegistry());
         RuleResult result = apiDef.accept(securedPlanRule);
 
         assertFalse(result.isSuccess());
@@ -89,7 +96,7 @@ class SecuredPlanTest extends SecuredPlan {
         keyLessPlan.setAuthMechanism("KEY_LESS");
         plans.add(keyLessPlan);
         apiDef.setPlans(plans);
-        SecuredPlan securedPlanRule = new SecuredPlan();
+        SecuredPlan securedPlanRule = new SecuredPlan(new RulesRegistry());
         RuleResult result = apiDef.accept(securedPlanRule);
 
         assertTrue(result.isSuccess());

@@ -12,9 +12,9 @@ import java.time.Instant;
 @Getter
 public class ErrorEmail {
 
-    private String from;
-    private String subject;
-    private String body;
+    private final String from;
+    private final String subject;
+    private final String body;
 
     public ErrorEmail(ApimRulecheckerException exception, String from, String envId) {
         this.from = from;

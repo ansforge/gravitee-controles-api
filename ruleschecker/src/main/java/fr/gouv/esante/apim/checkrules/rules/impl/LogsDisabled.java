@@ -6,16 +6,25 @@ package fr.gouv.esante.apim.checkrules.rules.impl;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Logging;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
-import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
+@Component
 @Slf4j
-public class LogsDisabled implements ApiDefinitionQualityRule {
+public class LogsDisabled extends AbstractRule {
 
     protected static final String FAILURE_MSG = "Le logging n'est pas désactivé sur cette API";
     protected static final String SUCCESS_MSG = "Le logging est correctement désactivé sur cette API";
 
+
+    @Autowired
+    public LogsDisabled(RulesRegistry registry) {
+        super(registry);
+        super.register(this);
+    }
 
     @Override
     public String getName() {
@@ -44,9 +53,6 @@ public class LogsDisabled implements ApiDefinitionQualityRule {
         if (!"NONE".equals(logging.getMode())) {
             return false;
         }
-        if (!"NONE".equals(logging.getScope())) {
-            return false;
-        }
-        return true;
+        return "NONE".equals(logging.getScope());
     }
 }

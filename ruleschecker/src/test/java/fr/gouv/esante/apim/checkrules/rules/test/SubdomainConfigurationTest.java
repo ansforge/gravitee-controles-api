@@ -11,8 +11,10 @@ import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -23,10 +25,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest(classes = {SubdomainConfigurationTest.class, ApiDefinitionMapper.class})
+@SpringBootTest(classes = {SubdomainConfigurationTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
 @ActiveProfiles({ "test" })
 @Slf4j
 class SubdomainConfigurationTest extends SubdomainConfiguration {
+
+    @Autowired
+    public SubdomainConfigurationTest(RulesRegistry registry) {
+        super(registry);
+    }
 
     @Test
     void testSubdomainConfigurationIsOK() {
@@ -53,7 +60,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
 
         assertEquals(super.getName(), result.getRuleName());
@@ -79,7 +86,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nAucun sharding tag n'est associé à cette API";
 
@@ -107,7 +114,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nAucun sharding tag n'est associé à cette API";
 
@@ -139,7 +146,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de nom";
 
@@ -171,7 +178,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de domaine associé";
 
@@ -204,7 +211,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de restriction d'accès";
 
@@ -231,7 +238,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setShardingTags(shardingTags);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nAucun entrypoint n'est associé à cette API";
 
@@ -261,7 +268,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nAucun entrypoint n'est associé à cette API";
 
@@ -293,7 +300,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn entrypoint de cette API n'a pas de cible";
 
@@ -326,7 +333,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\n" + "Un entrypoint de cette API n'a pas de cible";
 
@@ -352,7 +359,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setShardingTags(shardingTags);
         apiDef.setEntrypoints(entrypoints);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nAucun virtual host n'est associé à cette API";
 
@@ -381,7 +388,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nAucun virtual host n'est associé à cette API";
 
@@ -412,7 +419,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn virtual host de cette API n'a pas de domaine associé";
 
@@ -445,7 +452,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn virtual host de cette API n'a pas de domaine associé";
 
@@ -477,7 +484,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn virtual host de cette API ne protège aucun path";
 
@@ -510,7 +517,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn virtual host de cette API ne protège aucun path";
 
@@ -543,7 +550,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nUn des entrypoint de l'API n'est pas protégé par un virtual host :\n"
                 + entrypoint.getTarget();
@@ -577,7 +584,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         apiDef.setEntrypoints(entrypoints);
         apiDef.setVirtualHosts(virtualHosts);
 
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration();
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
         String errorDetails = " :\nLe domaine du sharding tag ne correspond pas à celui du virtual host";
 

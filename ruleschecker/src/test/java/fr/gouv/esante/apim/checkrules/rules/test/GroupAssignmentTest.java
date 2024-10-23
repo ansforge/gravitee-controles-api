@@ -8,10 +8,13 @@ import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -19,10 +22,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@SpringBootTest(classes = {GroupAssignmentTest.class, ApiDefinitionMapper.class})
+@SpringBootTest(classes = {GroupAssignmentTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
 @ActiveProfiles({ "test" })
 @Slf4j
 class GroupAssignmentTest extends GroupAssignment {
+
+    @Autowired
+    public GroupAssignmentTest(RulesRegistry registry) {
+        super(registry);
+    }
 
     @BeforeEach
     void setUp() {
@@ -34,7 +42,7 @@ class GroupAssignmentTest extends GroupAssignment {
         Set<String> groups = new HashSet<>();
         groups.add("mon-group");
         apiDef.setGroups(groups);
-        GroupAssignment groupRule = new GroupAssignment();
+        GroupAssignment groupRule = new GroupAssignment(new RulesRegistry());
         RuleResult result = apiDef.accept(groupRule);
         log.info(result.getTimestamp());
 
@@ -47,7 +55,7 @@ class GroupAssignmentTest extends GroupAssignment {
     @Test()
     void testGroupIsNull() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        GroupAssignment groupRule = new GroupAssignment();
+        GroupAssignment groupRule = new GroupAssignment(new RulesRegistry());
         RuleResult result = apiDef.accept(groupRule);
 
         assertFalse(result.isSuccess());
@@ -59,7 +67,7 @@ class GroupAssignmentTest extends GroupAssignment {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         Set<String> groups = new HashSet<>();
         apiDef.setGroups(groups);
-        GroupAssignment groupRule = new GroupAssignment();
+        GroupAssignment groupRule = new GroupAssignment(new RulesRegistry());
         RuleResult result = apiDef.accept(groupRule);
 
         assertFalse(result.isSuccess());
@@ -72,7 +80,7 @@ class GroupAssignmentTest extends GroupAssignment {
         groups.add("1st-group");
         groups.add("2nd-group");
         apiDef.setGroups(groups);
-        GroupAssignment groupRule = new GroupAssignment();
+        GroupAssignment groupRule = new GroupAssignment(new RulesRegistry());
         RuleResult result = apiDef.accept(groupRule);
 
         assertTrue(result.isSuccess());

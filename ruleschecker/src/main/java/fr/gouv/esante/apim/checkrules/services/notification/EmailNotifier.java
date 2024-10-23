@@ -7,7 +7,6 @@ import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
 import fr.gouv.esante.apim.checkrules.model.notification.ErrorEmail;
 import fr.gouv.esante.apim.checkrules.model.notification.ReportEmail;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;

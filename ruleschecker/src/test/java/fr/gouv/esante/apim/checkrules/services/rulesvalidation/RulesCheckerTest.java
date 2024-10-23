@@ -18,21 +18,19 @@ import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
-import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
 import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
 import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
-
 import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
+
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +40,7 @@ import java.util.Set;
 
 
 @WireMockTest
-@SpringBootTest(classes= {RulesChecker.class, RulesLoader.class, EmailNotifier.class, JavaMailSenderImpl.class,
+@SpringBootTest(classes= {RulesChecker.class, RulesRegistry.class, EmailNotifier.class, JavaMailSenderImpl.class,
                         GroupAssignment.class,
                         HealthCheckService.class,
                         HealthCheckRequest.class,
@@ -54,11 +52,12 @@ import java.util.Set;
 @Slf4j
 class RulesCheckerTest {
 
-    private static final String PACKAGE_NAME = "fr.gouv.esante.apim.checkrules.rules.impl";
+    @Autowired
+    private RulesRegistry registry;
 
 
     @Test
-    void checkRulesTest() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    void checkRulesTest() {
         // Construction de l'API definition d'entrée
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         Set<String> groups = new HashSet<>();
@@ -151,27 +150,7 @@ class RulesCheckerTest {
         apiResultsMap.put(apiResult.getApiDefinitionName(), apiResult);
 
         // Test
-        final RulesLoader[] loader = new RulesLoader[1];
-        Assertions.assertDoesNotThrow(() -> {
-            loader[0] = new RulesLoader(new EmailNotifier());
-        });
-        Set<ApiDefinitionQualityRule> rules = new HashSet<>();
-        List<String> rulesNames = List.of(
-                "GroupAssignment",
-                "HealthcheckActivation",
-                "HealthcheckSecured",
-                "LogsDisabled",
-                "SecuredPlan",
-                "SubdomainConfiguration"
-        );
-        for(String ruleName : rulesNames) {
-            ApiDefinitionQualityRule apiDefinitionQualityRule = (ApiDefinitionQualityRule) Class
-                    .forName(PACKAGE_NAME + "." + ruleName)
-                    .getDeclaredConstructor().newInstance();
-            rules.add(apiDefinitionQualityRule);
-        }
-        loader[0].setRules(rules);
-        RulesChecker checker = new RulesChecker(loader[0]);
+        RulesChecker checker = new RulesChecker(registry);
         ApiDefinitionCheckResult checkResult = checker.checkRules(apiDef);
         log.info("checkResult :\n{}", checkResult.toString());
     }

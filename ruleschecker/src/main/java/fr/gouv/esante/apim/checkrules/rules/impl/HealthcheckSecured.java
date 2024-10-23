@@ -7,21 +7,23 @@ import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Plan;
-import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
-import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
+import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
-
+@Component
 @Getter
 @Setter
 @Slf4j
-public class HealthcheckSecured implements ApiDefinitionQualityRule {
+public class HealthcheckSecured extends AbstractRule {
 
     protected static final String FAILURE_MSG = "Les plans affectés aux healthchecks de cette API ne sont pas " +
                                                 "sécurisés correctement";
@@ -32,6 +34,12 @@ public class HealthcheckSecured implements ApiDefinitionQualityRule {
      */
     private String detailErrorMessage = "";
 
+
+    @Autowired
+    public HealthcheckSecured(RulesRegistry registry) {
+        super(registry);
+        super.register(this);
+    }
 
     @Override
     public String getName() {
