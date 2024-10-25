@@ -23,7 +23,6 @@ import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
 import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +39,15 @@ import java.util.Set;
 
 
 @WireMockTest
-@SpringBootTest(classes= {RulesChecker.class, RulesRegistry.class, EmailNotifier.class, JavaMailSenderImpl.class,
-                        GroupAssignment.class,
-                        HealthCheckService.class,
-                        HealthCheckRequest.class,
-                        LogsDisabled.class,
-                        SecuredPlan.class,
-                        SubdomainConfiguration.class
+@SpringBootTest(classes = {RulesChecker.class, RulesRegistry.class, EmailNotifier.class, JavaMailSenderImpl.class,
+        GroupAssignment.class,
+        HealthCheckService.class,
+        HealthCheckRequest.class,
+        LogsDisabled.class,
+        SecuredPlan.class,
+        SubdomainConfiguration.class
 })
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class RulesCheckerTest {
 
@@ -67,8 +66,8 @@ class RulesCheckerTest {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag shardingTag = new ShardingTag();
         shardingTag.setName("test-tag");
-        shardingTag.setHostname("/testHost");
         shardingTag.setRestrictedGroups(List.of("group1", "group2"));
+        shardingTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(shardingTag);
 
         Plan accessPlan = new Plan();

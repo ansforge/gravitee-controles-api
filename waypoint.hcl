@@ -9,8 +9,8 @@ labels = { "domaine" = "gravitee" }
 runner {
   enabled = true
   data_source "git" {
-    url = "https://github.com/ansforge/gravitee-controles-api.git"
-    ref = "gitref"
+    url                         = "https://github.com/ansforge/gravitee-controles-api.git"
+    ref                         = "gitref"
     ignore_changes_outside_path = true
   }
   poll {
@@ -22,20 +22,20 @@ runner {
 app "apim-rules-checker" {
   # Build specifies how an application should be deployed.
   build {
-	use "docker-pull" {
-		image = var.image
-		tag   = var.tag
-		disable_entrypoint = true
-	}
+    use "docker-pull" {
+      image              = var.image
+      tag                = var.tag
+      disable_entrypoint = true
+    }
   }
 
   # Deploy to Nomad
   deploy {
     use "nomad-jobspec" {
       jobspec = templatefile("${path.app}/apim-rules-checker.nomad.tpl", {
-        image = var.image
-        tag = var.tag
-        datacenter = var.datacenter
+        image           = var.image
+        tag             = var.tag
+        datacenter      = var.datacenter
         nomad_namespace = "${workspace.name}"
         cron_expression = var.cron_expression
       })
@@ -44,22 +44,22 @@ app "apim-rules-checker" {
 }
 
 variable cron_expression {
-  type = string
+  type    = string
   default = "0 3 * * * * "
 }
 
 variable datacenter {
-  type = string
+  type    = string
   default = "*"
-  env     = ["NOMAD_DC"]
+  env = ["NOMAD_DC"]
 }
 
 variable "image" {
-  type = string
+  type    = string
   default = "ans/fr-gouv-esante-apim-checkrules/apim-rules-checker"
 }
 
 variable "tag" {
-  type = string
+  type    = string
   default = "0.0.2-SNAPSHOT"
 }

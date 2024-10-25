@@ -5,12 +5,11 @@ package fr.gouv.esante.apim.checkrules.rules.test;
 
 import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
+import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
-
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(classes = {SubdomainConfigurationTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class SubdomainConfigurationTest extends SubdomainConfiguration {
 
@@ -41,19 +40,20 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
-        entrypoint.setTarget("/testPath");
+        entrypoint.setHost("api.gateway.com");
+        entrypoint.setTarget("http://test/path");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setHost("/testHost");
-        virtualHost.setPath("/testPath");
+        virtualHost.setHost("api.gateway.com");
+        virtualHost.setPath("/test/vhost/path");
         virtualHosts.add(virtualHost);
 
         apiDef.setShardingTags(shardingTags);
@@ -74,13 +74,14 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setHost("/testHost");
-        virtualHost.setPath("/testPath");
+        virtualHost.setHost("api.gateway.com");
+        virtualHost.setPath("/test/vhost/path");
         virtualHosts.add(virtualHost);
 
         apiDef.setEntrypoints(entrypoints);
@@ -88,7 +89,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nAucun sharding tag n'est associé à cette API";
+        String errorDetails = String.format(
+                " : %sAucun sharding tag n'est associé à cette API",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -101,6 +105,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -116,7 +121,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nAucun sharding tag n'est associé à cette API";
+        String errorDetails = String.format(
+                " : %sAucun sharding tag n'est associé à cette API",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -127,12 +135,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -148,14 +157,17 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de nom";
+        String errorDetails = String.format(
+                " :%sUn sharding tag associé à cette API n'a pas de nom",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
-    void testSubdomainConfigurationEmptyTagHostname() {
+    void testSubdomainConfigurationEmptyTagEntrypointMapping() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
@@ -165,6 +177,7 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -180,7 +193,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de domaine associé";
+        String errorDetails = String.format(
+                " :%sUn sharding tag associé à cette API n'a aucun mapping vers un entrypoint",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -192,12 +208,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(Collections.emptyList());
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -213,7 +230,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn sharding tag associé à cette API n'a pas de restriction d'accès";
+        String errorDetails = String.format(
+                " :%sUn sharding tag associé à cette API n'a pas de groupe d'accès associé",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -225,8 +245,8 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
@@ -240,7 +260,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nAucun entrypoint n'est associé à cette API";
+        String errorDetails = String.format(
+                " :%sAucun entrypoint du backend n'est associé à cette API",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -252,8 +275,8 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
@@ -270,24 +293,28 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nAucun entrypoint n'est associé à cette API";
+        String errorDetails = String.format(
+                " :%sAucun entrypoint du backend n'est associé à cette API",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
-    void testSubdomainConfigurationNoEntryPointTarget() {
+    void testSubdomainConfigurationNoEntryPointHost() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
@@ -302,7 +329,82 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn entrypoint de cette API n'a pas de cible";
+        String errorDetails = String.format(
+                " :%sUn entrypoint du backend de cette API n'a pas de host",
+                System.lineSeparator()
+        );
+
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationEmptyEntryPointHost() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("");
+        entrypoint.setTarget("/testPath");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        String vhHost = "testHost";
+        virtualHost.setHost(vhHost);
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = String.format(
+                " :%sUn entrypoint du backend de cette API n'a pas de host",
+                System.lineSeparator()
+        );
+        assertFalse(result.isSuccess());
+        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
+    }
+
+    @Test
+    void testSubdomainConfigurationNoEntryPointTarget() {
+        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
+        List<ShardingTag> shardingTags = new ArrayList<>();
+        ShardingTag publicTag = new ShardingTag();
+        publicTag.setName("testPublicTag");
+        publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
+        shardingTags.add(publicTag);
+
+        List<Entrypoint> entrypoints = new ArrayList<>();
+        Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
+        entrypoints.add(entrypoint);
+
+        List<VirtualHost> virtualHosts = new ArrayList<>();
+        VirtualHost virtualHost = new VirtualHost();
+        String vhHost = "testHost";
+        virtualHost.setHost(vhHost);
+        virtualHosts.add(virtualHost);
+
+        apiDef.setShardingTags(shardingTags);
+        apiDef.setEntrypoints(entrypoints);
+        apiDef.setVirtualHosts(virtualHosts);
+
+        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
+        RuleResult result = apiDef.accept(subdomainConfiguration);
+        String errorDetails = String.format(
+                " :%sUn entrypoint du backend de cette API n'a pas de target",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -314,12 +416,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("");
         entrypoints.add(entrypoint);
 
@@ -335,8 +438,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\n" + "Un entrypoint de cette API n'a pas de cible";
-
+        String errorDetails = String.format(
+                " :%sUn entrypoint du backend de cette API n'a pas de target",
+                System.lineSeparator()
+        );
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
@@ -347,12 +452,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -361,7 +467,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nAucun virtual host n'est associé à cette API";
+        String errorDetails = String.format(
+                " :%sAucun virtual host n'est associé à cette API",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -373,12 +482,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -390,7 +500,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nAucun virtual host n'est associé à cette API";
+        String errorDetails = String.format(
+                " :%sAucun virtual host n'est associé à cette API",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -402,12 +515,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -421,7 +535,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn virtual host de cette API n'a pas de domaine associé";
+        String errorDetails = String.format(
+                " :%sUn virtual host de cette API n'a pas de host associé",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -433,12 +550,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -454,7 +572,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn virtual host de cette API n'a pas de domaine associé";
+        String errorDetails = String.format(
+                " :%sUn virtual host de cette API n'a pas de host associé",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -466,12 +587,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -486,7 +608,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn virtual host de cette API ne protège aucun path";
+        String errorDetails = String.format(
+                " :%sUn virtual host de cette API ne protège aucun path",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -498,12 +623,13 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
@@ -519,41 +645,10 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn virtual host de cette API ne protège aucun path";
-
-        assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
-    }
-
-    @Test
-    void testSubdomainConfigurationEntrypointNotProtected() {
-        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        List<ShardingTag> shardingTags = new ArrayList<>();
-        ShardingTag publicTag = new ShardingTag();
-        publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
-        publicTag.setRestrictedGroups(List.of("group1", "group2"));
-        shardingTags.add(publicTag);
-
-        List<Entrypoint> entrypoints = new ArrayList<>();
-        Entrypoint entrypoint = new Entrypoint();
-        entrypoint.setTarget("/unprotectedTestPath");
-        entrypoints.add(entrypoint);
-
-        List<VirtualHost> virtualHosts = new ArrayList<>();
-        VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setHost("/testHost");
-        virtualHost.setPath("/otherTestPath");
-        virtualHosts.add(virtualHost);
-
-        apiDef.setShardingTags(shardingTags);
-        apiDef.setEntrypoints(entrypoints);
-        apiDef.setVirtualHosts(virtualHosts);
-
-        SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
-        RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nUn des entrypoint de l'API n'est pas protégé par un virtual host :\n"
-                + entrypoint.getTarget();
+        String errorDetails = String.format(
+                " :%sUn virtual host de cette API ne protège aucun path",
+                System.lineSeparator()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -565,18 +660,19 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
         List<ShardingTag> shardingTags = new ArrayList<>();
         ShardingTag publicTag = new ShardingTag();
         publicTag.setName("testPublicTag");
-        publicTag.setHostname("/testHost");
         publicTag.setRestrictedGroups(List.of("group1", "group2"));
+        publicTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
         shardingTags.add(publicTag);
 
         List<Entrypoint> entrypoints = new ArrayList<>();
         Entrypoint entrypoint = new Entrypoint();
+        entrypoint.setHost("api.gateway.com");
         entrypoint.setTarget("/testPath");
         entrypoints.add(entrypoint);
 
         List<VirtualHost> virtualHosts = new ArrayList<>();
         VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setHost("/otherTestHost");
+        virtualHost.setHost("api.other.gateway.net");
         virtualHost.setPath("/testPath");
         virtualHosts.add(virtualHost);
 
@@ -586,7 +682,11 @@ class SubdomainConfigurationTest extends SubdomainConfiguration {
 
         SubdomainConfiguration subdomainConfiguration = new SubdomainConfiguration(new RulesRegistry());
         RuleResult result = apiDef.accept(subdomainConfiguration);
-        String errorDetails = " :\nLe domaine du sharding tag ne correspond pas à celui du virtual host";
+        String errorDetails = String.format(
+                " :%sLe virtual host %s ne correspond à aucun sharding tag de cette API",
+                System.lineSeparator(),
+                virtualHost.getHost()
+        );
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());

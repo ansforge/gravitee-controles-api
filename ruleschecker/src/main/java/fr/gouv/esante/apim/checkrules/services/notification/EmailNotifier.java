@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 @Service
 @Slf4j
 public class EmailNotifier implements Notifier {
-    
+
     /**
      * Allows almost all characters in the email address, excpet the pipe character (|) and single quote (‘),
      * as these present a potential SQL injection risk when passed from the client site to the server

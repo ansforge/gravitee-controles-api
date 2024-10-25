@@ -1,148 +1,167 @@
-[ {
-  "id" : "81291589-44e6-39af-925a-a66130af09f7",
-  "name" : "API PROXY - DMP",
-  "version" : "1.0",
-  "description" : "a proxy to reach the DMP via ProSanteConnect",
-  "visibility" : "PRIVATE",
-  "state" : "STARTED",
-  "numberOfRatings" : 0,
-  "tags" : [ ],
-  "created_at" : 1691068894939,
-  "updated_at" : 1720018649601,
-  "owner" : {
-    "id" : "3e544b5a-5320-4734-944b-5a5320f734ab",
-    "email" : "Claire.JUILLARD.EXT@esante.gouv.fr",
-    "displayName" : "admin Gravitee.io plateforme POC SCaleway",
-    "type" : "USER"
+[
+  {
+    "id": "81291589-44e6-39af-925a-a66130af09f7",
+    "name": "API PROXY - DMP",
+    "version": "1.0",
+    "description": "a proxy to reach the DMP via ProSanteConnect",
+    "visibility": "PRIVATE",
+    "state": "STARTED",
+    "numberOfRatings": 0,
+    "tags": [],
+    "created_at": 1691068894939,
+    "updated_at": 1720018649601,
+    "owner": {
+      "id": "3e544b5a-5320-4734-944b-5a5320f734ab",
+      "email": "Claire.JUILLARD.EXT@esante.gouv.fr",
+      "displayName": "admin Gravitee.io plateforme POC SCaleway",
+      "type": "USER"
+    },
+    "picture_url": "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/81291589-44e6-39af-925a-a66130af09f7/picture?hash=1720018649601",
+    "virtual_hosts": [
+      {
+        "path": "/si-dmp-server/v2/services"
+      }
+    ],
+    "lifecycle_state": "CREATED",
+    "context_path": "/si-dmp-server/v2/services",
+    "healthcheck_enabled": false
   },
-  "picture_url" : "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/81291589-44e6-39af-925a-a66130af09f7/picture?hash=1720018649601",
-  "virtual_hosts" : [ {
-    "path" : "/si-dmp-server/v2/services"
-  } ],
-  "lifecycle_state" : "CREATED",
-  "context_path" : "/si-dmp-server/v2/services",
-  "healthcheck_enabled" : false
-}, {
-  "id" : "495b56de-bf60-43ef-9b56-debf6033ef31",
-  "name" : "COPIER-COLLER V2 TokenExchange RFC 8693",
-  "version" : "1.0",
-  "description" : "Policies pour l'API 'COPIER-COLER'",
-  "visibility" : "PUBLIC",
-  "state" : "STARTED",
-  "labels" : [ ],
-  "numberOfRatings" : 0,
-  "tags" : [ ],
-  "created_at" : 1695117816806,
-  "updated_at" : 1695125784142,
-  "owner" : {
-    "id" : "3e544b5a-5320-4734-944b-5a5320f734ab",
-    "email" : "Claire.JUILLARD.EXT@esante.gouv.fr",
-    "displayName" : "admin Gravitee.io plateforme POC SCaleway",
-    "type" : "USER"
+  {
+    "id": "495b56de-bf60-43ef-9b56-debf6033ef31",
+    "name": "COPIER-COLLER V2 TokenExchange RFC 8693",
+    "version": "1.0",
+    "description": "Policies pour l'API 'COPIER-COLER'",
+    "visibility": "PUBLIC",
+    "state": "STARTED",
+    "labels": [],
+    "numberOfRatings": 0,
+    "tags": [],
+    "created_at": 1695117816806,
+    "updated_at": 1695125784142,
+    "owner": {
+      "id": "3e544b5a-5320-4734-944b-5a5320f734ab",
+      "email": "Claire.JUILLARD.EXT@esante.gouv.fr",
+      "displayName": "admin Gravitee.io plateforme POC SCaleway",
+      "type": "USER"
+    },
+    "picture_url": "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/495b56de-bf60-43ef-9b56-debf6033ef31/picture?hash=1695125784142",
+    "virtual_hosts": [
+      {
+        "path": "/copier-coller"
+      }
+    ],
+    "lifecycle_state": "CREATED",
+    "context_path": "/copier-coller",
+    "healthcheck_enabled": true
   },
-  "picture_url" : "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/495b56de-bf60-43ef-9b56-debf6033ef31/picture?hash=1695125784142",
-  "virtual_hosts" : [ {
-    "path" : "/copier-coller"
-  } ],
-  "lifecycle_state" : "CREATED",
-  "context_path" : "/copier-coller",
-  "healthcheck_enabled" : true
-}, {
-  "id" : "7c8fc522-6611-3f8b-9548-06b58e381885",
-  "name" : "DAMs (Données Améli) V2 TokenExchange RFC 8693",
-  "version" : "1.0",
-  "description" : "Policies pour l'API 'DAM' (données Ameli)",
-  "visibility" : "PUBLIC",
-  "state" : "STARTED",
-  "labels" : [ ],
-  "numberOfRatings" : 0,
-  "tags" : [ ],
-  "created_at" : 1691068752997,
-  "updated_at" : 1694772572988,
-  "owner" : {
-    "id" : "3e544b5a-5320-4734-944b-5a5320f734ab",
-    "email" : "Claire.JUILLARD.EXT@esante.gouv.fr",
-    "displayName" : "admin Gravitee.io plateforme POC SCaleway",
-    "type" : "USER"
+  {
+    "id": "7c8fc522-6611-3f8b-9548-06b58e381885",
+    "name": "DAMs (Données Améli) V2 TokenExchange RFC 8693",
+    "version": "1.0",
+    "description": "Policies pour l'API 'DAM' (données Ameli)",
+    "visibility": "PUBLIC",
+    "state": "STARTED",
+    "labels": [],
+    "numberOfRatings": 0,
+    "tags": [],
+    "created_at": 1691068752997,
+    "updated_at": 1694772572988,
+    "owner": {
+      "id": "3e544b5a-5320-4734-944b-5a5320f734ab",
+      "email": "Claire.JUILLARD.EXT@esante.gouv.fr",
+      "displayName": "admin Gravitee.io plateforme POC SCaleway",
+      "type": "USER"
+    },
+    "picture_url": "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/7c8fc522-6611-3f8b-9548-06b58e381885/picture?hash=1694772572988",
+    "virtual_hosts": [
+      {
+        "path": "/dam"
+      }
+    ],
+    "lifecycle_state": "CREATED",
+    "context_path": "/dam",
+    "healthcheck_enabled": true
   },
-  "picture_url" : "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/7c8fc522-6611-3f8b-9548-06b58e381885/picture?hash=1694772572988",
-  "virtual_hosts" : [ {
-    "path" : "/dam"
-  } ],
-  "lifecycle_state" : "CREATED",
-  "context_path" : "/dam",
-  "healthcheck_enabled" : true
-}, {
-  "id" : "a09774f5-3b30-36d9-9e77-f227ee67f4d8",
-  "name" : "Esign Proof (Mongo express)",
-  "version" : "1.0",
-  "description" : "Policies pour l'API 'Esignsante'",
-  "visibility" : "PRIVATE",
-  "state" : "STARTED",
-  "labels" : [ ],
-  "numberOfRatings" : 0,
-  "tags" : [ ],
-  "created_at" : 1691068934237,
-  "updated_at" : 1721752049529,
-  "owner" : {
-    "id" : "3e544b5a-5320-4734-944b-5a5320f734ab",
-    "email" : "Claire.JUILLARD.EXT@esante.gouv.fr",
-    "displayName" : "admin Gravitee.io plateforme POC SCaleway",
-    "type" : "USER"
+  {
+    "id": "a09774f5-3b30-36d9-9e77-f227ee67f4d8",
+    "name": "Esign Proof (Mongo express)",
+    "version": "1.0",
+    "description": "Policies pour l'API 'Esignsante'",
+    "visibility": "PRIVATE",
+    "state": "STARTED",
+    "labels": [],
+    "numberOfRatings": 0,
+    "tags": [],
+    "created_at": 1691068934237,
+    "updated_at": 1721752049529,
+    "owner": {
+      "id": "3e544b5a-5320-4734-944b-5a5320f734ab",
+      "email": "Claire.JUILLARD.EXT@esante.gouv.fr",
+      "displayName": "admin Gravitee.io plateforme POC SCaleway",
+      "type": "USER"
+    },
+    "picture_url": "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/a09774f5-3b30-36d9-9e77-f227ee67f4d8/picture?hash=1721752049529",
+    "virtual_hosts": [
+      {
+        "path": "/psc-db"
+      }
+    ],
+    "lifecycle_state": "DEPRECATED",
+    "context_path": "/psc-db",
+    "healthcheck_enabled": false
   },
-  "picture_url" : "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/a09774f5-3b30-36d9-9e77-f227ee67f4d8/picture?hash=1721752049529",
-  "virtual_hosts" : [ {
-    "path" : "/psc-db"
-  } ],
-  "lifecycle_state" : "DEPRECATED",
-  "context_path" : "/psc-db",
-  "healthcheck_enabled" : false
-}, {
-  "id" : "973b6a7a-6eda-3b45-9bef-1e41d99a3ec0",
-  "name" : "Esignsante",
-  "version" : "1.0",
-  "description" : "Policies pour l'API 'Esignsante'",
-  "visibility" : "PRIVATE",
-  "state" : "STARTED",
-  "numberOfRatings" : 0,
-  "tags" : [ ],
-  "created_at" : 1691068957185,
-  "updated_at" : 1697621260705,
-  "owner" : {
-    "id" : "3e544b5a-5320-4734-944b-5a5320f734ab",
-    "email" : "Claire.JUILLARD.EXT@esante.gouv.fr",
-    "displayName" : "admin Gravitee.io plateforme POC SCaleway",
-    "type" : "USER"
+  {
+    "id": "973b6a7a-6eda-3b45-9bef-1e41d99a3ec0",
+    "name": "Esignsante",
+    "version": "1.0",
+    "description": "Policies pour l'API 'Esignsante'",
+    "visibility": "PRIVATE",
+    "state": "STARTED",
+    "numberOfRatings": 0,
+    "tags": [],
+    "created_at": 1691068957185,
+    "updated_at": 1697621260705,
+    "owner": {
+      "id": "3e544b5a-5320-4734-944b-5a5320f734ab",
+      "email": "Claire.JUILLARD.EXT@esante.gouv.fr",
+      "displayName": "admin Gravitee.io plateforme POC SCaleway",
+      "type": "USER"
+    },
+    "picture_url": "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/973b6a7a-6eda-3b45-9bef-1e41d99a3ec0/picture?hash=1697621260705",
+    "virtual_hosts": [
+      {
+        "path": "/esign"
+      }
+    ],
+    "lifecycle_state": "CREATED",
+    "context_path": "/esign",
+    "healthcheck_enabled": true
   },
-  "picture_url" : "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/973b6a7a-6eda-3b45-9bef-1e41d99a3ec0/picture?hash=1697621260705",
-  "virtual_hosts" : [ {
-    "path" : "/esign"
-  } ],
-  "lifecycle_state" : "CREATED",
-  "context_path" : "/esign",
-  "healthcheck_enabled" : true
-}, {
-  "id" : "a2674f1f-0d35-4ff9-a74f-1f0d355ff991",
-  "name" : "TestAPI",
-  "version" : "0.0.1",
-  "description" : "API designed to test Gravitee API creation process",
-  "visibility" : "PRIVATE",
-  "state" : "STOPPED",
-  "numberOfRatings" : 0,
-  "tags" : [ ],
-  "created_at" : 1721045978713,
-  "updated_at" : 1721051929072,
-  "owner" : {
-    "id" : "3e544b5a-5320-4734-944b-5a5320f734ab",
-    "email" : "Claire.JUILLARD.EXT@esante.gouv.fr",
-    "displayName" : "admin Gravitee.io plateforme POC SCaleway",
-    "type" : "USER"
-  },
-  "picture_url" : "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/a2674f1f-0d35-4ff9-a74f-1f0d355ff991/picture?hash=1721051929072",
-  "virtual_hosts" : [ {
-    "path" : "/test"
-  } ],
-  "lifecycle_state" : "CREATED",
-  "context_path" : "/test",
-  "healthcheck_enabled" : false
-} ]
+  {
+    "id": "a2674f1f-0d35-4ff9-a74f-1f0d355ff991",
+    "name": "TestAPI",
+    "version": "0.0.1",
+    "description": "API designed to test Gravitee API creation process",
+    "visibility": "PRIVATE",
+    "state": "STOPPED",
+    "numberOfRatings": 0,
+    "tags": [],
+    "created_at": 1721045978713,
+    "updated_at": 1721051929072,
+    "owner": {
+      "id": "3e544b5a-5320-4734-944b-5a5320f734ab",
+      "email": "Claire.JUILLARD.EXT@esante.gouv.fr",
+      "displayName": "admin Gravitee.io plateforme POC SCaleway",
+      "type": "USER"
+    },
+    "picture_url": "http://192.168.43.7:26424/management/organizations/DEFAULT/environments/DEFAULT/apis/a2674f1f-0d35-4ff9-a74f-1f0d355ff991/picture?hash=1721051929072",
+    "virtual_hosts": [
+      {
+        "path": "/test"
+      }
+    ],
+    "lifecycle_state": "CREATED",
+    "context_path": "/test",
+    "healthcheck_enabled": false
+  }
+]
