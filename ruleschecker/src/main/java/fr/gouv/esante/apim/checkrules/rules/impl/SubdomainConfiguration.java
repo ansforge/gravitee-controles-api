@@ -46,11 +46,11 @@ public class SubdomainConfiguration extends AbstractRule {
 
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
-        log.info("SubdomainConfiguration visit");
         List<ShardingTag> shardingTags = apiDefinition.getShardingTags();
         List<Entrypoint> entrypoints = apiDefinition.getEntrypoints();
         List<VirtualHost> virtualHosts = apiDefinition.getVirtualHosts();
         boolean success = verify(shardingTags, entrypoints, virtualHosts);
+        logResults(apiDefinition.getApiName(), success);
 
         return new RuleResult(
                 getName(),
@@ -64,79 +64,129 @@ public class SubdomainConfiguration extends AbstractRule {
             List<Entrypoint> entrypoints,
             List<VirtualHost> virtualHosts
     ) {
+        // Vérification du mapping des Sharding tags de la définition de l'API du modèle interne
+        // On controle que l'API a au moins un sharding tag associé
         if (shardingTags == null || shardingTags.isEmpty()) {
-            setDetailErrorMessage(" :\nAucun sharding tag n'est associé à cette API");
+            log.error("Aucun sharding tag n'est associé à cette API");
+            setDetailErrorMessage(String.format(
+                    " : %sAucun sharding tag n'est associé à cette API",
+                    System.lineSeparator()
+            ));
             return false;
         }
+        // On controle que pour chaque sharding tag associé à l'API, tous les attributs sont renseignés
         for (ShardingTag shardingTag : shardingTags) {
             if (shardingTag.getName() == null || shardingTag.getName().isEmpty()) {
-                setDetailErrorMessage(" :\nUn sharding tag associé à cette API n'a pas de nom");
-                return false;
-            }
-            if (shardingTag.getHostname() == null || shardingTag.getHostname().isEmpty()) {
-                setDetailErrorMessage(" :\nUn sharding tag associé à cette API n'a pas de domaine associé");
+                log.error("Un sharding tag associé à cette API n'a pas de nom");
+                setDetailErrorMessage(String.format(
+                        " :%sUn sharding tag associé à cette API n'a pas de nom",
+                        System.lineSeparator()
+                ));
                 return false;
             }
             if (shardingTag.getRestrictedGroups() == null || shardingTag.getRestrictedGroups().isEmpty()) {
-                setDetailErrorMessage(" :\nUn sharding tag associé à cette API n'a pas de restriction d'accès");
+                log.error("Un sharding tag associé à cette API n'a pas de groupe d'accès associé");
+                setDetailErrorMessage(String.format(
+                        " :%sUn sharding tag associé à cette API n'a pas de groupe d'accès associé",
+                        System.lineSeparator()
+                ));
                 return false;
             }
-        }
+            if (shardingTag.getEntrypointMappings() == null || shardingTag.getEntrypointMappings().isEmpty()) {
+                log.error("Un sharding tag associé à cette API n'a aucun mapping vers un entrypoint");
+                setDetailErrorMessage(String.format(
+                        " :%sUn sharding tag associé à cette API n'a aucun mapping vers un entrypoint",
+                        System.lineSeparator()
+                ));
+                return false;
+            }
 
+        }
+        // Vérification du mapping des Sharding tags de la définition de l'API du modèle interne
+        // On controle que l'API a au moins un entrypoint de son backend
         if (entrypoints == null || entrypoints.isEmpty()) {
-            setDetailErrorMessage(" :\nAucun entrypoint n'est associé à cette API");
+            log.error("Aucun entrypoint du backend n'est associé à cette API");
+            setDetailErrorMessage(String.format(
+                    " :%sAucun entrypoint du backend n'est associé à cette API",
+                    System.lineSeparator()
+            ));
             return false;
         }
+        // On controle que pour chaque entrypoint du backend de l'API, tous les attributs sont renseignés
         for (Entrypoint entrypoint : entrypoints) {
+            if (entrypoint.getHost() == null || entrypoint.getHost().isEmpty()) {
+                log.error("Un entrypoint du backend de cette API n'a pas de host");
+                setDetailErrorMessage(String.format(
+                        " :%sUn entrypoint du backend de cette API n'a pas de host",
+                        System.lineSeparator()
+                ));
+                return false;
+            }
             if (entrypoint.getTarget() == null || entrypoint.getTarget().isEmpty()) {
-                setDetailErrorMessage(" :\nUn entrypoint de cette API n'a pas de cible");
+                log.error("Un entrypoint du backend de cette API n'a pas de target");
+                setDetailErrorMessage(String.format(
+                        " :%sUn entrypoint du backend de cette API n'a pas de target",
+                        System.lineSeparator()
+                ));
                 return false;
             }
         }
 
+        // On controle que l'API est en mode virtual host et que ceux-ci sont bien définis
         if (virtualHosts == null || virtualHosts.isEmpty()) {
-            setDetailErrorMessage(" :\nAucun virtual host n'est associé à cette API");
+            log.error("Aucun virtual host n'est associé à cette API");
+            setDetailErrorMessage(String.format(
+                    " :%sAucun virtual host n'est associé à cette API",
+                    System.lineSeparator()
+            ));
             return false;
         }
         for (VirtualHost virtualHost : virtualHosts) {
             if (virtualHost.getHost() == null || virtualHost.getHost().isEmpty()) {
-                setDetailErrorMessage(" :\nUn virtual host de cette API n'a pas de domaine associé");
+                log.error("Un virtual host de cette API n'a pas de host associé");
+                setDetailErrorMessage(String.format(
+                        " :%sUn virtual host de cette API n'a pas de host associé",
+                        System.lineSeparator()
+                ));
                 return false;
             }
             if (virtualHost.getPath() == null || virtualHost.getPath().isEmpty()) {
-                setDetailErrorMessage(" :\nUn virtual host de cette API ne protège aucun path");
+                log.error("Un virtual host de cette API ne protège aucun path");
+                setDetailErrorMessage(String.format(
+                        " :%sUn virtual host de cette API ne protège aucun path",
+                        System.lineSeparator()
+                ));
                 return false;
             }
         }
 
-        // On controle que chaque entrypoint est associé à un virtual host
-        List<String> virtualHostListeningPaths = virtualHosts.stream().map(VirtualHost::getPath).toList();
-        for (Entrypoint entrypoint : entrypoints) {
-            // La cible de l'entrypoint doit être le path protégé d'un des virtual host
-            if (!virtualHostListeningPaths.contains(entrypoint.getTarget())) {
-                setDetailErrorMessage(" :\nUn des entrypoint de l'API n'est pas protégé par un virtual host :\n" +
-                        entrypoint.getTarget());
-                return false;
-            }
-            // On vérifie que le host de chaque virtual host correspond au host d'un sharding tag de l'API
-            for (VirtualHost vhost : virtualHosts) {
-                // On cherche le virtual host correspondant à l'entrypoint
-                if (vhost.getPath().equals(entrypoint.getTarget())) {
-                    String host = vhost.getHost();
-                    List<ShardingTag> tagsForHost = new ArrayList<>();
-                    // On cherche les sharding tags qui ont le même host que le virtual host
-                    for (ShardingTag t : shardingTags) {
-                        if (t.getHostname().equals(host)) {
-                            tagsForHost.add(t);
-                        }
-                    }
-                    // On controle que le host du virtual host est associé à au moins un sharding tag de l'API
-                    if (tagsForHost.isEmpty()) {
-                        setDetailErrorMessage(" :\nLe domaine du sharding tag " +
-                                "ne correspond pas à celui du virtual host");
-                        return false;
-                    }
+        // On vérifie si tous les hosts des virtual hosts correspondent à ceux associés aux sharding tags de l'API
+        List<String> virtualHostListeningHosts = virtualHosts.stream().map(VirtualHost::getHost).toList();
+        for (String listeningHost : virtualHostListeningHosts) {
+            boolean found = false;
+            for (ShardingTag tag : shardingTags) {
+                List<String> domains = new ArrayList<>();
+                for (String entrypointUrl : tag.getEntrypointMappings()) {
+                    domains.add(entrypointUrl.replaceAll("http(s)?://|www\\.|/.*", ""));
                 }
+                if (domains.contains(listeningHost)) {
+                    found = true;
+                    log.debug("Correspondance vérifiée entre virtualhost {} et sharding tag {} : {} inclus dans {}",
+                            listeningHost,
+                            tag.getName(),
+                            listeningHost,
+                            domains
+                    );
+                }
+            }
+            if (!found) {
+                log.error("Le virtual host {} ne correspond à aucun sharding tag de cette API", listeningHost);
+                setDetailErrorMessage(String.format(
+                        " :%sLe virtual host %s ne correspond à aucun sharding tag de cette API",
+                        System.lineSeparator(),
+                        listeningHost
+                ));
+                return false;
             }
         }
         return true;

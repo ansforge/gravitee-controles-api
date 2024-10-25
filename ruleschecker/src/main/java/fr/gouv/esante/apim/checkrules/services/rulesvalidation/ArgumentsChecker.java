@@ -48,7 +48,7 @@ public class ArgumentsChecker {
         if (!args.containsOption(ENV_ID)) {
             throw new ApimMissingArgumentException("Missing --envid argument");
         } else if (args.getOptionValues(ENV_ID).isEmpty() ||
-                        args.getOptionValues(ENV_ID).get(0).trim().isEmpty()) {
+                args.getOptionValues(ENV_ID).get(0).trim().isEmpty()) {
             throw new ApimMissingArgumentException("Empty --envid argument");
         } else {
             log.info("Checking APIs on environment: {}", args.getOptionValues(ENV_ID).get(0).trim());
@@ -60,7 +60,7 @@ public class ArgumentsChecker {
                 args.getOptionValues(API_KEY).get(0).trim().isEmpty()) {
             throw new ApimMissingArgumentException("Empty --apikey argument");
         } else {
-            log.info("API_KEY found");
+            log.debug("API_KEY found");
         }
 
         if (!args.containsOption(RECIPIENTS_FILEPATH)) {
@@ -69,19 +69,19 @@ public class ArgumentsChecker {
                 args.getOptionValues(RECIPIENTS_FILEPATH).get(0).trim().isEmpty()) {
             throw new ApimMissingArgumentException("Empty --recipients.filepath argument");
         } else {
-            log.info("Recipients list filepath found");
+            log.debug("Recipients list filepath found");
         }
     }
 
     private void checkFile(String filepath) throws ApimFileNotFoundException {
         final Path path = Path.of(filepath);
         String errorMessage = "";
-        if(!Files.exists(path)) {
+        if (!Files.exists(path)) {
             errorMessage = "Recipients list file not found: %s".formatted(filepath);
-        } else if(!Files.isReadable(path)) {
+        } else if (!Files.isReadable(path)) {
             errorMessage = "Recipients list file cannot be read: %s".formatted(filepath);
         }
-        if(!errorMessage.trim().isEmpty()) {
+        if (!errorMessage.trim().isEmpty()) {
             throw new ApimFileNotFoundException(errorMessage);
         }
     }

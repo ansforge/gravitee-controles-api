@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class HealthcheckActivation extends AbstractRule {
 
-    protected static final String FAILURE_MSG = "Aucun healthcheck n'est actif sur cette API";
-    protected static final String SUCCESS_MSG = "Healthcheck correctement activé sur cette API";
+    protected static final String FAILURE_MSG = "Aucun healthcheck au niveau global n'est actif sur cette API";
+    protected static final String SUCCESS_MSG = "Healthcheck correctement activé au niveau global sur cette API";
 
 
     @Autowired
@@ -32,9 +32,9 @@ public class HealthcheckActivation extends AbstractRule {
 
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
-        log.info("HealthcheckActivation visit");
         HealthCheckService healthCheck = apiDefinition.getHealthCheck();
         boolean success = verify(healthCheck);
+        logResults(apiDefinition.getApiName(), success);
         return new RuleResult(
                 getName(),
                 success,

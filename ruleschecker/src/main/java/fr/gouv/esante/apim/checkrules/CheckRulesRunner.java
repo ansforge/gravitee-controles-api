@@ -11,6 +11,7 @@ import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionLoader;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ArgumentsChecker;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesChecker;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -28,6 +29,7 @@ import java.util.Map;
  * Point d'entrée de l'application
  */
 @Component
+@Getter
 @Slf4j
 public class CheckRulesRunner implements ApplicationRunner {
 
@@ -38,6 +40,8 @@ public class CheckRulesRunner implements ApplicationRunner {
 
     @Value("${envid}")
     private String envId;
+
+    private Report report;
 
 
     public CheckRulesRunner(ArgumentsChecker argsParser,
@@ -51,19 +55,18 @@ public class CheckRulesRunner implements ApplicationRunner {
 
     /**
      * Méthode principale de l'application :
-     *  - Vérifie les arguments donnés en ligne de commande
-     *  - Vérifie les règles sur chaque API
-     *  - Envoie le rapport des vérifications par notifications
+     * - Vérifie les arguments donnés en ligne de commande
+     * - Vérifie les règles sur chaque API
+     * - Envoie le rapport des vérifications par notifications
      *
      * @param args incoming application arguments
      */
     @Override
     public void run(ApplicationArguments args) {
-        log.info("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
+        log.debug("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
         // Récupération et validation des arguments d'entrée
         argsParser.verifyArgs(args);
         // Lancement des vérifications des règles et génération du rapport
-        Report report;
         try {
             // Chargement de toutes les définitions d'API de l'APIM
             List<GraviteeApiDefinition> apis = loader.loadApiDefinitions();

@@ -8,7 +8,6 @@ import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckActivation;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
-
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(classes = {HealthcheckActivationTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class HealthcheckActivationTest extends HealthcheckActivation {
 

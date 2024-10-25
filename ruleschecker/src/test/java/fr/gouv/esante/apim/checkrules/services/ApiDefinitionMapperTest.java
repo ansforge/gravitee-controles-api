@@ -16,13 +16,11 @@ import fr.gouv.esante.apim.checkrules.model.definition.Logging;
 import fr.gouv.esante.apim.checkrules.model.definition.Plan;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
-
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 import fr.gouv.esante.apim.client.ApiClient;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
-
-import fr.gouv.esante.apim.client.model.InstanceListItemGravitee;
+import fr.gouv.esante.apim.client.model.EntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -34,12 +32,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @WireMockTest
-@SpringBootTest(classes= ApiDefinitionMapper.class)
-@ActiveProfiles({ "test" })
+@SpringBootTest(classes = ApiDefinitionMapper.class)
+@ActiveProfiles({"test"})
 @Slf4j
 class ApiDefinitionMapperTest {
 
@@ -61,14 +60,15 @@ class ApiDefinitionMapperTest {
         tagEntity.setRestrictedGroups(List.of("group1", "group2"));
         tagEntities.add(tagEntity);
 
-        List<InstanceListItemGravitee> gateways = new ArrayList<>();
-        InstanceListItemGravitee gateway = new InstanceListItemGravitee();
-        gateway.setHostname("localhost");
-        gateway.setTags(List.of("tagId"));
-        gateways.add(gateway);
+        List<EntrypointEntityGravitee> entrypointEntities = new ArrayList<>();
+        EntrypointEntityGravitee entrypointEntity = new EntrypointEntityGravitee();
+        entrypointEntity.setId("0123-4567-8910");
+        entrypointEntity.setTags(List.of("tagId"));
+        entrypointEntity.setValue("https://localhost");
+        entrypointEntities.add(entrypointEntity);
 
         ApiDefinitionMapper mapper = new ApiDefinitionMapper();
-        GraviteeApiDefinition apiDef = mapper.map(apiEntity, tagEntities, gateways);
+        GraviteeApiDefinition apiDef = mapper.map(apiEntity, tagEntities, entrypointEntities);
 
         GraviteeApiDefinition expectedApiDef = new GraviteeApiDefinition();
         Set<String> groups = new HashSet<>();
@@ -110,11 +110,12 @@ class ApiDefinitionMapperTest {
         Entrypoint entrypoint = new Entrypoint();
         entrypoint.setHost("localhost");
         entrypoint.setTags(Set.of("test-tag"));
-        entrypoint.setTarget("entryPath");
+        entrypoint.setTarget("/entry/path");
+
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setHost("localhost");
         virtualHost.setOverrideEntrypoint(true);
-        virtualHost.setPath("vhostPath");
+        virtualHost.setPath("/vhost/path");
 
         HealthCheckService healthCheck = new HealthCheckService();
         healthCheck.setEnabled(true);

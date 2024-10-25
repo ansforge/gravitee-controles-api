@@ -43,25 +43,32 @@ public class ReportEmail {
     }
 
     private String writeEmailBody(Report report) {
-        String body = "Synthèse des résultats :\n";
+        String body = "Synthèse des résultats :";
         StringBuilder sb = new StringBuilder(body);
-        if(report.isSuccess()) {
-            sb.append("Toutes les APIs contrôlées sont conformes aux règles d'implémentation dans l'APIM\n\n");
+        sb.append(System.lineSeparator());
+        if (report.isSuccess()) {
+            sb.append("Toutes les APIs contrôlées sont conformes aux règles d'implémentation dans l'APIM")
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator());
         } else {
-            sb.append("Au moins une infraction aux règles d'implémentation dans l'APIM a été détectée\n\n");
+            sb.append("Au moins une infraction aux règles d'implémentation dans l'APIM a été détectée")
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator());
         }
-        for(Map.Entry<String, ApiDefinitionCheckResult> entry : report.getGlobalCheckResults().entrySet()) {
+        for (Map.Entry<String, ApiDefinitionCheckResult> entry : report.getGlobalCheckResults().entrySet()) {
             String apiName = entry.getKey();
             ApiDefinitionCheckResult apiCheckResult = entry.getValue();
-            sb.append(apiName).append(" : ");
+            sb.append(apiName)
+                    .append(" : ");
             String apiResult = "Succès - Respecte toutes les règles d'implementation";
-            for(RuleResult ruleResult : apiCheckResult.getRuleResults()) {
-                if(!ruleResult.isSuccess()) {
+            for (RuleResult ruleResult : apiCheckResult.getRuleResults()) {
+                if (!ruleResult.isSuccess()) {
                     apiResult = "Echec - Non conforme aux règles d'implementation";
                     break;
                 }
             }
-            sb.append(apiResult);
+            sb.append(apiResult)
+                    .append(System.lineSeparator());
         }
         return sb.toString();
     }

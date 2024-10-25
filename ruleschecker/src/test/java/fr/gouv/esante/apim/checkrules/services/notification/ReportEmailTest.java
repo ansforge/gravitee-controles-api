@@ -7,7 +7,6 @@ import fr.gouv.esante.apim.checkrules.model.notification.ReportEmail;
 import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
-
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,16 +15,16 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class ReportEmailTest {
 
@@ -49,8 +48,9 @@ class ReportEmailTest {
         String expectedBody = """
                 Synthèse des résultats :
                 Au moins une infraction aux règles d'implémentation dans l'APIM a été détectée
-                
-                API under test : Echec - Non conforme aux règles d'implementation""";
+                                
+                API under test : Echec - Non conforme aux règles d'implementation
+                """;
         String expectedReport = Files.readAllLines(Paths.get("src/test/resources/__files/report-ko.json")).get(0);
         // Construction du mail correspondant au rapport assemblé
         Report report = new Report(apiResultsMap, now, "test env");
@@ -62,7 +62,8 @@ class ReportEmailTest {
         // L'objet du mail dépend du résultat des contrôles
         assertEquals(expectedSubject, email.getSubject());
         // Le corps du mail dépend des résultats de chaque API testée
-        assertEquals(expectedBody, email.getBody());
+        // On homogénise les séparateurs de lignes pour éviter des faux positifs dûs au système
+        assertEquals(expectedBody.replace("\r", ""), email.getBody().replace("\r", ""));
         assertNotNull(email.getAttachment());
 
         String actualReport = Files.readString(email.getAttachment().toPath());
@@ -89,8 +90,9 @@ class ReportEmailTest {
         String expectedBody = """
                 Synthèse des résultats :
                 Toutes les APIs contrôlées sont conformes aux règles d'implémentation dans l'APIM
-                
-                API under test : Succès - Respecte toutes les règles d'implementation""";
+                                
+                API under test : Succès - Respecte toutes les règles d'implementation
+                """;
         String expectedReport = Files.readAllLines(Paths.get("src/test/resources/__files/report-ok.json")).get(0);
         // Construction du mail correspondant au rapport assemblé
         Report report = new Report(apiResultsMap, now, "test env");
@@ -100,7 +102,8 @@ class ReportEmailTest {
         // L'objet du mail dépend du résultat des contrôles
         assertEquals(expectedSubject, email.getSubject());
         // Le corps du mail dépend des résultats de chaque API testée
-        assertEquals(expectedBody, email.getBody());
+        // On homogénise les séparateurs de lignes pour éviter des faux positifs dûs au système
+        assertEquals(expectedBody.replace("\r", ""), email.getBody().replace("\r", ""));
 
         String actualReport = Files.readString(email.getAttachment().toPath());
         assertEquals(expectedReport, actualReport);

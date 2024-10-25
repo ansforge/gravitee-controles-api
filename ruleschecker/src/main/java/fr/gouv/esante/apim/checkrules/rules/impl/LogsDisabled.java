@@ -33,9 +33,9 @@ public class LogsDisabled extends AbstractRule {
 
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
-        log.info("LogsDisabled visit");
         Logging logging = apiDefinition.getLogging();
         boolean success = verify(logging);
+        logResults(apiDefinition.getApiName(), success);
         return new RuleResult(
                 getName(),
                 success,

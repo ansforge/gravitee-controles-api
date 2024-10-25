@@ -38,9 +38,9 @@ public class GroupAssignment extends AbstractRule {
 
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
-        log.info("GroupAssignment visit");
         Set<String> groups = apiDefinition.getGroups();
         boolean success = verify(groups);
+        logResults(apiDefinition.getApiName(), success);
         return new RuleResult(
                 getName(),
                 success,
@@ -49,7 +49,7 @@ public class GroupAssignment extends AbstractRule {
     }
 
     private boolean verify(Set<String> groups) {
-        if(groups == null) {
+        if (groups == null) {
             return false;
         }
         return !groups.isEmpty();

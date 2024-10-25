@@ -37,9 +37,9 @@ public class SecuredPlan extends AbstractRule {
 
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
-        log.info("SecuredPlan visit");
         Set<Plan> plans = apiDefinition.getPlans();
         boolean success = verify(plans);
+        logResults(apiDefinition.getApiName(), success);
         return new RuleResult(
                 getName(),
                 success,

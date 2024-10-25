@@ -3,6 +3,7 @@
  */
 package fr.gouv.esante.apim.checkrules.model.results;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.Map;
 @Slf4j
 @Getter
 @Setter
+@JsonPropertyOrder({"success", "timestamp", "environment", "globalCheckResults"})
 public class Report {
 
     private Map<String, ApiDefinitionCheckResult> globalCheckResults;
@@ -32,8 +34,8 @@ public class Report {
     private boolean evaluateSuccess() {
         for (Map.Entry<String, ApiDefinitionCheckResult> entry : globalCheckResults.entrySet()) {
             ApiDefinitionCheckResult checkResult = entry.getValue();
-            for(RuleResult ruleResult : checkResult.getRuleResults()) {
-                if(!ruleResult.isSuccess()) {
+            for (RuleResult ruleResult : checkResult.getRuleResults()) {
+                if (!ruleResult.isSuccess()) {
                     return false;
                 }
             }

@@ -17,10 +17,10 @@ import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
+import fr.gouv.esante.apim.client.model.EntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.FlowGravitee;
 import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
 import fr.gouv.esante.apim.client.model.HealthCheckStepGravitee;
-import fr.gouv.esante.apim.client.model.InstanceListItemGravitee;
 import fr.gouv.esante.apim.client.model.LoggingGravitee;
 import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
 import fr.gouv.esante.apim.client.model.StepGravitee;
@@ -46,7 +46,7 @@ public class ApiDefinitionMapper {
 
     public GraviteeApiDefinition map(ApiEntityGravitee apiEntity,
                                      List<TagEntityGravitee> tagEntities,
-                                     List<InstanceListItemGravitee> gateways) {
+                                     List<EntrypointEntityGravitee> entrypointEntities) {
 
         log.info("Mapping de la définition de l'API {}", apiEntity.getName());
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
@@ -65,7 +65,7 @@ public class ApiDefinitionMapper {
 
         apiDef.setTags(apiEntity.getTags());
         if (apiEntity.getTags() != null) {
-            apiDef.setShardingTags(mapShardingTags(apiEntity.getTags(), tagEntities, gateways));
+            apiDef.setShardingTags(mapShardingTags(apiEntity.getTags(), tagEntities, entrypointEntities));
         }
 
         if (apiEntity.getEntrypoints() != null) {
@@ -129,7 +129,7 @@ public class ApiDefinitionMapper {
     private Step mapStep(StepGravitee stepGravitee) {
         Step step = new Step();
         step.setPolicy(stepGravitee.getPolicy());
-        if(stepGravitee.getConfiguration() != null) {
+        if (stepGravitee.getConfiguration() != null) {
             step.setConfiguration(mapConfig(stepGravitee.getConfiguration()));
         }
         return step;
@@ -174,7 +174,7 @@ public class ApiDefinitionMapper {
 
     private List<ShardingTag> mapShardingTags(Set<String> apiTags,
                                               List<TagEntityGravitee> tagEntities,
-                                              List<InstanceListItemGravitee> gateways) {
+                                              List<EntrypointEntityGravitee> entrypointEntities) {
         List<ShardingTag> shardingTags = new ArrayList<>();
         // On associe chaque tag de l'API à un domaine et un groupe d'utilisatuers
         for (String apiTag : apiTags) {
@@ -182,16 +182,16 @@ public class ApiDefinitionMapper {
             for (TagEntityGravitee tagEntity : tagEntities) {
                 // On cherche un sharding tag du même nom qu'un tag de l'API
                 if (tagEntity.getName().equals(apiTag)) {
-                    for (InstanceListItemGravitee gateway : gateways) {
-                        // On cherche à quel domaine est associé le sharding tag
-                        if (gateway.getTags() != null && gateway.getTags().contains(tagEntity.getId())) {
-                            shardingTag.setName(apiTag);
-                            shardingTag.setHostname(gateway.getHostname());
-                            shardingTag.setRestrictedGroups(tagEntity.getRestrictedGroups());
-                            shardingTags.add(shardingTag);
-                            break;
+                    shardingTag.setName(apiTag);
+                    shardingTag.setRestrictedGroups(tagEntity.getRestrictedGroups());
+
+                    for (EntrypointEntityGravitee entrypoint : entrypointEntities) {
+                        // On cherche à quel entrypoint est associé le sharding tag
+                        if (entrypoint.getTags() != null && entrypoint.getTags().contains(tagEntity.getId())) {
+                            shardingTag.getEntrypointMappings().add(entrypoint.getValue());
                         }
                     }
+                    shardingTags.add(shardingTag);
                     break;
                 }
             }

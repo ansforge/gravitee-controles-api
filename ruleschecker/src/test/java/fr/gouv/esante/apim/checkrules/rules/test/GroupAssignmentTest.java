@@ -7,13 +7,10 @@ import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
-
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,9 +18,11 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest(classes = {GroupAssignmentTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class GroupAssignmentTest extends GroupAssignment {
 

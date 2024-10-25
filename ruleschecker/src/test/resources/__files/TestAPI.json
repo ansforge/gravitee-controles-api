@@ -1,189 +1,245 @@
 {
-  "name" : "TestAPI",
-  "crossId" : "887791f7-fe67-4f04-b791-f7fe672f0463",
-  "version" : "0.0.1",
-  "execution_mode" : "v3",
-  "description" : "API designed to test Gravitee Management API",
-  "visibility" : "PRIVATE",
-  "flows" : [ ],
-  "gravitee" : "2.0.0",
-  "flow_mode" : "DEFAULT",
-  "resources" : [ ],
-  "properties" : [ ],
-  "members" : [ {
-    "source" : "gravitee",
-    "sourceId" : "Lionel.POMA.EXT@esante.gouv.fr",
-    "roles" : [ "1dc06dee-bd77-4b9d-806d-eebd778b9d4b" ]
-  } ],
-  "pages" : [ {
-    "id" : "81c6aca8-34ce-36f3-8ea4-22b3f13fcb6a",
-    "crossId" : "8a9dfd9c-93c5-43da-9dfd-9c93c533da23",
-    "name" : "Aside",
-    "type" : "SYSTEM_FOLDER",
-    "order" : 0,
-    "published" : true,
-    "visibility" : "PUBLIC",
-    "lastModificationDate" : 1727255007292,
-    "contentType" : "application/json",
-    "homepage" : false,
-    "parentPath" : "",
-    "excludedAccessControls" : false,
-    "accessControls" : [ ],
-    "api" : "4f70b3be-a0e4-32c4-b6cf-e9409906621c"
-  } ],
-  "plans" : [ {
-    "id" : "16e733ea-0b6f-4a4b-a733-ea0b6f8a4b2b",
-    "crossId" : "6d26946a-50e3-4239-a694-6a50e3823956",
-    "name" : "toto",
-    "description" : "tata",
-    "validation" : "AUTO",
-    "security" : "KEY_LESS",
-    "securityDefinition" : "{}",
-    "type" : "API",
-    "status" : "STAGING",
-    "api" : "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
-    "order" : 0,
-    "characteristics" : [ ],
-    "created_at" : 1728398767891,
-    "updated_at" : 1728475308976,
-    "paths" : { },
-    "flows" : [ {
-      "id" : "654c24af-b9bc-4619-8c24-afb9bc5619d4",
-      "name" : "",
-      "path-operator" : {
-        "path" : "/",
-        "operator" : "STARTS_WITH"
-      },
-      "condition" : "",
-      "consumers" : [ ],
-      "methods" : [ ],
-      "pre" : [ {
-        "name" : "Resource Filtering",
-        "description" : "Restrict resources according to whitelist and / or blacklist rules",
-        "enabled" : true,
-        "policy" : "resource-filtering",
-        "configuration" : {"blacklist":[],"whitelist":[{"methods":["GET"],"pattern":"/toto"},{"methods":["POST"],"pattern":"/tata"}]}
-      } ],
-      "post" : [ ],
-      "enabled" : true
-    } ],
-    "comment_required" : false
-  }, {
-    "id" : "b3e0a529-2337-400a-a0a5-292337100aaf",
-    "crossId" : "c176ee8f-dbb5-4e74-b6ee-8fdbb5ce741a",
-    "name" : "TestAPI-v2-HealthCheck",
-    "description" : "Plan to access healthcheck endpoint",
-    "validation" : "AUTO",
-    "security" : "KEY_LESS",
-    "securityDefinition" : "{}",
-    "type" : "API",
-    "status" : "STAGING",
-    "api" : "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
-    "order" : 0,
-    "characteristics" : [ ],
-    "created_at" : 1728379815208,
-    "updated_at" : 1728475308991,
-    "paths" : { },
-    "flows" : [ {
-      "id" : "405beb99-20e4-408e-9beb-9920e4a08e50",
-      "name" : "",
-      "path-operator" : {
-        "path" : "/actuator/healthcheck",
-        "operator" : "EQUALS"
-      },
-      "condition" : "",
-      "consumers" : [ ],
-      "methods" : [ "GET" ],
-      "pre" : [ {
-        "name" : "Resource Filtering",
-        "description" : "Restrict resources according to whitelist and / or blacklist rules",
-        "enabled" : true,
-        "policy" : "resource-filtering",
-        "configuration" : {"blacklist":[],"whitelist":[{"methods":["GET"],"pattern":"/actuator/healthcheck"}]}
-      } ],
-      "post" : [ ],
-      "enabled" : true
-    } ],
-    "comment_required" : false
-  }, {
-    "id" : "d32e6bf4-d959-36a7-8bc7-9bf9f7713ed9",
-    "crossId" : "2629c767-278c-4d7f-a9c7-67278c1d7ff6",
-    "name" : "TestAccessPlan",
-    "description" : "API test access plan",
-    "validation" : "AUTO",
-    "security" : "KEY_LESS",
-    "securityDefinition" : "{}",
-    "type" : "API",
-    "status" : "STAGING",
-    "api" : "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
-    "order" : 0,
-    "created_at" : 1727255007297,
-    "updated_at" : 1728475309000,
-    "paths" : {
-      "/" : [ ]
+  "name": "TestAPI",
+  "crossId": "887791f7-fe67-4f04-b791-f7fe672f0463",
+  "version": "0.0.1",
+  "execution_mode": "v3",
+  "description": "API designed to test Gravitee Management API",
+  "visibility": "PRIVATE",
+  "flows": [],
+  "gravitee": "2.0.0",
+  "flow_mode": "DEFAULT",
+  "resources": [],
+  "properties": [],
+  "members": [
+    {
+      "source": "gravitee",
+      "sourceId": "Lionel.POMA.EXT@esante.gouv.fr",
+      "roles": [
+        "1dc06dee-bd77-4b9d-806d-eebd778b9d4b"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "id": "81c6aca8-34ce-36f3-8ea4-22b3f13fcb6a",
+      "crossId": "8a9dfd9c-93c5-43da-9dfd-9c93c533da23",
+      "name": "Aside",
+      "type": "SYSTEM_FOLDER",
+      "order": 0,
+      "published": true,
+      "visibility": "PUBLIC",
+      "lastModificationDate": 1727255007292,
+      "contentType": "application/json",
+      "homepage": false,
+      "parentPath": "",
+      "excludedAccessControls": false,
+      "accessControls": [],
+      "api": "4f70b3be-a0e4-32c4-b6cf-e9409906621c"
+    }
+  ],
+  "plans": [
+    {
+      "id": "16e733ea-0b6f-4a4b-a733-ea0b6f8a4b2b",
+      "crossId": "6d26946a-50e3-4239-a694-6a50e3823956",
+      "name": "toto",
+      "description": "tata",
+      "validation": "AUTO",
+      "security": "KEY_LESS",
+      "securityDefinition": "{}",
+      "type": "API",
+      "status": "STAGING",
+      "api": "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
+      "order": 0,
+      "characteristics": [],
+      "created_at": 1728398767891,
+      "updated_at": 1728475308976,
+      "paths": {},
+      "flows": [
+        {
+          "id": "654c24af-b9bc-4619-8c24-afb9bc5619d4",
+          "name": "",
+          "path-operator": {
+            "path": "/",
+            "operator": "STARTS_WITH"
+          },
+          "condition": "",
+          "consumers": [],
+          "methods": [],
+          "pre": [
+            {
+              "name": "Resource Filtering",
+              "description": "Restrict resources according to whitelist and / or blacklist rules",
+              "enabled": true,
+              "policy": "resource-filtering",
+              "configuration": {
+                "blacklist": [],
+                "whitelist": [
+                  {
+                    "methods": [
+                      "GET"
+                    ],
+                    "pattern": "/toto"
+                  },
+                  {
+                    "methods": [
+                      "POST"
+                    ],
+                    "pattern": "/tata"
+                  }
+                ]
+              }
+            }
+          ],
+          "post": [],
+          "enabled": true
+        }
+      ],
+      "comment_required": false
     },
-    "flows" : [ {
-      "id" : "1d2ecb66-6a95-4a50-aecb-666a95ea507d",
-      "name" : "",
-      "path-operator" : {
-        "path" : "/",
-        "operator" : "STARTS_WITH"
+    {
+      "id": "b3e0a529-2337-400a-a0a5-292337100aaf",
+      "crossId": "c176ee8f-dbb5-4e74-b6ee-8fdbb5ce741a",
+      "name": "TestAPI-v2-HealthCheck",
+      "description": "Plan to access healthcheck endpoint",
+      "validation": "AUTO",
+      "security": "KEY_LESS",
+      "securityDefinition": "{}",
+      "type": "API",
+      "status": "STAGING",
+      "api": "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
+      "order": 0,
+      "characteristics": [],
+      "created_at": 1728379815208,
+      "updated_at": 1728475308991,
+      "paths": {},
+      "flows": [
+        {
+          "id": "405beb99-20e4-408e-9beb-9920e4a08e50",
+          "name": "",
+          "path-operator": {
+            "path": "/actuator/healthcheck",
+            "operator": "EQUALS"
+          },
+          "condition": "",
+          "consumers": [],
+          "methods": [
+            "GET"
+          ],
+          "pre": [
+            {
+              "name": "Resource Filtering",
+              "description": "Restrict resources according to whitelist and / or blacklist rules",
+              "enabled": true,
+              "policy": "resource-filtering",
+              "configuration": {
+                "blacklist": [],
+                "whitelist": [
+                  {
+                    "methods": [
+                      "GET"
+                    ],
+                    "pattern": "/actuator/healthcheck"
+                  }
+                ]
+              }
+            }
+          ],
+          "post": [],
+          "enabled": true
+        }
+      ],
+      "comment_required": false
+    },
+    {
+      "id": "d32e6bf4-d959-36a7-8bc7-9bf9f7713ed9",
+      "crossId": "2629c767-278c-4d7f-a9c7-67278c1d7ff6",
+      "name": "TestAccessPlan",
+      "description": "API test access plan",
+      "validation": "AUTO",
+      "security": "KEY_LESS",
+      "securityDefinition": "{}",
+      "type": "API",
+      "status": "STAGING",
+      "api": "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
+      "order": 0,
+      "created_at": 1727255007297,
+      "updated_at": 1728475309000,
+      "paths": {
+        "/": []
       },
-      "condition" : "",
-      "consumers" : [ ],
-      "methods" : [ ],
-      "pre" : [ ],
-      "post" : [ ],
-      "enabled" : true
-    } ],
-    "comment_required" : false
-  } ],
-  "metadata" : [ {
-    "key" : "email-support",
-    "name" : "email-support",
-    "format" : "MAIL",
-    "value" : "${(api.primaryOwner.email)!''}",
-    "defaultValue" : "support@change.me",
-    "apiId" : "4f70b3be-a0e4-32c4-b6cf-e9409906621c"
-  } ],
-  "id" : "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
-  "path_mappings" : [ ],
-  "proxy" : {
-    "virtual_hosts" : [ {
-      "path" : "/test"
-    } ],
-    "strip_context_path" : false,
-    "preserve_host" : false,
-    "groups" : [ {
-      "name" : "default-group",
-      "endpoints" : [ {
-        "backup" : false,
-        "inherit" : true,
-        "name" : "default",
-        "weight" : 1,
-        "type" : "http",
-        "target" : "http://localhost:8080/"
-      } ],
-      "load_balancing" : {
-        "type" : "ROUND_ROBIN"
-      },
-      "http" : {
-        "connectTimeout" : 5000,
-        "idleTimeout" : 60000,
-        "keepAlive" : true,
-        "readTimeout" : 10000,
-        "pipelining" : false,
-        "maxConcurrentConnections" : 100,
-        "useCompression" : true,
-        "followRedirects" : false
+      "flows": [
+        {
+          "id": "1d2ecb66-6a95-4a50-aecb-666a95ea507d",
+          "name": "",
+          "path-operator": {
+            "path": "/",
+            "operator": "STARTS_WITH"
+          },
+          "condition": "",
+          "consumers": [],
+          "methods": [],
+          "pre": [],
+          "post": [],
+          "enabled": true
+        }
+      ],
+      "comment_required": false
+    }
+  ],
+  "metadata": [
+    {
+      "key": "email-support",
+      "name": "email-support",
+      "format": "MAIL",
+      "value": "${(api.primaryOwner.email)!''}",
+      "defaultValue": "support@change.me",
+      "apiId": "4f70b3be-a0e4-32c4-b6cf-e9409906621c"
+    }
+  ],
+  "id": "4f70b3be-a0e4-32c4-b6cf-e9409906621c",
+  "path_mappings": [],
+  "proxy": {
+    "virtual_hosts": [
+      {
+        "path": "/test"
       }
-    } ]
+    ],
+    "strip_context_path": false,
+    "preserve_host": false,
+    "groups": [
+      {
+        "name": "default-group",
+        "endpoints": [
+          {
+            "backup": false,
+            "inherit": true,
+            "name": "default",
+            "weight": 1,
+            "type": "http",
+            "target": "http://localhost:8080/"
+          }
+        ],
+        "load_balancing": {
+          "type": "ROUND_ROBIN"
+        },
+        "http": {
+          "connectTimeout": 5000,
+          "idleTimeout": 60000,
+          "keepAlive": true,
+          "readTimeout": 10000,
+          "pipelining": false,
+          "maxConcurrentConnections": 100,
+          "useCompression": true,
+          "followRedirects": false
+        }
+      }
+    ]
   },
-  "response_templates" : { },
-  "primaryOwner" : {
-    "id" : "018ca165-d825-4b07-8ca1-65d825eb0731",
-    "email" : "Lionel.POMA.EXT@esante.gouv.fr",
-    "displayName" : "Lionel POMA",
-    "type" : "USER"
+  "response_templates": {},
+  "primaryOwner": {
+    "id": "018ca165-d825-4b07-8ca1-65d825eb0731",
+    "email": "Lionel.POMA.EXT@esante.gouv.fr",
+    "displayName": "Lionel POMA",
+    "type": "USER"
   }
 }

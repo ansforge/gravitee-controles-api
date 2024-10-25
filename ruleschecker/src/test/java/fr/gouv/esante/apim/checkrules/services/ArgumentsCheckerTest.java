@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest(classes = ArgumentsCheckerTest.class)
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class ArgumentsCheckerTest {
 

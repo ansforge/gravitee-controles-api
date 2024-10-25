@@ -15,12 +15,18 @@ public abstract class AbstractRule implements ApiDefinitionQualityRule {
 
 
     public AbstractRule(RulesRegistry registry) {
-        log.info("Setting registry to {}", registry);
         this.registry = registry;
     }
 
     protected void register(ApiDefinitionQualityRule rule) {
-        log.info("Registering api definition quality rule: {}", rule);
         registry.getRules().add(rule);
+        log.info("Api definition quality rule: {} registered.", rule.getName());
+    }
+
+    protected void logResults(String apiName, boolean result) {
+        log.info("le contrôle de la règle {} pour l'API {} est en {}",
+                getName(),
+                apiName,
+                result ? "succès" : "échec");
     }
 }

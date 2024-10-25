@@ -3,6 +3,7 @@
  */
 package fr.gouv.esante.apim.checkrules.model.results;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.time.Instant;
  * Résultat complet de la vérification d'une règle pour une API
  */
 @Getter
+@JsonPropertyOrder({"ruleName", "success", "timestamp", "message"})
 public class RuleResult {
 
     /**
@@ -36,7 +38,7 @@ public class RuleResult {
      */
     private final String timestamp;
 
-    
+
     public RuleResult(String ruleName, boolean success, String message) {
         this(ruleName, success, message, Instant.now().toString());
     }
@@ -44,10 +46,10 @@ public class RuleResult {
     /**
      * Constructeur dédié aux tests
      *
-     * @param ruleName
-     * @param success
-     * @param message
-     * @param timestamp
+     * @param ruleName Nom de la règle vérifiée
+     * @param success Conformité de l'API à cette règle
+     * @param message Détail sur le résultat de la vérification
+     * @param timestamp Date et heure de la vérification
      */
     public RuleResult(String ruleName, boolean success, String message, String timestamp) {
         this.ruleName = ruleName;

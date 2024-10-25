@@ -8,11 +8,10 @@ import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Plan;
-import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
+import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
-
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(classes = {HealthcheckSecuredTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class HealthcheckSecuredTest extends HealthcheckSecured {
 
@@ -78,7 +77,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nAucun plan n'est associé à cette API";
+        String errorDetails = String.format(" :%sAucun plan n'est associé à cette API", System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -91,7 +90,7 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nAucun plan n'est associé à cette API";
+        String errorDetails = String.format(" :%sAucun plan n'est associé à cette API", System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -108,14 +107,16 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nAucun plan se terminant par -HealthCheck n'est associé à cette API";
+        String errorDetails = String.format(" :%sAucun plan se terminant par -HealthCheck" +
+                        " n'est associé à cette API",
+                System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }
 
     @Test
-    void testHealthCheckPlanIsNotSecured() {
+    void testHealthCheckPlanIsNotKeyLess() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         Set<Plan> plans = new HashSet<>();
         Plan plan = new Plan();
@@ -124,7 +125,9 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
         apiDef.setPlans(plans);
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nLe type d'authentification du plan healthcheck doit être KEY_LESS";
+        String errorDetails = String.format(" :%sLe type d'authentification du plan healthcheck" +
+                        " doit être KEY_LESS",
+                System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -158,8 +161,9 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
 
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nLe plan healthcheck doit inclure une restriction" +
-                " de type Resource Filtering";
+        String errorDetails = String.format(" :%sLe plan healthcheck doit inclure" +
+                        " une restriction de type Resource Filtering",
+                System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -189,7 +193,9 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
 
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nLa whitelist du plan healthcheck est vide";
+        String errorDetails = String.format(" :%sLa whitelist du plan" +
+                        " healthcheck est vide",
+                System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -223,7 +229,10 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
 
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nLa whitelist du plan healthcheck ne doit autoriser l'accès qu'au endpoit healthcheck";
+        String errorDetails = String.format(" :%sLa whitelist du plan" +
+                        " healthcheck ne doit autoriser l'accès qu'au endpoit" +
+                        " healthcheck",
+                System.lineSeparator());
 
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
@@ -257,7 +266,10 @@ class HealthcheckSecuredTest extends HealthcheckSecured {
 
         HealthcheckSecured healthcheckSecured = new HealthcheckSecured(new RulesRegistry());
         RuleResult result = apiDef.accept(healthcheckSecured);
-        String errorDetails = " :\nLe endpoint healthcheck ne doit être accessible qu'en GET";
+        String errorDetails = String.format(" :%sLe endpoint healthcheck" +
+                        " ne doit être accessible qu'en GET : méthode %s trouvée",
+                System.lineSeparator(),
+                whitelist.get(0).getMethods().get(0));
         assertFalse(result.isSuccess());
         assertEquals(FAILURE_MSG + errorDetails, result.getMessage());
     }

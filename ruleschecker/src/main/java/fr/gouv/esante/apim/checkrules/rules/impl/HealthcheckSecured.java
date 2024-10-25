@@ -26,9 +26,9 @@ import java.util.Set;
 public class HealthcheckSecured extends AbstractRule {
 
     protected static final String FAILURE_MSG = "Les plans affectés aux healthchecks de cette API ne sont pas " +
-                                                "sécurisés correctement";
+            "sécurisés correctement";
     protected static final String SUCCESS_MSG = "Les plans affectés aux healthchecks de cette API sont " +
-                                                "correctement sécurisés";
+            "correctement sécurisés";
     /**
      * Détails sur la cause de l'échec du contrôle
      */
@@ -44,14 +44,14 @@ public class HealthcheckSecured extends AbstractRule {
     @Override
     public String getName() {
         return "6.2 - Les endpoints HealthCheck exposés à l’extérieur doivent avoir un plan spécifique, " +
-               "dont le nom est suffixé avec « -HealthCheck »";
+                "dont le nom est suffixé avec « -HealthCheck »";
     }
 
     @Override
     public RuleResult visit(GraviteeApiDefinition apiDefinition) {
-        log.info("HealthcheckSecured visit");
         Set<Plan> plans = apiDefinition.getPlans();
         boolean success = verify(plans);
+        logResults(apiDefinition.getApiName(), success);
         return new RuleResult(
                 getName(),
                 success,
@@ -62,7 +62,7 @@ public class HealthcheckSecured extends AbstractRule {
     private boolean verify(Set<Plan> plans) {
         // Controle qu'au moins un plan existe
         if (plans == null || plans.isEmpty()) {
-            setDetailErrorMessage(" :\nAucun plan n'est associé à cette API");
+            setDetailErrorMessage(String.format(" :%sAucun plan n'est associé à cette API", System.lineSeparator()));
             return false;
         }
 
@@ -73,7 +73,7 @@ public class HealthcheckSecured extends AbstractRule {
                 if ("KEY_LESS".equals(plan.getAuthMechanism())) {
                     // On cherche un flow unique
                     if (plan.getFlows().size() == 1) {
-                        // On cherche un flow contenant au moins un pre-step
+                        log.debug("On cherche un flow contenant au moins un pre-step");
                         for (Flow flow : plan.getFlows()) {
                             if (!flow.getPreSteps().isEmpty()) {
                                 // On cherche un pre-step ayant une policy ressource-filtering
@@ -89,29 +89,46 @@ public class HealthcheckSecured extends AbstractRule {
                                                 if ("GET".equals(whitelist.get(0).getMethods().get(0))) {
                                                     return true;
                                                 } else {
-                                                    setDetailErrorMessage(" :\nLe endpoint healthcheck " +
-                                                            "ne doit être accessible qu'en GET");
+                                                    setDetailErrorMessage(String.format(" :%sLe endpoint healthcheck" +
+                                                                    " ne doit être accessible qu'en GET : méthode %s trouvée",
+                                                            System.lineSeparator(),
+                                                            whitelist.get(0).getMethods().get(0))
+                                                    );
                                                 }
                                             } else {
-                                                setDetailErrorMessage(" :\nLa whitelist du plan healthcheck " +
-                                                        "ne doit autoriser l'accès qu'au endpoit healthcheck");
+                                                setDetailErrorMessage(String.format(" :%sLa whitelist du plan" +
+                                                                " healthcheck ne doit autoriser l'accès qu'au endpoit" +
+                                                                " healthcheck",
+                                                        System.lineSeparator())
+                                                );
                                             }
                                         } else {
-                                            setDetailErrorMessage(" :\nLa whitelist du plan healthcheck est vide");
+                                            setDetailErrorMessage(String.format(" :%sLa whitelist du plan" +
+                                                            " healthcheck est vide",
+                                                    System.lineSeparator())
+                                            );
                                         }
                                     } else {
-                                        setDetailErrorMessage(" :\nLe plan healthcheck doit inclure une restriction" +
-                                                " de type Resource Filtering");
+                                        setDetailErrorMessage(String.format(" :%sLe plan healthcheck doit inclure" +
+                                                        " une restriction de type Resource Filtering",
+                                                System.lineSeparator())
+                                        );
                                     }
                                 }
                             }
                         }
                     }
                 } else {
-                    setDetailErrorMessage(" :\nLe type d'authentification du plan healthcheck doit être KEY_LESS");
+                    setDetailErrorMessage(String.format(" :%sLe type d'authentification du plan healthcheck" +
+                                    " doit être KEY_LESS",
+                            System.lineSeparator())
+                    );
                 }
             } else {
-                setDetailErrorMessage(" :\nAucun plan se terminant par -HealthCheck n'est associé à cette API");
+                setDetailErrorMessage(String.format(" :%sAucun plan se terminant par -HealthCheck" +
+                                " n'est associé à cette API",
+                        System.lineSeparator())
+                );
             }
         }
         return false;

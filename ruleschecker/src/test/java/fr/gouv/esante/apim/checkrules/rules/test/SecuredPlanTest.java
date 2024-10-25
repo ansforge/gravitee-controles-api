@@ -8,7 +8,6 @@ import fr.gouv.esante.apim.checkrules.model.definition.Plan;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
-
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(classes = {SecuredPlanTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
-@ActiveProfiles({ "test" })
+@ActiveProfiles({"test"})
 @Slf4j
 class SecuredPlanTest extends SecuredPlan {
 
@@ -101,12 +100,6 @@ class SecuredPlanTest extends SecuredPlan {
 
         assertTrue(result.isSuccess());
     }
-
-
-
-
-
-
 
 
 }
