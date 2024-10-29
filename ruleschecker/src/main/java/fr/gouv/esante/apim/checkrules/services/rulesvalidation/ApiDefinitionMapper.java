@@ -181,7 +181,7 @@ public class ApiDefinitionMapper {
             ShardingTag shardingTag = new ShardingTag();
             for (TagEntityGravitee tagEntity : tagEntities) {
                 // On cherche un sharding tag du même nom qu'un tag de l'API
-                if (tagEntity.getName().equals(apiTag)) {
+                if (apiTag.equals(tagEntity.getId())) {
                     shardingTag.setName(apiTag);
                     shardingTag.setRestrictedGroups(tagEntity.getRestrictedGroups());
 
