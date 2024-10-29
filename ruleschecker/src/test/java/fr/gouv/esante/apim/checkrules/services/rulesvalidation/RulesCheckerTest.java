@@ -19,6 +19,8 @@ import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
+import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckActivation;
+import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
 import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
@@ -41,8 +43,8 @@ import java.util.Set;
 @WireMockTest
 @SpringBootTest(classes = {RulesChecker.class, RulesRegistry.class, EmailNotifier.class, JavaMailSenderImpl.class,
         GroupAssignment.class,
-        HealthCheckService.class,
-        HealthCheckRequest.class,
+        HealthcheckSecured.class,
+        HealthcheckActivation.class,
         LogsDisabled.class,
         SecuredPlan.class,
         SubdomainConfiguration.class
