@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 
@@ -52,7 +53,8 @@ public class SecuredPlan extends AbstractRule {
         if (plans == null || plans.isEmpty()) {
             return false;
         }
-        for (Plan plan : plans) {
+        List<Plan> activePlans = plans.stream().filter(plan -> Arrays.asList("STAGING", "PUBLISHED").contains(plan.getStatus())).toList();
+        for (Plan plan : activePlans) {
             if (Arrays.asList("API_KEY", "OAUTH2").contains(plan.getAuthMechanism())) {
                 success = true;
                 break;

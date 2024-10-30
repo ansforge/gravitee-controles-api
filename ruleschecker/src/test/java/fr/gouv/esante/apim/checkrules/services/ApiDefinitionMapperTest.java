@@ -6,7 +6,6 @@ package fr.gouv.esante.apim.checkrules.services;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
-import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
@@ -68,7 +67,7 @@ class ApiDefinitionMapperTest {
         entrypointEntities.add(entrypointEntity);
 
         ApiDefinitionMapper mapper = new ApiDefinitionMapper();
-        GraviteeApiDefinition apiDef = mapper.map(apiEntity, tagEntities, entrypointEntities);
+        GraviteeApiDefinition apiDef = mapper.map(apiEntity, entrypointEntities);
 
         GraviteeApiDefinition expectedApiDef = new GraviteeApiDefinition();
         Set<String> groups = new HashSet<>();
@@ -107,11 +106,6 @@ class ApiDefinitionMapperTest {
         flows.add(flow);
         healthcheckPlan.setFlows(flows);
 
-        Entrypoint entrypoint = new Entrypoint();
-        entrypoint.setHost("localhost");
-        entrypoint.setTags(Set.of("test-tag"));
-        entrypoint.setTarget("/entry/path");
-
         VirtualHost virtualHost = new VirtualHost();
         virtualHost.setHost("localhost");
         virtualHost.setOverrideEntrypoint(true);
@@ -132,8 +126,6 @@ class ApiDefinitionMapperTest {
         expectedApiDef.setApiName("TestAPI-ex");
         expectedApiDef.setGroups(groups);
         expectedApiDef.setPlans(Set.of(accessPlan, healthcheckPlan));
-        expectedApiDef.setTags(Set.of("test-tag"));
-        expectedApiDef.setEntrypoints(List.of(entrypoint));
         expectedApiDef.setVirtualHosts(List.of(virtualHost));
         expectedApiDef.setHealthCheck(healthCheck);
         expectedApiDef.setLogging(logging);
@@ -142,8 +134,6 @@ class ApiDefinitionMapperTest {
         assertEquals(expectedApiDef.getApiName(), apiDef.getApiName());
         assertEquals(expectedApiDef.getGroups(), apiDef.getGroups());
         assertEquals(expectedApiDef.getPlans(), apiDef.getPlans());
-        assertEquals(expectedApiDef.getTags(), apiDef.getTags());
-        assertEquals(expectedApiDef.getEntrypoints(), apiDef.getEntrypoints());
         assertEquals(expectedApiDef.getVirtualHosts(), apiDef.getVirtualHosts());
         assertEquals(expectedApiDef.getHealthCheck(), apiDef.getHealthCheck());
         assertEquals(expectedApiDef.getLogging(), apiDef.getLogging());

@@ -11,7 +11,6 @@ import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.ApiListItemGravitee;
 import fr.gouv.esante.apim.client.model.EntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.ExecutionModeGravitee;
-import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -66,15 +65,12 @@ public class ApiDefinitionLoader {
     }
 
     public List<GraviteeApiDefinition> loadApiDefinitions() throws ApimRulecheckerException {
-        List<TagEntityGravitee> tagEntities = configurationApi.getTags1(envId, orgId);
-        log.info("Found {} Sharding tags on environment {}", tagEntities.size(), envId);
-        if (tagEntities.isEmpty()) {
-            throw new ApimRulecheckerException("No Sharding tags found on environment " + envId);
-        }
+        log.info("Loading api definitions from {}", apisApi.getApiClient().getBasePath());
+
 
         List<EntrypointEntityGravitee> entrypointEntities = configurationApi.getEntrypoints(orgId);
-        log.info("Found {} entrypoint entities on environment {}", tagEntities.size(), envId);
-        if (tagEntities.isEmpty()) {
+        log.info("Found {} entrypoint entities on environment {}", entrypointEntities.size(), envId);
+        if (entrypointEntities.isEmpty()) {
             throw new ApimRulecheckerException("No entrypoint entity found on environment " + envId);
         }
 
@@ -108,7 +104,7 @@ public class ApiDefinitionLoader {
                 ApiEntityGravitee apiEntity = apisApi.getApi(apiListItem.getId(), envId, orgId);
 
                 // Build an object GraviteeApiDefinition and add it to returned list
-                apiDefinitions.add(mapper.map(apiEntity, tagEntities, entrypointEntities));
+                apiDefinitions.add(mapper.map(apiEntity, entrypointEntities));
             }
         } catch (RestClientException e) {
             log.error("Error while querying APIM API :", e);

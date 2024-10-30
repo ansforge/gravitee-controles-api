@@ -1,0 +1,5 @@
+[ {
+  "id" : "8f7e43b2-fc05-4be5-be43-b2fc053be5a4",
+  "value" : "http://test-api.gateway.api.esante.gouv.fr",
+  "tags" : [ "shardingtag01" ]
+} ]

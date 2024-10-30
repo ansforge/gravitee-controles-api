@@ -15,21 +15,23 @@ import java.util.Objects;
 @Setter
 public class ShardingTag {
 
-    private String name;
-    private List<String> restrictedGroups = new ArrayList<>();
+    private String id;
     private List<String> entrypointMappings = new ArrayList<>();
 
+    public ShardingTag(String id) {
+        this.id = id;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ShardingTag that = (ShardingTag) o;
-        return Objects.equals(name, that.name) && Objects.equals(restrictedGroups, that.restrictedGroups) && Objects.equals(entrypointMappings, that.entrypointMappings);
+        return Objects.equals(id, that.id) && Objects.equals(entrypointMappings, that.entrypointMappings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, restrictedGroups, entrypointMappings);
+        return Objects.hash(id, entrypointMappings);
     }
 }

@@ -5,7 +5,6 @@ package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
-import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
@@ -66,10 +65,8 @@ class RulesCheckerTest {
         groups.add("group2");
 
         List<ShardingTag> shardingTags = new ArrayList<>();
-        ShardingTag shardingTag = new ShardingTag();
-        shardingTag.setName("test-tag");
-        shardingTag.setRestrictedGroups(List.of("group1", "group2"));
-        shardingTag.setEntrypointMappings(List.of("http://api.gateway.com", "https://api.gateway.net"));
+        ShardingTag shardingTag = new ShardingTag("test-tag");
+        shardingTag.setEntrypointMappings(List.of("api.gateway.com", "api.gateway.net"));
         shardingTags.add(shardingTag);
 
         Plan accessPlan = new Plan();
@@ -104,12 +101,8 @@ class RulesCheckerTest {
         flows.add(flow);
         healthcheckPlan.setFlows(flows);
 
-        Entrypoint entrypoint = new Entrypoint();
-        entrypoint.setHost("localhost");
-        entrypoint.setTags(Set.of("test-tag"));
-        entrypoint.setTarget("/testPath");
         VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setHost("/testHost");
+        virtualHost.setHost("testHost");
         virtualHost.setOverrideEntrypoint(true);
         virtualHost.setPath("/testPath");
 
@@ -128,9 +121,7 @@ class RulesCheckerTest {
         apiDef.setApiName("TestAPI-ex");
         apiDef.setGroups(groups);
         apiDef.setPlans(Set.of(accessPlan, healthcheckPlan));
-        apiDef.setTags(Set.of("test-tag"));
         apiDef.setShardingTags(shardingTags);
-        apiDef.setEntrypoints(List.of(entrypoint));
         apiDef.setVirtualHosts(List.of(virtualHost));
         apiDef.setHealthCheck(healthCheck);
         apiDef.setLogging(logging);

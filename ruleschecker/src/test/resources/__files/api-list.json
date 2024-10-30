@@ -1,0 +1,29 @@
+[ {
+  "id" : "f704667f-f498-3015-a0a2-17c2a243942a",
+  "name" : "Certificat_Structure",
+  "version" : "Certificat_Structure",
+  "description" : "Certificat_Structure",
+  "visibility" : "PRIVATE",
+  "state" : "STARTED",
+  "numberOfRatings" : 0,
+  "tags" : [ "shardingtag01" ],
+  "created_at" : 1729245602390,
+  "updated_at" : 1729781057978,
+  "owner" : {
+    "id" : "43ac0984-eade-4534-ac09-84eade15348d",
+    "displayName" : "gandalf",
+    "type" : "USER"
+  },
+  "picture_url" : "http://10.3.8.166:24723/management/organizations/DEFAULT/environments/DEFAULT/apis/f704667f-f498-3015-a0a2-17c2a243942a/picture?hash=1729781057978",
+  "virtual_hosts" : [ {
+    "path" : "/Certificat_Structure/V002.00"
+  } ],
+  "lifecycle_state" : "PUBLISHED",
+  "context_path" : "/Certificat_Structure/V002.00",
+  "healthcheck_enabled" : true,
+  "definition_context" : {
+    "origin" : "management",
+    "mode" : "fully_managed"
+  },
+  "gravitee" : "2.0.0"
+} ]

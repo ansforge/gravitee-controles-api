@@ -24,11 +24,12 @@ import fr.gouv.esante.apim.client.model.HealthCheckStepGravitee;
 import fr.gouv.esante.apim.client.model.LoggingGravitee;
 import fr.gouv.esante.apim.client.model.PlanEntityGravitee;
 import fr.gouv.esante.apim.client.model.StepGravitee;
-import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +46,6 @@ import java.util.Set;
 public class ApiDefinitionMapper {
 
     public GraviteeApiDefinition map(ApiEntityGravitee apiEntity,
-                                     List<TagEntityGravitee> tagEntities,
                                      List<EntrypointEntityGravitee> entrypointEntities) {
 
         log.info("Mapping de la définition de l'API {}", apiEntity.getName());
@@ -63,25 +63,21 @@ public class ApiDefinitionMapper {
             apiDef.setPlans(plans);
         }
 
-        apiDef.setTags(apiEntity.getTags());
         if (apiEntity.getTags() != null) {
-            apiDef.setShardingTags(mapShardingTags(apiEntity.getTags(), tagEntities, entrypointEntities));
+            apiDef.setShardingTags(mapShardingTags(apiEntity.getTags(), entrypointEntities));
         }
 
         if (apiEntity.getEntrypoints() != null) {
-            List<Entrypoint> entrypoints = new ArrayList<>();
-            for (ApiEntrypointEntityGravitee entrypointGravitee : apiEntity.getEntrypoints()) {
-                entrypoints.add(mapEntrypoint(entrypointGravitee));
+            for (ApiEntrypointEntityGravitee apiEntrypointEntityGravitee : apiEntity.getEntrypoints()) {
+                Entrypoint entrypoint = new Entrypoint(getHostFromUrl(apiEntrypointEntityGravitee.getTarget()), apiEntrypointEntityGravitee.getHost());
+                apiDef.getEntrypoints().add(entrypoint);
             }
-            apiDef.setEntrypoints(entrypoints);
         }
 
         if (apiEntity.getProxy().getVirtualHosts() != null) {
-            List<VirtualHost> virtualHosts = new ArrayList<>();
             for (VirtualHostGravitee virtualHostGravitee : apiEntity.getProxy().getVirtualHosts()) {
-                virtualHosts.add(mapVirtualHost(virtualHostGravitee));
+                apiDef.getVirtualHosts().add(mapVirtualHost(virtualHostGravitee));
             }
-            apiDef.setVirtualHosts(virtualHosts);
         }
 
         if (apiEntity.getServices() != null && apiEntity.getServices().getHealthCheck() != null) {
@@ -98,6 +94,7 @@ public class ApiDefinitionMapper {
     private Plan mapPlan(PlanEntityGravitee planGravitee) {
         Plan plan = new Plan();
         plan.setName(planGravitee.getName());
+        plan.setStatus(planGravitee.getStatus().getValue());
         plan.setAuthMechanism(planGravitee.getSecurity().getValue());
         List<Flow> flows = new ArrayList<>();
         for (FlowGravitee flowGravitee : planGravitee.getFlows()) {
@@ -143,7 +140,13 @@ public class ApiDefinitionMapper {
         // aux champs whitelist et blacklist
         Map<String, Object> config = (Map<String, Object>) configGravitee;
         List<Object> whitelistObject = (List<Object>) config.get("whitelist");
+        if (whitelistObject == null) {
+            whitelistObject = new ArrayList<>();
+        }
         List<Object> blacklistObject = (List<Object>) config.get("blacklist");
+        if (blacklistObject == null) {
+            blacklistObject = new ArrayList<>();
+        }
         // On cast le contenu des 2 listes en objets Filter du modèle
         List<Filter> whitelist = buildFilterList(whitelistObject);
         List<Filter> blacklist = buildFilterList(blacklistObject);
@@ -172,39 +175,36 @@ public class ApiDefinitionMapper {
         return filters;
     }
 
-    private List<ShardingTag> mapShardingTags(Set<String> apiTags,
-                                              List<TagEntityGravitee> tagEntities,
+    // On construit les sharding tags en intégrant directement les hostnames des entrypoint mappings
+    private List<ShardingTag> mapShardingTags(Set<String> apiAssociatedTags,
                                               List<EntrypointEntityGravitee> entrypointEntities) {
         List<ShardingTag> shardingTags = new ArrayList<>();
-        // On associe chaque tag de l'API à un domaine et un groupe d'utilisatuers
-        for (String apiTag : apiTags) {
-            ShardingTag shardingTag = new ShardingTag();
-            for (TagEntityGravitee tagEntity : tagEntities) {
-                // On cherche un sharding tag du même nom qu'un tag de l'API
-                if (apiTag.equals(tagEntity.getId())) {
-                    shardingTag.setName(apiTag);
-                    shardingTag.setRestrictedGroups(tagEntity.getRestrictedGroups());
-
-                    for (EntrypointEntityGravitee entrypoint : entrypointEntities) {
-                        // On cherche à quel entrypoint est associé le sharding tag
-                        if (entrypoint.getTags() != null && entrypoint.getTags().contains(tagEntity.getId())) {
-                            shardingTag.getEntrypointMappings().add(entrypoint.getValue());
-                        }
+        // On associe chaque tag de l'API à un domaine et un groupe d'utilisateurs
+        for (String apiAssociatedTag : apiAssociatedTags) {
+            ShardingTag shardingTag = new ShardingTag(apiAssociatedTag);
+            // On cherche un sharding tag du même nom qu'un tag de l'API
+            for (EntrypointEntityGravitee entrypointEntity : entrypointEntities) {
+                // Attention : le nom associé dans l'API est l'id du sharding tag
+                for (String tag : entrypointEntity.getTags()) {
+                    if (apiAssociatedTag.equals(tag)) {
+                        // Ajout des hostnames de tous les entrypoint mappings associés au tag
+                        shardingTag.getEntrypointMappings().add(getHostFromUrl(entrypointEntity.getValue()));
                     }
-                    shardingTags.add(shardingTag);
-                    break;
                 }
             }
+            shardingTags.add(shardingTag);
         }
         return shardingTags;
     }
 
-    private Entrypoint mapEntrypoint(ApiEntrypointEntityGravitee entrypointGravitee) {
-        Entrypoint entrypoint = new Entrypoint();
-        entrypoint.setHost(entrypointGravitee.getHost());
-        entrypoint.setTags(entrypointGravitee.getTags());
-        entrypoint.setTarget(entrypointGravitee.getTarget());
-        return entrypoint;
+    private String getHostFromUrl(String urlStr) {
+        try {
+            URL url = new URL(urlStr);
+            return url.getHost();
+        } catch (MalformedURLException e) {
+            log.error("URL mal formée : {}", e.getMessage());
+            return "";
+        }
     }
 
     private VirtualHost mapVirtualHost(VirtualHostGravitee virtualHostGravitee) {

@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,12 +25,11 @@ import java.util.Set;
 public class GraviteeApiDefinition {
 
     String apiName;
-    Set<String> groups;
-    Set<Plan> plans;
-    Set<String> tags;
-    List<ShardingTag> shardingTags;
-    List<Entrypoint> entrypoints;
-    List<VirtualHost> virtualHosts;
+    Set<String> groups = new HashSet<>();
+    Set<Plan> plans = new HashSet<>();
+    List<ShardingTag> shardingTags = new ArrayList<>();
+    List<Entrypoint> entrypoints = new ArrayList<>();
+    List<VirtualHost> virtualHosts = new ArrayList<>();
     HealthCheckService healthCheck;
     Logging logging;
 
