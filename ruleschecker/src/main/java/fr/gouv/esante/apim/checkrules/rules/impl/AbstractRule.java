@@ -16,14 +16,14 @@ public abstract class AbstractRule implements ApiDefinitionQualityRule {
 
     protected final MessageProvider messageProvider;
 
-    public AbstractRule(RulesRegistry registry, MessageProvider messageProvider) {
+    protected AbstractRule(RulesRegistry registry, MessageProvider messageProvider) {
         this.registry = registry;
         this.messageProvider = messageProvider;
     }
 
     protected void register(ApiDefinitionQualityRule rule) {
         registry.getRules().add(rule);
-//        log.info("Api definition quality rule: {} registered.", rule.getName());
+        log.info("Api definition quality rule: {} registered.", rule.getName());
     }
 
     protected void logResults(String apiName, boolean result) {

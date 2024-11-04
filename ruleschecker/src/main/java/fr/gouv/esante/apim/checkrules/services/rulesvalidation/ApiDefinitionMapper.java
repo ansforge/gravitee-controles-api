@@ -18,7 +18,6 @@ import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
-import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.EndpointGravitee;
 import fr.gouv.esante.apim.client.model.EndpointGroupGravitee;
 import fr.gouv.esante.apim.client.model.EntrypointEntityGravitee;
@@ -35,10 +34,10 @@ import org.springframework.stereotype.Service;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -60,19 +59,15 @@ public class ApiDefinitionMapper {
         apiDef.setAdminGroups(apiEntity.getGroups());
 
         if (apiEntity.getProxy().getGroups() != null) {
-            List<Group> groups = new ArrayList<>();
-            for (EndpointGroupGravitee endpointGroup : apiEntity.getProxy().getGroups()) {
-                groups.add(mapGroup(endpointGroup));
-            }
+            List<Group> groups = apiEntity.getProxy().getGroups().stream()
+                    .map(this::mapGroup).collect(Collectors.toList());
             apiDef.setGroups(groups);
         }
 
 
         if (apiEntity.getPlans() != null) {
-            Set<Plan> plans = new HashSet<>();
-            for (PlanEntityGravitee plan : apiEntity.getPlans()) {
-                plans.add(mapPlan(plan));
-            }
+            Set<Plan> plans = apiEntity.getPlans().stream()
+                    .map(this::mapPlan).collect(Collectors.toSet());
             apiDef.setPlans(plans);
         }
 
@@ -81,16 +76,16 @@ public class ApiDefinitionMapper {
         }
 
         if (apiEntity.getEntrypoints() != null) {
-            for (ApiEntrypointEntityGravitee apiEntrypointEntityGravitee : apiEntity.getEntrypoints()) {
-                Entrypoint entrypoint = new Entrypoint(getHostFromUrl(apiEntrypointEntityGravitee.getTarget()), apiEntrypointEntityGravitee.getHost());
-                apiDef.getEntrypoints().add(entrypoint);
-            }
+            apiEntity.getEntrypoints().stream().map(apiEntrypointEntityGravitee -> new Entrypoint(
+                    getHostFromUrl(apiEntrypointEntityGravitee.getTarget()),
+                    apiEntrypointEntityGravitee.getHost()
+            )).forEach(entrypoint -> apiDef.getEntrypoints().add(entrypoint));
         }
 
         if (apiEntity.getProxy().getVirtualHosts() != null) {
-            for (VirtualHostGravitee virtualHostGravitee : apiEntity.getProxy().getVirtualHosts()) {
-                apiDef.getVirtualHosts().add(mapVirtualHost(virtualHostGravitee));
-            }
+            apiEntity.getProxy().getVirtualHosts().forEach(virtualHostGravitee ->
+                    apiDef.getVirtualHosts().add(mapVirtualHost(virtualHostGravitee))
+            );
         }
 
         if (apiEntity.getServices() != null && apiEntity.getServices().getHealthCheck() != null) {
@@ -121,7 +116,6 @@ public class ApiDefinitionMapper {
                 group.getEndpoints().add(endpoint);
             }
         }
-
         return group;
     }
 
@@ -131,10 +125,9 @@ public class ApiDefinitionMapper {
         plan.setName(planGravitee.getName());
         plan.setStatus(planGravitee.getStatus().getValue());
         plan.setAuthMechanism(planGravitee.getSecurity().getValue());
-        List<Flow> flows = new ArrayList<>();
-        for (FlowGravitee flowGravitee : planGravitee.getFlows()) {
-            flows.add(mapFlow(flowGravitee));
-        }
+
+        List<Flow> flows = planGravitee.getFlows().stream()
+                .map(this::mapFlow).collect(Collectors.toList());
         plan.setFlows(flows);
         return plan;
     }
@@ -142,17 +135,13 @@ public class ApiDefinitionMapper {
     private Flow mapFlow(FlowGravitee flowGravitee) {
         Flow flow = new Flow();
         if (flowGravitee.getPre() != null) {
-            List<Step> preSteps = new ArrayList<>();
-            for (StepGravitee stepGravitee : flowGravitee.getPre()) {
-                preSteps.add(mapStep(stepGravitee));
-            }
+            List<Step> preSteps = flowGravitee.getPre().stream()
+                    .map(this::mapStep).collect(Collectors.toList());
             flow.setPreSteps(preSteps);
         }
         if (flowGravitee.getPost() != null) {
-            List<Step> postSteps = new ArrayList<>();
-            for (StepGravitee stepGravitee : flowGravitee.getPost()) {
-                postSteps.add(mapStep(stepGravitee));
-            }
+            List<Step> postSteps = flowGravitee.getPost().stream()
+                    .map(this::mapStep).collect(Collectors.toList());
             flow.setPostSteps(postSteps);
         }
         return flow;

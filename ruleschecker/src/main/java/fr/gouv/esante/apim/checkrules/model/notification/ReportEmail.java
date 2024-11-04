@@ -10,8 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
-import org.springframework.boot.system.SystemProperties;
-import org.springframework.util.SystemPropertyUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -50,8 +48,8 @@ public class ReportEmail {
     }
 
     private String writeEmailBody(Report report) {
-        String body = "Synthèse des résultats :";
-        StringBuilder sb = new StringBuilder(body);
+        String emailBody = "Synthèse des résultats :";
+        StringBuilder sb = new StringBuilder(emailBody);
         sb.append(System.lineSeparator());
         if (report.isSuccess()) {
             sb.append("Toutes les APIs contrôlées sont conformes aux règles d'implémentation dans l'APIM")
@@ -84,8 +82,6 @@ public class ReportEmail {
         // Write report in temp file
         File tempFile = null;
         try {
-
-
             if(SystemUtils.IS_OS_UNIX) {
                 FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
                 tempFile = Files.createTempFile("report", "json", attr).toFile();

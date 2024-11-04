@@ -13,6 +13,8 @@ import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapp
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -62,43 +64,18 @@ class LogsDisabledTest extends LogsDisabled {
         assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
     }
 
-    @Test
-    void testLogsContentIsNotNone() {
+    @ParameterizedTest
+    @CsvSource({
+            "HEADERS, NONE, NONE",
+            "NONE, CLIENT, NONE",
+            "NONE, NONE, REQUEST_RESPONSE",
+    })
+    void testLogsAreEnabled(String content, String mode, String scope) {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
         Logging logging = new Logging();
-        logging.setContent("HEADERS");
-        logging.setMode("NONE");
-        logging.setScope("NONE");
-        apiDef.setLogging(logging);
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
-        RuleResult result = apiDef.accept(logsDisabled);
-
-        assertFalse(result.isSuccess());
-        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
-    }
-
-    @Test
-    void testLogsModeIsNotNone() {
-        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Logging logging = new Logging();
-        logging.setContent("NONE");
-        logging.setMode("CLIENT");
-        logging.setScope("NONE");
-        apiDef.setLogging(logging);
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
-        RuleResult result = apiDef.accept(logsDisabled);
-
-        assertFalse(result.isSuccess());
-        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
-    }
-
-    @Test
-    void testLogsScopeIsNotNone() {
-        GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        Logging logging = new Logging();
-        logging.setContent("NONE");
-        logging.setMode("NONE");
-        logging.setScope("REQUEST_RESPONSE");
+        logging.setContent(content);
+        logging.setMode(mode);
+        logging.setScope(scope);
         apiDef.setLogging(logging);
         LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);

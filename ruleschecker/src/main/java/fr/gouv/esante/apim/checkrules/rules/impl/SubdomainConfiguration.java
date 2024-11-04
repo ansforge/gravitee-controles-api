@@ -3,7 +3,6 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
-import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
@@ -65,13 +64,11 @@ public class SubdomainConfiguration extends AbstractRule {
         // On controle que l'API a au moins un sharding tag associé
         if (shardingTags == null || shardingTags.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for (Entrypoint ep : apiDefinition.getEntrypoints()) {
-                sb.append("targetHostName [ ");
-                sb.append(ep.getTargetHostName());
-                sb.append(" ] pour le Vhost [ ");
-                sb.append(ep.getHost());
-                sb.append(" ].");
-            }
+            apiDefinition.getEntrypoints().forEach(ep ->
+                    sb.append("targetHostName [ ")
+                    .append(ep.getTargetHostName())
+                    .append(" ] pour le Vhost [ ")
+                    .append(ep.getHost()).append(" ]."));
             log.error("Aucun sharding tag n'est associé à cette API, le default entrypoint {} est utilisé", sb);
             setDetailErrorMessage(String.format(
                     messageProvider.getMessage("rule.subdomainconfig.msg.noshardingtag"),
@@ -112,22 +109,22 @@ public class SubdomainConfiguration extends AbstractRule {
                         System.lineSeparator()
                 ));
                 return false;
-                // On vérifie si le virtual host correspond à un de ceux associés aux sharding tags de l'API
-            } else {
-                boolean isMapped = shardingTags.stream()
-                        .flatMap(shardingTag -> shardingTag.getEntrypointMappings().stream())
-                        .anyMatch(entrypoint -> entrypoint.equals(virtualHost.getHost()));
-
-                if (!isMapped) {
-                    log.error("Le virtual host {} n'est pas mappé dans les entrypoint mappings", virtualHost.getHost());
-                    setDetailErrorMessage(String.format(
-                            messageProvider.getMessage("rule.subdomainconfig.msg.novhostmapping"),
-                            System.lineSeparator(),
-                            virtualHost.getHost()
-                    ));
-                    return false;
-                }
             }
+            // On vérifie si le virtual host correspond à un de ceux associés aux sharding tags de l'API
+            boolean isMapped = shardingTags.stream()
+                    .flatMap(shardingTag -> shardingTag.getEntrypointMappings().stream())
+                    .anyMatch(entrypoint -> entrypoint.equals(virtualHost.getHost()));
+
+            if (!isMapped) {
+                log.error("Le virtual host {} n'est pas mappé dans les entrypoint mappings", virtualHost.getHost());
+                setDetailErrorMessage(String.format(
+                        messageProvider.getMessage("rule.subdomainconfig.msg.novhostmapping"),
+                        System.lineSeparator(),
+                        virtualHost.getHost()
+                ));
+                return false;
+            }
+
         }
         return true;
     }

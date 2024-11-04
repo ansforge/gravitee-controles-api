@@ -62,65 +62,85 @@ public class HealthcheckSecured extends AbstractRule {
             return false;
         }
 
-        // Controle qu'au moins un plan contient -HealthCheck dans son nom
+        // Controle qu'au moins un plan contient -HealthCheck dans son nom, est en mode de sécurité KEYLESS
+        // et contient un unique flow paramétré
         for (Plan plan : plans) {
-            if (plan.getName().toLowerCase().contains("-healthcheck")) {
-                // Controle le type d'authentification qui doit etre KEY_LESS pour un plan healthcheck
-                if ("KEY_LESS".equals(plan.getAuthMechanism())) {
-                    // On cherche un flow unique
-                    if (plan.getFlows().size() == 1) {
-                        log.debug("On cherche un flow contenant au moins un pre-step");
-                        for (Flow flow : plan.getFlows()) {
-                            if (!flow.getPreSteps().isEmpty()) {
-                                // On cherche un pre-step ayant une policy ressource-filtering
-                                for (Step step : flow.getPreSteps()) {
-                                    if ("resource-filtering".equals(step.getPolicy())) {
-                                        // On vérifie qu'il y a une whitelist dans la configuration
-                                        List<Filter> whitelist = step.getConfiguration().getWhitelist();
-                                        if (whitelist != null && !whitelist.isEmpty()) {
-                                            // On controle que la whitelist ne contient qu'un seul endpoint
-                                            // accessible par une seule méthode
-                                            if (whitelist.size() == 1 && whitelist.get(0).getMethods().size() == 1) {
-                                                // On controle que la seule méthode HTTP accessible est GET
-                                                if ("GET".equals(whitelist.get(0).getMethods().get(0))) {
-                                                    return true;
-                                                } else {
-                                                    setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.methodnotallowed"),
-                                                            System.lineSeparator(),
-                                                            whitelist.get(0).getMethods().get(0))
-                                                    );
-                                                }
-                                            } else {
-                                                setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.accessunauthorized"),
-                                                        System.lineSeparator())
-                                                );
-                                            }
-                                        } else {
-                                            setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.emptywhitelist"),
-                                                    System.lineSeparator())
-                                            );
-                                        }
-                                    } else {
-                                        setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.noresourcefiltering"),
-                                                System.lineSeparator())
-                                        );
-                                    }
-                                }
+            if (isValidHealthcheckPlan(plan)) {
+                //On cherche un flow contenant au moins un pre-step
+                for (Flow flow : plan.getFlows()) {
+                    if (!flow.getPreSteps().isEmpty()) {
+                        // On cherche un pre-step ayant une policy ressource-filtering correctement configurée,
+                        // i.e. contenant une whitelist qui autorise l'accès à un endpoint unique en GET uniquement
+                        for (Step step : flow.getPreSteps()) {
+                            if (isRessourceFiltering(step)) {
+                                return true;
                             }
                         }
                     }
-                } else {
-                    setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.authmechanismnotallowed"),
-                            System.lineSeparator())
-                    );
                 }
-            } else {
-                setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.nohealthcheckplan"),
-                        System.lineSeparator())
-                );
             }
         }
         return false;
     }
 
+    private boolean isValidHealthcheckPlan(Plan plan) {
+        // Controle que le plan contient -HealthCheck dans son nom
+        if (!plan.getName().toLowerCase().contains("-healthcheck")) {
+            setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.nohealthcheckplan"),
+                    System.lineSeparator())
+            );
+            return false;
+        }
+        // Controle le type d'authentification qui doit etre KEY_LESS pour un plan healthcheck
+        if (!"KEY_LESS".equals(plan.getAuthMechanism())) {
+            setDetailErrorMessage(String.format(messageProvider.getMessage("rule.healthchecksecured.msg.detail.authmechanismnotallowed"),
+                    System.lineSeparator())
+            );
+            return false;
+        }
+        // On cherche un flow unique
+        return plan.getFlows().size() == 1;
+    }
+
+    private boolean isRessourceFiltering(Step step) {
+        if (!"resource-filtering".equals(step.getPolicy())) {
+            setDetailErrorMessage(String.format(
+                    messageProvider.getMessage("rule.healthchecksecured.msg.detail.noresourcefiltering"),
+                    System.lineSeparator())
+            );
+            return false;
+        }
+
+        // On vérifie qu'il y a une whitelist dans la configuration
+        List<Filter> whitelist = step.getConfiguration().getWhitelist();
+        if (whitelist == null || whitelist.isEmpty()) {
+            setDetailErrorMessage(String.format(
+                    messageProvider.getMessage("rule.healthchecksecured.msg.detail.emptywhitelist"),
+                    System.lineSeparator())
+            );
+            return false;
+        }
+
+        // On controle que la whitelist ne contient qu'un seul endpoint
+        // accessible par une seule méthode
+        if (whitelist.size() != 1 || whitelist.get(0).getMethods().size() != 1) {
+            setDetailErrorMessage(String.format(
+                    messageProvider.getMessage("rule.healthchecksecured.msg.detail.accessunauthorized"),
+                    System.lineSeparator())
+            );
+            return false;
+        }
+
+        // On controle que la seule méthode HTTP accessible est GET
+        if (!"GET".equals(whitelist.get(0).getMethods().get(0))) {
+            setDetailErrorMessage(String.format(
+                    messageProvider.getMessage("rule.healthchecksecured.msg.detail.methodnotallowed"),
+                    System.lineSeparator(),
+                    whitelist.get(0).getMethods().get(0))
+            );
+            return false;
+        }
+
+        return true;
+    }
 }

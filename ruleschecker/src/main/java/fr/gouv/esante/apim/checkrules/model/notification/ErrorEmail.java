@@ -27,7 +27,10 @@ public class ErrorEmail {
     }
 
     private String writeEmailBody(ApimRulecheckerException exception) {
-        return "Détails de l'erreur :\n" + String.format("Date de l'exécution : %s\n", Instant.now()) +
-                exception.getMessage();
+        return String.format("Détails de l'erreur :%sDate de l'exécution : %s%s",
+                System.lineSeparator(),
+                Instant.now(),
+                exception.getMessage()
+        );
     }
 }

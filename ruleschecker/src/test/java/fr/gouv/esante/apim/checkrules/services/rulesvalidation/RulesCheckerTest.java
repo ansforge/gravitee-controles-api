@@ -6,7 +6,6 @@ package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import fr.gouv.esante.apim.checkrules.config.AppTestConfig;
 import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
-import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
@@ -18,7 +17,6 @@ import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.checkrules.model.results.ApiDefinitionCheckResult;
-import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
 import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckActivation;
 import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
@@ -35,10 +33,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -63,8 +59,6 @@ class RulesCheckerTest {
 
     @Autowired
     private RulesRegistry registry;
-    @Autowired
-    private MessageProvider messageProvider;
 
 
     @Test
@@ -143,8 +137,8 @@ class RulesCheckerTest {
         ApiDefinitionCheckResult checkResult = checker.checkRules(apiDef);
         log.info("checkResult :\n{}", checkResult.toString());
 
-        Assertions.assertEquals(checkResult.getRuleResults().size(), 6);
-        Assertions.assertEquals(checkResult.getApiDefinitionName(), "TestAPI-ex");
+        Assertions.assertEquals(6, checkResult.getRuleResults().size());
+        Assertions.assertEquals("TestAPI-ex", checkResult.getApiDefinitionName());
 
         Assertions.assertTrue(checkResult.getRuleResults().get(0).isSuccess());
         Assertions.assertTrue(checkResult.getRuleResults().get(1).isSuccess());
