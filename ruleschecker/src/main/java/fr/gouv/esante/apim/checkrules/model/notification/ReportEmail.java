@@ -84,17 +84,17 @@ public class ReportEmail {
         // Write report in temp file
         File tempFile = null;
         try {
-            tempFile = Files.createTempFile("report", "json").toFile();
+
 
             if(SystemUtils.IS_OS_UNIX) {
                 FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
-                Files.createTempFile("prefix", "suffix", attr); // Compliant
+                tempFile = Files.createTempFile("report", "json", attr).toFile();
             }
             else {
-                File f = Files.createTempFile("prefix", "suffix").toFile();  // Compliant
-                f.setReadable(true, true);
-                f.setWritable(true, true);
-                f.setExecutable(true, true);
+                tempFile = Files.createTempFile("report", "json").toFile();
+                tempFile.setReadable(true, true);
+                tempFile.setWritable(true, true);
+                tempFile.setExecutable(true, true);
             }
 
             try (PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
