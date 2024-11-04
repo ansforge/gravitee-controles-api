@@ -25,7 +25,8 @@ import java.util.Set;
 public class GraviteeApiDefinition {
 
     String apiName;
-    Set<String> groups = new HashSet<>();
+    Set<String> adminGroups = new HashSet<>();
+    List<Group> groups = new ArrayList<>();
     Set<Plan> plans = new HashSet<>();
     List<ShardingTag> shardingTags = new ArrayList<>();
     List<Entrypoint> entrypoints = new ArrayList<>();

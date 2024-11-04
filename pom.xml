@@ -96,6 +96,7 @@
                         <exclude>**/ASIPProfilesSettings.xml</exclude>
                         <exclude>**/dependency-check-report.xml</exclude>
                         <exclude>reports/report.html</exclude>
+                        <exclude>**/messages*</exclude>
                     </excludes>
                     <aggregate>false</aggregate>
                     <strictCheck>true</strictCheck>

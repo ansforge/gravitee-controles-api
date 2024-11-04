@@ -4,10 +4,12 @@
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
 import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
+import fr.gouv.esante.apim.checkrules.model.definition.Endpoint;
 import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
+import fr.gouv.esante.apim.checkrules.model.definition.Group;
 import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckRequest;
 import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.definition.Logging;
@@ -17,6 +19,8 @@ import fr.gouv.esante.apim.checkrules.model.definition.Step;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.ApiEntrypointEntityGravitee;
+import fr.gouv.esante.apim.client.model.EndpointGravitee;
+import fr.gouv.esante.apim.client.model.EndpointGroupGravitee;
 import fr.gouv.esante.apim.client.model.EntrypointEntityGravitee;
 import fr.gouv.esante.apim.client.model.FlowGravitee;
 import fr.gouv.esante.apim.client.model.HealthCheckServiceGravitee;
@@ -53,7 +57,16 @@ public class ApiDefinitionMapper {
 
         apiDef.setApiName(apiEntity.getName());
 
-        apiDef.setGroups(apiEntity.getGroups());
+        apiDef.setAdminGroups(apiEntity.getGroups());
+
+        if (apiEntity.getProxy().getGroups() != null) {
+            List<Group> groups = new ArrayList<>();
+            for (EndpointGroupGravitee endpointGroup : apiEntity.getProxy().getGroups()) {
+                groups.add(mapGroup(endpointGroup));
+            }
+            apiDef.setGroups(groups);
+        }
+
 
         if (apiEntity.getPlans() != null) {
             Set<Plan> plans = new HashSet<>();
@@ -90,6 +103,28 @@ public class ApiDefinitionMapper {
 
         return apiDef;
     }
+
+    private Group mapGroup(EndpointGroupGravitee endpointGroup) {
+        Group group = new Group();
+        group.setName(endpointGroup.getName());
+        if (endpointGroup.getServices() != null && endpointGroup.getServices().getHealthCheck() != null) {
+            group.setHealthCheckService(mapHealthCheck(endpointGroup.getServices().getHealthCheck()));
+        }
+        if (endpointGroup.getEndpoints() != null) {
+            for (EndpointGravitee endpointGravitee : endpointGroup.getEndpoints()) {
+                HealthCheckService healthCheckService = new HealthCheckService();
+                if (endpointGravitee.getHealthcheck() != null) {
+                    healthCheckService.setEnabled(Boolean.TRUE.equals(endpointGravitee.getHealthcheck().getEnabled()));
+                }
+                Endpoint endpoint = new Endpoint();
+                endpoint.setHealthCheckService(healthCheckService);
+                group.getEndpoints().add(endpoint);
+            }
+        }
+
+        return group;
+    }
+
 
     private Plan mapPlan(PlanEntityGravitee planGravitee) {
         Plan plan = new Plan();

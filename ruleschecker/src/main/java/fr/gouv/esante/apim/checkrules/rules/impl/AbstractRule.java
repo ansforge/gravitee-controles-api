@@ -4,6 +4,7 @@
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
 import fr.gouv.esante.apim.checkrules.rules.ApiDefinitionQualityRule;
+import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,14 +14,16 @@ public abstract class AbstractRule implements ApiDefinitionQualityRule {
 
     private final RulesRegistry registry;
 
+    protected final MessageProvider messageProvider;
 
-    public AbstractRule(RulesRegistry registry) {
+    public AbstractRule(RulesRegistry registry, MessageProvider messageProvider) {
         this.registry = registry;
+        this.messageProvider = messageProvider;
     }
 
     protected void register(ApiDefinitionQualityRule rule) {
         registry.getRules().add(rule);
-        log.info("Api definition quality rule: {} registered.", rule.getName());
+//        log.info("Api definition quality rule: {} registered.", rule.getName());
     }
 
     protected void logResults(String apiName, boolean result) {
@@ -29,4 +32,6 @@ public abstract class AbstractRule implements ApiDefinitionQualityRule {
                 apiName,
                 result ? "succès" : "échec");
     }
+
+
 }

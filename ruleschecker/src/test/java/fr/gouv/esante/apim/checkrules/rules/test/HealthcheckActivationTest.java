@@ -3,10 +3,12 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.test;
 
+import fr.gouv.esante.apim.checkrules.config.AppTestConfig;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckActivation;
+import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +20,20 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest(classes = {HealthcheckActivationTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
+@SpringBootTest(
+        classes = {
+            AppTestConfig.class,
+            ApiDefinitionMapper.class,
+            RulesRegistry.class,
+            MessageProvider.class
+        })
 @ActiveProfiles({"test"})
 @Slf4j
 class HealthcheckActivationTest extends HealthcheckActivation {
 
     @Autowired
-    public HealthcheckActivationTest(RulesRegistry registry) {
-        super(registry);
+    public HealthcheckActivationTest(RulesRegistry registry, MessageProvider messageProvider) {
+        super(registry, messageProvider);
     }
 
     @Test
@@ -34,22 +42,22 @@ class HealthcheckActivationTest extends HealthcheckActivation {
         HealthCheckService healthCheck = new HealthCheckService();
         healthCheck.setEnabled(true);
         apiDef.setHealthCheck(healthCheck);
-        HealthcheckActivation healthcheckActivation = new HealthcheckActivation(new RulesRegistry());
+        HealthcheckActivation healthcheckActivation = new HealthcheckActivation(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(healthcheckActivation);
 
         assertEquals(super.getName(), result.getRuleName());
         assertTrue(result.isSuccess());
-        assertEquals(SUCCESS_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.healthcheckactivation.msg.success"), result.getMessage());
     }
 
     @Test
     void testHealthCheckDoesntExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        HealthcheckActivation healthcheckActivation = new HealthcheckActivation(new RulesRegistry());
+        HealthcheckActivation healthcheckActivation = new HealthcheckActivation(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(healthcheckActivation);
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.healthcheckactivation.msg.failure"), result.getMessage());
     }
 
     @Test
@@ -58,10 +66,10 @@ class HealthcheckActivationTest extends HealthcheckActivation {
         HealthCheckService healthCheck = new HealthCheckService();
         healthCheck.setEnabled(false);
         apiDef.setHealthCheck(healthCheck);
-        HealthcheckActivation healthcheckActivation = new HealthcheckActivation(new RulesRegistry());
+        HealthcheckActivation healthcheckActivation = new HealthcheckActivation(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(healthcheckActivation);
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.healthcheckactivation.msg.failure"), result.getMessage());
     }
 }

@@ -1,5 +1,7 @@
+/*
+ * (c) Copyright 2024-2024, ANS. All rights reserved.
+ */
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
-
 
 import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;

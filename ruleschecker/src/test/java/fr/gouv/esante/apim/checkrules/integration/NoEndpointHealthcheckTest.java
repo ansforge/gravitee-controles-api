@@ -6,7 +6,7 @@ package fr.gouv.esante.apim.checkrules.integration;
 import fr.gouv.esante.apim.checkrules.config.AppTestConfig;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
-import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
+import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckActivation;
 import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionLoader;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
@@ -35,33 +35,31 @@ import static org.junit.jupiter.api.Assertions.*;
             RulesChecker.class,
             RulesRegistry.class,
             MessageProvider.class,
-            GroupAssignment.class
-})
+            HealthcheckActivation.class,
+        }
+)
 @ActiveProfiles({"test"})
 @Slf4j
-class AdminGroupNotAssignedTest extends AbstractIntegrationTest {
-
+class NoEndpointHealthcheckTest extends AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void dynamicPropertySources(DynamicPropertyRegistry registry) {
-        registry.add("envid",  () -> "AGR");
+        registry.add("envid",  () -> "NEH");
     }
 
 
     @Test
-    void testAdminGroupNotAssigned() throws Exception {
-        String expectedMessage = messageProvider.getMessage("rule.groupassignment.msg.failure");
+    void testNoEndpointHealthcheck() throws Exception {
+        String expectedMessage = messageProvider.getMessage("rule.healthcheckactivation.msg.failure");
 
         Report report = checkRulesService.check();
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure").getRuleResults();
-        Optional<RuleResult> rule2_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.groupassignment.name"))).findFirst();
-        if(rule2_1.isPresent()) {
-            assertFalse(rule2_1.get().isSuccess());
-            log.info("Message : {} | {}", rule2_1.get().getMessage(), expectedMessage);
-            assertTrue(rule2_1.get().getMessage().equalsIgnoreCase(expectedMessage));
+        Optional<RuleResult> rule6_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.healthcheckactivation.name"))).findFirst();
+        if(rule6_1.isPresent()) {
+            assertFalse(rule6_1.get().isSuccess());
+            assertTrue(rule6_1.get().getMessage().equalsIgnoreCase(expectedMessage));
         }
     }
-
 }

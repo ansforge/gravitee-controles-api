@@ -20,7 +20,6 @@ import fr.gouv.esante.apim.client.ApiClient;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.model.ApiEntityGravitee;
 import fr.gouv.esante.apim.client.model.EntrypointEntityGravitee;
-import fr.gouv.esante.apim.client.model.TagEntityGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,33 +40,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 class ApiDefinitionMapperTest {
 
-    private ApiClient client;
-
     @Test
-    void testMapping(WireMockRuntimeInfo wmri) {
+    void testMappingOK(WireMockRuntimeInfo wmri) {
 
-        client = new ApiClient();
+        ApiClient client = new ApiClient();
         client.setBasePath("http://localhost:" + wmri.getHttpPort() + "/");
         ApisApi apisApi = new ApisApi(client);
 
-        ApiEntityGravitee apiEntity = apisApi.getApi("test-mapping-ok", "envId", "orgId");
-
-        List<TagEntityGravitee> tagEntities = new ArrayList<>();
-        TagEntityGravitee tagEntity = new TagEntityGravitee();
-        tagEntity.setName("test-tag");
-        tagEntity.setId("tagId");
-        tagEntity.setRestrictedGroups(List.of("group1", "group2"));
-        tagEntities.add(tagEntity);
-
-        List<EntrypointEntityGravitee> entrypointEntities = new ArrayList<>();
-        EntrypointEntityGravitee entrypointEntity = new EntrypointEntityGravitee();
-        entrypointEntity.setId("0123-4567-8910");
-        entrypointEntity.setTags(List.of("tagId"));
-        entrypointEntity.setValue("https://localhost");
-        entrypointEntities.add(entrypointEntity);
-
-        ApiDefinitionMapper mapper = new ApiDefinitionMapper();
-        GraviteeApiDefinition apiDef = mapper.map(apiEntity, entrypointEntities);
 
         GraviteeApiDefinition expectedApiDef = new GraviteeApiDefinition();
         Set<String> groups = new HashSet<>();
@@ -77,6 +56,7 @@ class ApiDefinitionMapperTest {
         Plan accessPlan = new Plan();
         accessPlan.setAuthMechanism("JWT");
         accessPlan.setName("access-plan");
+        accessPlan.setStatus("PUBLISHED");
         Flow emptyFlow = new Flow();
         emptyFlow.setPreSteps(new ArrayList<>());
         emptyFlow.setPostSteps(new ArrayList<>());
@@ -85,6 +65,7 @@ class ApiDefinitionMapperTest {
         Plan healthcheckPlan = new Plan();
         healthcheckPlan.setAuthMechanism("KEY_LESS");
         healthcheckPlan.setName("plan-HealthCheck");
+        healthcheckPlan.setStatus("STAGING");
 
         List<Flow> flows = new ArrayList<>();
         Flow flow = new Flow();
@@ -124,15 +105,29 @@ class ApiDefinitionMapperTest {
         logging.setScope("NONE");
 
         expectedApiDef.setApiName("TestAPI-ex");
-        expectedApiDef.setGroups(groups);
+        expectedApiDef.setAdminGroups(groups);
         expectedApiDef.setPlans(Set.of(accessPlan, healthcheckPlan));
         expectedApiDef.setVirtualHosts(List.of(virtualHost));
         expectedApiDef.setHealthCheck(healthCheck);
         expectedApiDef.setLogging(logging);
 
+
+        ApiEntityGravitee apiEntity = apisApi.getApi("mapper-test-ok", "envId", "orgId");
+
+        List<EntrypointEntityGravitee> entrypointEntities = new ArrayList<>();
+        EntrypointEntityGravitee entrypointEntity = new EntrypointEntityGravitee();
+        entrypointEntity.setId("0123-4567-8910");
+        entrypointEntity.setTags(List.of("tagId"));
+        entrypointEntity.setValue("http://localhost");
+        entrypointEntities.add(entrypointEntity);
+
+        ApiDefinitionMapper mapper = new ApiDefinitionMapper();
+        GraviteeApiDefinition apiDef = mapper.map(apiEntity, entrypointEntities);
+
+
         assertNotNull(apiDef);
         assertEquals(expectedApiDef.getApiName(), apiDef.getApiName());
-        assertEquals(expectedApiDef.getGroups(), apiDef.getGroups());
+        assertEquals(expectedApiDef.getAdminGroups(), apiDef.getAdminGroups());
         assertEquals(expectedApiDef.getPlans(), apiDef.getPlans());
         assertEquals(expectedApiDef.getVirtualHosts(), apiDef.getVirtualHosts());
         assertEquals(expectedApiDef.getHealthCheck(), apiDef.getHealthCheck());

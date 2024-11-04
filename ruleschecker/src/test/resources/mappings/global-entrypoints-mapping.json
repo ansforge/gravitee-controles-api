@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPathTemplate": "/organizations/DEFAULT/configuration/entrypoints",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "test-entrypoints.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

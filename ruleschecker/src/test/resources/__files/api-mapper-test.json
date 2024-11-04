@@ -180,7 +180,7 @@
       "security": "JWT",
       "securityDefinition": "string",
       "selection_rule": "string",
-      "status": "STAGING",
+      "status": "PUBLISHED",
       "tags": [
         "string"
       ],

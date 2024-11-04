@@ -6,6 +6,7 @@ package fr.gouv.esante.apim.checkrules.rules.impl;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Plan;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
+import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +21,15 @@ import java.util.Set;
 @Slf4j
 public class SecuredPlan extends AbstractRule {
 
-    protected static final String FAILURE_MSG = "Aucun plan ne dispose d'un moyen d’authentification et " +
-            "d’identification de l’utilisateur sur cette API";
-    protected static final String SUCCESS_MSG = "Plan sécurisé présent sur cette API";
-
-
     @Autowired
-    public SecuredPlan(RulesRegistry registry) {
-        super(registry);
+    public SecuredPlan(RulesRegistry registry, MessageProvider messageProvider) {
+        super(registry, messageProvider);
         super.register(this);
     }
 
     @Override
     public String getName() {
-        return "3.1.1 - Paramétrer au moins un moyen d’authentification et d’identification de l’utilisateur";
+        return messageProvider.getMessage("rule.securedplan.name");
     }
 
     @Override
@@ -44,7 +40,7 @@ public class SecuredPlan extends AbstractRule {
         return new RuleResult(
                 getName(),
                 success,
-                success ? SUCCESS_MSG : FAILURE_MSG
+                success ? messageProvider.getMessage("rule.securedplan.msg.success") : messageProvider.getMessage("rule.securedplan.msg.failure")
         );
     }
 
@@ -53,7 +49,11 @@ public class SecuredPlan extends AbstractRule {
         if (plans == null || plans.isEmpty()) {
             return false;
         }
-        List<Plan> activePlans = plans.stream().filter(plan -> Arrays.asList("STAGING", "PUBLISHED").contains(plan.getStatus())).toList();
+        // On ne considère que les plans ayant un status STAGING ou PUBLISHED comme plans "actifs", ceux en status
+        // CLOSED ou DEPRECATED ne peuvent pas satisfaire cette règle d'implémentation
+        List<Plan> activePlans = plans.stream()
+                .filter(plan -> Arrays.asList("STAGING", "PUBLISHED").contains(plan.getStatus()))
+                .toList();
         for (Plan plan : activePlans) {
             if (Arrays.asList("API_KEY", "OAUTH2").contains(plan.getAuthMechanism())) {
                 success = true;

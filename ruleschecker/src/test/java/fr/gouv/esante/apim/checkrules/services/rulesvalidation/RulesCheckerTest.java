@@ -4,7 +4,9 @@
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import fr.gouv.esante.apim.checkrules.config.AppTestConfig;
 import fr.gouv.esante.apim.checkrules.model.definition.Configuration;
+import fr.gouv.esante.apim.checkrules.model.definition.Entrypoint;
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
@@ -23,12 +25,13 @@ import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
 import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
 import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
 import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
+import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -40,13 +43,19 @@ import java.util.Set;
 
 
 @WireMockTest
-@SpringBootTest(classes = {RulesChecker.class, RulesRegistry.class, EmailNotifier.class, JavaMailSenderImpl.class,
-        GroupAssignment.class,
-        HealthcheckSecured.class,
-        HealthcheckActivation.class,
-        LogsDisabled.class,
-        SecuredPlan.class,
-        SubdomainConfiguration.class
+@SpringBootTest(
+        classes = {
+            AppTestConfig.class,
+            RulesChecker.class,
+            RulesRegistry.class,
+            EmailNotifier.class,
+            MessageProvider.class,
+            GroupAssignment.class,
+            HealthcheckSecured.class,
+            HealthcheckActivation.class,
+            LogsDisabled.class,
+            SecuredPlan.class,
+            SubdomainConfiguration.class
 })
 @ActiveProfiles({"test"})
 @Slf4j
@@ -54,6 +63,8 @@ class RulesCheckerTest {
 
     @Autowired
     private RulesRegistry registry;
+    @Autowired
+    private MessageProvider messageProvider;
 
 
     @Test
@@ -72,6 +83,7 @@ class RulesCheckerTest {
         Plan accessPlan = new Plan();
         accessPlan.setAuthMechanism("OAUTH2");
         accessPlan.setName("access-plan");
+        accessPlan.setStatus("PUBLISHED");
         Flow emptyFlow = new Flow();
         emptyFlow.setPreSteps(new ArrayList<>());
         emptyFlow.setPostSteps(new ArrayList<>());
@@ -102,7 +114,7 @@ class RulesCheckerTest {
         healthcheckPlan.setFlows(flows);
 
         VirtualHost virtualHost = new VirtualHost();
-        virtualHost.setHost("testHost");
+        virtualHost.setHost("api.gateway.net");
         virtualHost.setOverrideEntrypoint(true);
         virtualHost.setPath("/testPath");
 
@@ -119,31 +131,27 @@ class RulesCheckerTest {
         logging.setScope("NONE");
 
         apiDef.setApiName("TestAPI-ex");
-        apiDef.setGroups(groups);
+        apiDef.setAdminGroups(groups);
         apiDef.setPlans(Set.of(accessPlan, healthcheckPlan));
         apiDef.setShardingTags(shardingTags);
         apiDef.setVirtualHosts(List.of(virtualHost));
         apiDef.setHealthCheck(healthCheck);
         apiDef.setLogging(logging);
 
-        // Construction du résultat attendu
-        String now = "2024-10-16T13:39:34.347787200Z";
-        // Construction des résultats de contrôles de 3 règles quelconques, dont 1 en échec
-        RuleResult rule1Result = new RuleResult("rule1", true, "Success message 1", now);
-        RuleResult rule2Result = new RuleResult("rule2", false, "Failure message 2", now);
-        RuleResult rule3Result = new RuleResult("rule3", true, "Success message 3", now);
-
-        ApiDefinitionCheckResult apiResult = new ApiDefinitionCheckResult();
-        apiResult.setTimestamp(now);
-        apiResult.setApiDefinitionName("API under test");
-        apiResult.setRuleResults(List.of(rule1Result, rule2Result, rule3Result));
-
-        Map<String, ApiDefinitionCheckResult> apiResultsMap = new HashMap<>();
-        apiResultsMap.put(apiResult.getApiDefinitionName(), apiResult);
-
         // Test
         RulesChecker checker = new RulesChecker(registry);
         ApiDefinitionCheckResult checkResult = checker.checkRules(apiDef);
         log.info("checkResult :\n{}", checkResult.toString());
+
+        Assertions.assertEquals(checkResult.getRuleResults().size(), 6);
+        Assertions.assertEquals(checkResult.getApiDefinitionName(), "TestAPI-ex");
+
+        Assertions.assertTrue(checkResult.getRuleResults().get(0).isSuccess());
+        Assertions.assertTrue(checkResult.getRuleResults().get(1).isSuccess());
+        Assertions.assertTrue(checkResult.getRuleResults().get(2).isSuccess());
+        Assertions.assertTrue(checkResult.getRuleResults().get(3).isSuccess());
+        Assertions.assertTrue(checkResult.getRuleResults().get(4).isSuccess());
+        Assertions.assertTrue(checkResult.getRuleResults().get(5).isSuccess());
+
     }
 }

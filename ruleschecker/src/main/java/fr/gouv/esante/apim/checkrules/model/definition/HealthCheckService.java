@@ -16,6 +16,7 @@ import java.util.Objects;
 public class HealthCheckService {
 
     private boolean enabled;
+
     private List<HealthCheckRequest> paths;
 
     @Override

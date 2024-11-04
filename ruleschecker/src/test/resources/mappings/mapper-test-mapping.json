@@ -1,6 +1,6 @@
 {
   "request": {
-    "urlPathTemplate": "/organizations/{org}/environments/{envid}/apis",
+    "urlPathTemplate": "/organizations/{org}/environments/{envid}/apis/{api}",
     "method": "GET",
     "pathParameters": {
       "org": {
@@ -8,12 +8,15 @@
       },
       "envid": {
         "matches": "[A-Za-z0-9]*"
+      },
+      "api": {
+        "matches": "mapper-test-ok"
       }
     }
   },
   "response": {
     "status": 200,
-    "bodyFileName": "apis-list.json",
+    "bodyFileName": "api-mapper-test.json",
     "headers": {
       "Content-Type": "application/json"
     }

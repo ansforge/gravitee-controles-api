@@ -7,11 +7,9 @@ import fr.gouv.esante.apim.client.ApiClient;
 import fr.gouv.esante.apim.client.api.ApisApi;
 import fr.gouv.esante.apim.client.api.ConfigurationApi;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -19,49 +17,19 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 
-@Configuration
-@Profile({"!test"})
+@TestConfiguration
 @Slf4j
-public class AppConfig {
-
-    /**
-     * URL de l'API de gestion de l'APIM
-     * Dépend de l'environnement ciblé
-     */
-    @Value("${apim.management.url}")
-    private String apimUrl;
-
-    /**
-     * Token d'accès à l'API de gestion de l'APIM
-     * Dépend de l'environnement ciblé
-     */
-    @Value("${apikey}")
-    private String apiKey;
-
-    /**
-     * Host du serveur SMTP
-     */
-    @Value("${spring.mail.host}")
-    private String mailHost;
-
-    /**
-     * Port utilisé par le serveur SMTP
-     */
-    @Value("${spring.mail.port}")
-    private int mailPort;
-
+public class AppTestConfig {
 
     @Bean
     public ApiClient apiClient() {
-        log.info("ApiClient instantiated");
-        ApiClient apiClient = new ApiClient();
-        apiClient.setBasePath(apimUrl);
-        apiClient.setBearerToken(apiKey);
-        return apiClient;
+        log.info("ApiClient instantiated in Test Configuration");
+        return new ApiClient();
     }
 
     @Bean
     public ApisApi apisApi() {
+        log.info("ApisApi instantiated with url : {}", apiClient().getBasePath());
         return new ApisApi(apiClient());
     }
 
@@ -73,11 +41,10 @@ public class AppConfig {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailHost);
-        mailSender.setPort(mailPort);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
+        props.put("mail.debug", "true");
 
         return mailSender;
     }
@@ -87,7 +54,6 @@ public class AppConfig {
         log.info("Inside MessageSource in AppConfig");
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
-        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 

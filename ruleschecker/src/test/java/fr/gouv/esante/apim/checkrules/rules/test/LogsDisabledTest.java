@@ -3,10 +3,12 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.test;
 
+import fr.gouv.esante.apim.checkrules.config.AppTestConfig;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Logging;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
+import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +20,20 @@ import org.springframework.test.context.ActiveProfiles;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-@SpringBootTest(classes = {LogsDisabledTest.class, ApiDefinitionMapper.class, RulesRegistry.class})
+@SpringBootTest(
+        classes = {
+            AppTestConfig.class,
+            ApiDefinitionMapper.class,
+            RulesRegistry.class,
+            MessageProvider.class
+        })
 @ActiveProfiles({"test"})
 @Slf4j
 class LogsDisabledTest extends LogsDisabled {
 
     @Autowired
-    public LogsDisabledTest(RulesRegistry registry) {
-        super(registry);
+    public LogsDisabledTest(RulesRegistry registry, MessageProvider messageProvider) {
+        super(registry, messageProvider);
     }
 
     @Test
@@ -36,22 +44,22 @@ class LogsDisabledTest extends LogsDisabled {
         logging.setMode("NONE");
         logging.setScope("NONE");
         apiDef.setLogging(logging);
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry());
+        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);
 
         assertEquals(super.getName(), result.getRuleName());
         assertTrue(result.isSuccess());
-        assertEquals(SUCCESS_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.logging.msg.success"), result.getMessage());
     }
 
     @Test
     void testLoggingConfigDoesntExists() {
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry());
+        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
     }
 
     @Test
@@ -62,11 +70,11 @@ class LogsDisabledTest extends LogsDisabled {
         logging.setMode("NONE");
         logging.setScope("NONE");
         apiDef.setLogging(logging);
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry());
+        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
     }
 
     @Test
@@ -77,11 +85,11 @@ class LogsDisabledTest extends LogsDisabled {
         logging.setMode("CLIENT");
         logging.setScope("NONE");
         apiDef.setLogging(logging);
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry());
+        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
     }
 
     @Test
@@ -92,10 +100,10 @@ class LogsDisabledTest extends LogsDisabled {
         logging.setMode("NONE");
         logging.setScope("REQUEST_RESPONSE");
         apiDef.setLogging(logging);
-        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry());
+        LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);
 
         assertFalse(result.isSuccess());
-        assertEquals(FAILURE_MSG, result.getMessage());
+        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
     }
 }
