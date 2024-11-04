@@ -9,13 +9,20 @@ import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
+import org.springframework.boot.system.SystemProperties;
+import org.springframework.util.SystemPropertyUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Map;
+import java.util.Set;
 
 
 @Getter
@@ -78,6 +85,17 @@ public class ReportEmail {
         File tempFile = null;
         try {
             tempFile = Files.createTempFile("report", "json").toFile();
+
+            if(SystemUtils.IS_OS_UNIX) {
+                FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+                Files.createTempFile("prefix", "suffix", attr); // Compliant
+            }
+            else {
+                File f = Files.createTempFile("prefix", "suffix").toFile();  // Compliant
+                f.setReadable(true, true);
+                f.setWritable(true, true);
+                f.setExecutable(true, true);
+            }
 
             try (PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
                 writer.print(report.toString());
