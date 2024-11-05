@@ -88,9 +88,13 @@ public class ReportEmail {
             }
             else {
                 tempFile = Files.createTempFile("report", "json").toFile();
-                tempFile.setReadable(true, true);
-                tempFile.setWritable(true, true);
-                tempFile.setExecutable(true, true);
+                boolean iseadable = tempFile.setReadable(true, true);
+                boolean iswritable = tempFile.setWritable(true, true);
+                boolean isexecutable = tempFile.setExecutable(true, true);
+
+                if (!iseadable || !iswritable || !isexecutable) {
+                    log.error("Erreur lors de l'écriture du fichier de résultats");
+                }
             }
 
             try (PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
