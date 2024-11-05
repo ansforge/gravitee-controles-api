@@ -1,0 +1,18 @@
+{
+  "request": {
+    "urlPathTemplate": "/organizations/DEFAULT/environments/{envid}/apis/f704667f-f498-3015-a0a2-17c2a243942a",
+    "method": "GET",
+    "pathParameters": {
+      "envid": {
+        "matches": "LOG"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "api-log.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

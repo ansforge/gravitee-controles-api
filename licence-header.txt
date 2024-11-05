@@ -1,0 +1,1 @@
+(c) Copyright ${yearSpan}, ANS. All rights reserved.

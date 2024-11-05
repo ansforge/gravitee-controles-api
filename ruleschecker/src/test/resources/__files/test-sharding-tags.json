@@ -1,0 +1,6 @@
+[ {
+  "id" : "shardingtag01",
+  "name" : "Sharding tag Test-01",
+  "description" : "1st test Sharding Tag",
+  "restricted_groups" : [ "454e20cd-7ba6-4dd1-8e20-cd7ba67dd19d" ]
+} ]

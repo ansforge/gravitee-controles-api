@@ -1,0 +1,18 @@
+{
+  "request": {
+    "urlPathTemplate": "/organizations/DEFAULT/environments/{envid}/apis",
+    "method": "GET",
+    "pathParameters": {
+      "envid": {
+        "matches": ".*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "api-list.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

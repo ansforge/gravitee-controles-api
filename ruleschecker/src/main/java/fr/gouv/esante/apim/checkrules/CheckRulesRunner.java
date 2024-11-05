@@ -1,107 +1,74 @@
+/*
+ * (c) Copyright 2024-2024, ANS. All rights reserved.
+ */
 package fr.gouv.esante.apim.checkrules;
 
-import fr.gouv.esante.apim.checkrules.model.ApiDefinitionCheckResult;
-import fr.gouv.esante.apim.checkrules.model.GraviteeApiDefinition;
-import fr.gouv.esante.apim.checkrules.services.RulesChecker;
-import fr.gouv.esante.apim.client.api.ApiPlansApi;
-import fr.gouv.esante.apim.client.api.ApisApi;
-import fr.gouv.esante.apim.client.model.ApiGravitee;
-import fr.gouv.esante.apim.client.model.ApisResponseGravitee;
-import fr.gouv.esante.apim.client.model.PlanGravitee;
-import fr.gouv.esante.apim.client.model.PlansResponseGravitee;
-
+import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
+import fr.gouv.esante.apim.checkrules.model.results.Report;
+import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ArgumentsChecker;
+import fr.gouv.esante.apim.checkrules.services.rulesvalidation.CheckRulesService;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 
+
+/**
+ * Point d'entrée de l'application
+ */
 @Component
+@Getter
 @Slf4j
-@Profile({ "production", "test" })
-public class CheckRulesRunner implements CommandLineRunner {
+public class CheckRulesRunner implements ApplicationRunner {
 
-    private static final String ENV_ID = "environment identfier";
+    private final ArgumentsChecker argsParser;
+    private final CheckRulesService checkRulesService;
+    private final EmailNotifier emailNotifier;
 
-    private final ApisApi apisApi;
+    @Value("${envid}")
+    private String envId;
 
-    private final ApiPlansApi apiPlansApi;
+    private Report report;
 
-    private final RulesChecker rulesChecker;
 
-    public CheckRulesRunner(ApisApi apisApi, ApiPlansApi apiPlansApi, RulesChecker rulesChecker) {
-        this.apisApi = apisApi;
-        this.apiPlansApi = apiPlansApi;
-        this.rulesChecker = rulesChecker;
+    public CheckRulesRunner(ArgumentsChecker argsParser,
+                            CheckRulesService checkRulesService,
+                            EmailNotifier emailNotifier) {
+        this.argsParser = argsParser;
+        this.checkRulesService = checkRulesService;
+        this.emailNotifier = emailNotifier;
     }
 
+    /**
+     * Méthode principale de l'application :
+     * - Vérifie les arguments donnés en ligne de commande
+     * - Vérifie les règles sur chaque API
+     * - Envoie le rapport des vérifications par notifications
+     *
+     * @param args incoming application arguments
+     */
     @Override
-    public void run(String... args) throws Exception {
-        log.info("Starting check rules");
-        // get data from args
-        // run checks
-        check();
-        log.info("Finished check rules");
-    }
-
-    private void check() {
-        // Initialize results list
-        Map<String, ApiDefinitionCheckResult> allResults = new HashMap<>();
-
+    public void run(ApplicationArguments args) {
+        log.debug("Start checking rules with args : {}", Arrays.toString(args.getSourceArgs()));
+        // Récupération et validation des arguments d'entrée
+        argsParser.verifyArgs(args);
+        // Lancement des vérifications des règles et génération du rapport
         try {
-            // Get API Definitions list
-            ApisResponseGravitee apisResponse = apisApi.listApis(
-                    ENV_ID,
-                    1,
-                    100,
-                    Collections.emptyList()
-            );
-            List<ApiGravitee> apis = apisResponse.getData();
-
-            // Test each API
-            for (ApiGravitee apiGravitee : apis) {
-                // Get each individual API Definition
-                ApiGravitee apiDefinition = apisApi.getApi(ENV_ID, apiGravitee.getId());
-
-                // Get plans list belonging to the API
-                PlansResponseGravitee plansResponse = apiPlansApi.listApiPlans(
-                        ENV_ID,
-                        apiGravitee.getId(),
-                        Collections.emptyList(),
-                        Collections.emptyList(),
-                        null,
-                        1,
-                        100
-                );
-                List<PlanGravitee> plans = plansResponse.getData();
-                List<PlanGravitee> fullPlans = plansResponse.getData();
-
-                // (Confirm with real API response if this step is really needed)
-                for (PlanGravitee planDetails : plans) {
-                    // Get (again) API plans from their ids and store it in fullPlans list
-                    fullPlans.add(
-                            apiPlansApi.getApiPlan(ENV_ID, apiGravitee.getId(), planDetails.getId())
-                    );
-                }
-
-                // Build an object GraviteeApiDefinition
-                GraviteeApiDefinition graviteeApiDefinition = new GraviteeApiDefinition(apiDefinition, fullPlans);
-
-                // Execute RuleChecker for each API and collect results
-                allResults.put(apiDefinition.getName(), rulesChecker.checkRules(graviteeApiDefinition));
-            }
-        } catch (Exception e) {
-            log.error("CAUGHT ERROR");
-            log.error(e.getMessage());
-            log.error("END ERROR");
+            report = checkRulesService.check();
+            // Préparation et envoi des notifications par mail
+            emailNotifier.notify(report);
+        } catch (ApimRulecheckerException e) {
+            // Envoi de l'email d'erreur aux destinataires
+            emailNotifier.notifyError(e, envId);
         }
-
-        // Send notifications
-        log.info(allResults.toString());
-
     }
+
+
+
+
 }

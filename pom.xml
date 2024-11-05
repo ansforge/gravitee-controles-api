@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    (c) Copyright 2024-2024, ANS. All rights reserved.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.gouv.esante.apim.checkrules</groupId>
     <artifactId>check-apim-rules-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>apim-ruleschecker</name>
-    
+    <inceptionYear>2024</inceptionYear>
+
     <properties>
         <java.version>17</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -20,12 +26,12 @@
         <wiremock.version>3.9.1</wiremock.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc.version>2.2.0</springdoc.version>
+        <license.current.year>2024</license.current.year>
     </properties>
 
     <modules>
-        <module>ruleschecker</module>
         <module>gravitee-client</module>
-<!--        <module>notifier</module>-->
+        <module>ruleschecker</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -56,5 +62,46 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>4.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <header>licence-header.txt</header>
+                    <properties>
+                        <!--
+                          This license current year is computed. If we wanted to rebuild an old version without
+                          changing license headers, we would just need to add -Dlicense.current.year=XXX to the maven command line.
+                        -->
+                        <yearSpan>${inceptionYear}-${license.current.year}</yearSpan>
+                    </properties>
+                    <mapping>
+                        <Jenkinsfile>JAVADOC_STYLE</Jenkinsfile>
+                        <hcl>SCRIPT_STYLE</hcl>
+                        <nomad.tpl>SCRIPT_STYLE</nomad.tpl>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <excludes>
+                        <exclude>**/ASIPGlobalSettings.xml</exclude>
+                        <exclude>**/ASIPProfilesSettings.xml</exclude>
+                        <exclude>**/dependency-check-report.xml</exclude>
+                        <exclude>reports/report.html</exclude>
+                        <exclude>**/messages*</exclude>
+                    </excludes>
+                    <aggregate>false</aggregate>
+                    <strictCheck>true</strictCheck>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
