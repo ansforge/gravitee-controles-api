@@ -10,7 +10,7 @@
 
     <groupId>fr.gouv.esante.apim.checkrules</groupId>
     <artifactId>check-apim-rules-parent</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>apim-ruleschecker</name>
     <inceptionYear>2024</inceptionYear>
