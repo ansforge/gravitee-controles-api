@@ -10,10 +10,10 @@
     <parent>
         <groupId>fr.gouv.esante.apim.checkrules</groupId>
         <artifactId>check-apim-rules-parent</artifactId>
-        <version>1.0.0</version>
+        <version>0.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>check-apim-rules-ruleschecker</artifactId>
-    <version>1.0.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>ruleschecker</name>
     <description>Command line application to check API Manager integration rules for hosted APIs</description>
     <url/>
