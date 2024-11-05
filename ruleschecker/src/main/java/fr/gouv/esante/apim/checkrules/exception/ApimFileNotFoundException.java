@@ -3,10 +3,12 @@
  */
 package fr.gouv.esante.apim.checkrules.exception;
 
-import org.springframework.boot.ExitCodeGenerator;
 
-
-public class ApimFileNotFoundException extends RuntimeException implements ExitCodeGenerator {
+/**
+ * Custom unchecked exception in charge of immediately stopping
+ * the application if the recipient list file cannot be found
+ */
+public class ApimFileNotFoundException extends ApimArgsException {
 
     /**
      * Constructs a {@code ApimFileNotFoundException} with the

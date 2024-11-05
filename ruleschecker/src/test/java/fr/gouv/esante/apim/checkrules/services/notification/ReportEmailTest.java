@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ReportEmailTest {
 
     @Test
-    public void notifyEmailCheckFailureTest() throws IOException {
+    void notifyEmailCheckFailureTest() throws IOException {
         String now = "2024-10-16T13:39:34.347787200Z";
         // Construction des résultats de contrôles de 3 règles quelconques, dont 1 en échec
         RuleResult rule1Result = new RuleResult("rule1", true, "Success message 1", now);
@@ -71,7 +71,7 @@ class ReportEmailTest {
     }
 
     @Test
-    public void notifyEmailCheckSuccessTest() throws IOException {
+    void notifyEmailCheckSuccessTest() throws IOException {
         String now = "2024-10-16T13:39:34.347787200Z";
         // Construction des résultats de contrôles de 3 règles quelconques, tous en succès
         RuleResult rule1Result = new RuleResult("rule1", true, "Success message 1", now);

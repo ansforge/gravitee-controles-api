@@ -3,6 +3,7 @@
  */
 package fr.gouv.esante.apim.checkrules.services.rulesvalidation;
 
+import fr.gouv.esante.apim.checkrules.exception.ApimArgsException;
 import fr.gouv.esante.apim.checkrules.exception.ApimFileNotFoundException;
 import fr.gouv.esante.apim.checkrules.exception.ApimMissingArgumentException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,9 @@ public class ArgumentsChecker {
      * a une valeur vide ou non valide dans le cas du fichier d'adresses mail.
      *
      * @param args Arguments donnés en ligne de commande
-     * @throws ApimFileNotFoundException Exception métier si les arguments sont invalides
+     * @throws ApimMissingArgumentException Exception métier si les arguments sont invalides
      */
-    public void verifyArgs(ApplicationArguments args) throws RuntimeException {
+    public void verifyArgs(ApplicationArguments args) throws ApimArgsException {
         parseArgs(args);
         checkFile(args.getOptionValues(RECIPIENTS_FILEPATH).get(0));
     }

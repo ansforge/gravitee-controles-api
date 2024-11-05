@@ -31,8 +31,8 @@ import fr.gouv.esante.apim.client.model.VirtualHostGravitee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +60,7 @@ public class ApiDefinitionMapper {
 
         if (apiEntity.getProxy().getGroups() != null) {
             List<Group> groups = apiEntity.getProxy().getGroups().stream()
-                    .map(this::mapGroup).collect(Collectors.toList());
+                    .map(this::mapGroup).toList();
             apiDef.setGroups(groups);
         }
 
@@ -127,7 +127,7 @@ public class ApiDefinitionMapper {
         plan.setAuthMechanism(planGravitee.getSecurity().getValue());
 
         List<Flow> flows = planGravitee.getFlows().stream()
-                .map(this::mapFlow).collect(Collectors.toList());
+                .map(this::mapFlow).toList();
         plan.setFlows(flows);
         return plan;
     }
@@ -136,12 +136,12 @@ public class ApiDefinitionMapper {
         Flow flow = new Flow();
         if (flowGravitee.getPre() != null) {
             List<Step> preSteps = flowGravitee.getPre().stream()
-                    .map(this::mapStep).collect(Collectors.toList());
+                    .map(this::mapStep).toList();
             flow.setPreSteps(preSteps);
         }
         if (flowGravitee.getPost() != null) {
             List<Step> postSteps = flowGravitee.getPost().stream()
-                    .map(this::mapStep).collect(Collectors.toList());
+                    .map(this::mapStep).toList();
             flow.setPostSteps(postSteps);
         }
         return flow;
@@ -223,9 +223,9 @@ public class ApiDefinitionMapper {
 
     private String getHostFromUrl(String urlStr) {
         try {
-            URL url = new URL(urlStr);
-            return url.getHost();
-        } catch (MalformedURLException e) {
+            URI uri = new URI(urlStr);
+            return uri.getHost();
+        } catch (URISyntaxException e) {
             log.error("URL mal formée : {}", e.getMessage());
             return "";
         }

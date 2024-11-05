@@ -68,14 +68,10 @@ public class HealthcheckSecured extends AbstractRule {
             if (isValidHealthcheckPlan(plan)) {
                 //On cherche un flow contenant au moins un pre-step
                 for (Flow flow : plan.getFlows()) {
-                    if (!flow.getPreSteps().isEmpty()) {
-                        // On cherche un pre-step ayant une policy ressource-filtering correctement configurée,
-                        // i.e. contenant une whitelist qui autorise l'accès à un endpoint unique en GET uniquement
-                        for (Step step : flow.getPreSteps()) {
-                            if (isRessourceFiltering(step)) {
-                                return true;
-                            }
-                        }
+                    // On cherche un pre-step ayant une policy ressource-filtering correctement configurée,
+                    // i.e. contenant une whitelist qui autorise l'accès à un endpoint unique en GET uniquement
+                    if (flow.getPreSteps().stream().anyMatch(this::isRessourceFiltering)) {
+                        return true;
                     }
                 }
             }

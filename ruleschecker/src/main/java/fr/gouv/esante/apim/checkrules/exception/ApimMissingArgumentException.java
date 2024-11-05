@@ -4,7 +4,6 @@
 package fr.gouv.esante.apim.checkrules.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ExitCodeGenerator;
 
 
 /**
@@ -13,7 +12,7 @@ import org.springframework.boot.ExitCodeGenerator;
  * in the starting command line.
  */
 @Slf4j
-public class ApimMissingArgumentException extends RuntimeException implements ExitCodeGenerator {
+public class ApimMissingArgumentException extends ApimArgsException {
 
     /**
      * Constructs a {@code ApimMissingArgumentException} with the
