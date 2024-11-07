@@ -16,7 +16,7 @@
     <inceptionYear>2024</inceptionYear>
 
     <scm>
-        <connection>scm:git:${project.basedir}</connection>
+        <connection>scm:git:https://github.com/ansforge/gravitee-controles-api.git</connection>
         <tag>HEAD</tag>
     </scm>
 
