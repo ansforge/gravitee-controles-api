@@ -22,11 +22,6 @@
     } ],
     "strip_context_path" : false,
     "preserve_host" : false,
-    "logging" : {
-      "mode" : "CLIENT_PROXY",
-      "content" : "HEADERS",
-      "scope" : "RESPONSE"
-    },
     "groups" : [ {
       "name" : "default",
       "endpoints" : [ {

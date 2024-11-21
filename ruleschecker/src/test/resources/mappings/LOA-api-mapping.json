@@ -4,13 +4,13 @@
     "method": "GET",
     "pathParameters": {
       "envid": {
-        "matches": "LOG"
+        "matches": "LOA"
       }
     }
   },
   "response": {
     "status": 200,
-    "bodyFileName": "api-log.json",
+    "bodyFileName": "api-loa.json",
     "headers": {
       "Content-Type": "application/json"
     }
