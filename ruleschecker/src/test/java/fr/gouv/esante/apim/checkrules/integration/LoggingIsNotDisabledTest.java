@@ -23,7 +23,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @SpringBootTest(
@@ -59,7 +60,7 @@ class LoggingIsNotDisabledTest extends AbstractIntegrationTest {
         Optional<RuleResult> rule6_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.logging.name"))).findFirst();
         if(rule6_3.isPresent()) {
             assertFalse(rule6_3.get().isSuccess());
-            assertTrue(rule6_3.get().getMessage().equalsIgnoreCase(expectedMessage));
+            assertEquals(expectedMessage, rule6_3.get().getMessage());
         }
     }
 }

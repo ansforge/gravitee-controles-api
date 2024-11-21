@@ -23,7 +23,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @SpringBootTest(
@@ -59,8 +60,7 @@ class AdminGroupNotAssignedTest extends AbstractIntegrationTest {
         Optional<RuleResult> rule2_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.groupassignment.name"))).findFirst();
         if(rule2_1.isPresent()) {
             assertFalse(rule2_1.get().isSuccess());
-            log.info("Message : {} | {}", rule2_1.get().getMessage(), expectedMessage);
-            assertTrue(rule2_1.get().getMessage().equalsIgnoreCase(expectedMessage));
+            assertEquals(expectedMessage, rule2_1.get().getMessage());
         }
     }
 

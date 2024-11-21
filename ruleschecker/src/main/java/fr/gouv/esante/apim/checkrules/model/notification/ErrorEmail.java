@@ -10,7 +10,7 @@ import java.time.Instant;
 
 
 @Getter
-public class ErrorEmail {
+public class ErrorEmail implements Notification{
 
     private final String from;
     private final String subject;
@@ -32,5 +32,10 @@ public class ErrorEmail {
                 Instant.now(),
                 exception.getMessage()
         );
+    }
+
+    @Override
+    public String getContent() {
+        return getBody();
     }
 }

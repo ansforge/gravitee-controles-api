@@ -45,7 +45,6 @@ public class SecuredPlan extends AbstractRule {
     }
 
     private boolean verify(Set<Plan> plans) {
-        boolean success = false;
         if (plans == null || plans.isEmpty()) {
             return false;
         }
@@ -56,10 +55,9 @@ public class SecuredPlan extends AbstractRule {
                 .toList();
         for (Plan plan : activePlans) {
             if (Arrays.asList("API_KEY", "OAUTH2").contains(plan.getAuthMechanism())) {
-                success = true;
-                break;
+                return true;
             }
         }
-        return success;
+        return false;
     }
 }

@@ -13,10 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-
-import java.util.Properties;
 
 
 @Configuration
@@ -38,18 +34,6 @@ public class AppConfig {
     @Value("${apikey}")
     private String apiKey;
 
-    /**
-     * Host du serveur SMTP
-     */
-    @Value("${spring.mail.host}")
-    private String mailHost;
-
-    /**
-     * Port utilisé par le serveur SMTP
-     */
-    @Value("${spring.mail.port}")
-    private int mailPort;
-
 
     @Bean
     public ApiClient apiClient() {
@@ -70,21 +54,9 @@ public class AppConfig {
         return new ConfigurationApi(apiClient());
     }
 
-    @Bean
-    public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailHost);
-        mailSender.setPort(mailPort);
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-
-        return mailSender;
-    }
 
     @Bean
     public MessageSource messageSource() {
-        log.info("Inside MessageSource in AppConfig");
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");

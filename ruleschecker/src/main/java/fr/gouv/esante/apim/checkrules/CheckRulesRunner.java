@@ -4,6 +4,7 @@
 package fr.gouv.esante.apim.checkrules;
 
 import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
+import fr.gouv.esante.apim.checkrules.model.notification.Notification;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 import fr.gouv.esante.apim.checkrules.services.notification.EmailNotifier;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ArgumentsChecker;
@@ -35,6 +36,8 @@ public class CheckRulesRunner implements ApplicationRunner {
 
     private Report report;
 
+    private Notification notification;
+
 
     public CheckRulesRunner(ArgumentsChecker argsParser,
                             CheckRulesService checkRulesService,
@@ -61,10 +64,10 @@ public class CheckRulesRunner implements ApplicationRunner {
         try {
             report = checkRulesService.check();
             // Préparation et envoi des notifications par mail
-            emailNotifier.notify(report);
+            notification = emailNotifier.notify(report);
         } catch (ApimRulecheckerException e) {
             // Envoi de l'email d'erreur aux destinataires
-            emailNotifier.notifyError(e, envId);
+            notification = emailNotifier.notifyError(e, envId);
         }
     }
 

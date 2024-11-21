@@ -26,7 +26,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Slf4j
-public class ReportEmail {
+public class ReportEmail implements Notification {
 
     private String from;
     private String subject;
@@ -108,5 +108,10 @@ public class ReportEmail {
         }
 
         return tempFile;
+    }
+
+    @Override
+    public String getContent() {
+        return String.format("Body : %s,%sReport : %s", getBody(), System.lineSeparator(), getAttachment());
     }
 }

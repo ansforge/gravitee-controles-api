@@ -23,7 +23,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @SpringBootTest(
@@ -63,7 +64,7 @@ class ContextPathModeInsteadofVHostTest extends AbstractIntegrationTest {
         Optional<RuleResult> rule3_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.subdomainconfig.name"))).findFirst();
         if(rule3_3.isPresent()) {
             assertFalse(rule3_3.get().isSuccess());
-            assertTrue(rule3_3.get().getMessage().equalsIgnoreCase(expectedMessage));
+            assertEquals(expectedMessage, rule3_3.get().getMessage());
         }
 
     }
