@@ -112,6 +112,12 @@ public class ReportEmail implements Notification {
 
     @Override
     public String getContent() {
-        return String.format("Body : %s,%sReport : %s", getBody(), System.lineSeparator(), getAttachment());
+        String reportContent;
+        try {
+            reportContent = Files.readString(getAttachment().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return String.format("Body : %s,%sReport : %s", getBody(), System.lineSeparator(), reportContent);
     }
 }
