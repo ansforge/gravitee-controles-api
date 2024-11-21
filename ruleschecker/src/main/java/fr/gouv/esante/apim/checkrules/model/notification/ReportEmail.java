@@ -73,6 +73,7 @@ public class ReportEmail {
                 }
             }
             sb.append(apiResult)
+                    .append(System.lineSeparator())
                     .append(System.lineSeparator());
         }
         return sb.toString();
