@@ -26,7 +26,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Slf4j
-public class ReportEmail {
+public class ReportEmail implements Notification {
 
     private String from;
     private String subject;
@@ -73,6 +73,7 @@ public class ReportEmail {
                 }
             }
             sb.append(apiResult)
+                    .append(System.lineSeparator())
                     .append(System.lineSeparator());
         }
         return sb.toString();
@@ -107,5 +108,16 @@ public class ReportEmail {
         }
 
         return tempFile;
+    }
+
+    @Override
+    public String getContent() {
+        String reportContent;
+        try {
+            reportContent = Files.readString(getAttachment().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return String.format("Body : %s,%sReport : %s", getBody(), System.lineSeparator(), reportContent);
     }
 }

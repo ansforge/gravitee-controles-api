@@ -1,0 +1,283 @@
+{
+  "id" : "f704667f-f498-3015-a0a2-17c2a243942a",
+  "crossId" : "a9e55bf5-1f28-41b1-a55b-f51f28c1b1fd",
+  "environmentId" : "DEFAULT",
+  "name" : "Certificat_Structure",
+  "version" : "Certificat_Structure",
+  "description" : "Certificat_Structure",
+  "groups" : [ "454e20cd-7ba6-4dd1-8e20-cd7ba67dd19d" ],
+  "visibility" : "PRIVATE",
+  "state" : "STARTED",
+  "tags" : [ "shardingtag01" ],
+  "entrypoints" : [ {
+    "tags" : [ "shardingtag01" ],
+    "target" : "http://test-api.gateway.api.esante.gouv.fr/Certificat_Structure/V002.00"
+  } ],
+  "execution_mode" : "v3",
+  "context_path" : "/Certificat_Structure/V002.00",
+  "proxy" : {
+    "virtual_hosts" : [ {
+      "host" : "test-api.gateway.api.esante.gouv.fr",
+      "path" : "/Certificat_Structure/V002.00"
+    } ],
+    "strip_context_path" : false,
+    "preserve_host" : false,
+    "groups" : [ {
+      "name" : "default",
+      "endpoints" : [ {
+        "proxy" : {
+          "port" : 8080,
+          "host" : "10.144.248.6",
+          "type" : "HTTP",
+          "useSystemProxy" : false,
+          "enabled" : true
+        },
+        "healthcheck" : {
+          "schedule" : "* * * 1 * *",
+          "inherit" : false,
+          "steps" : [ {
+            "request" : {
+              "path" : "/healthgroup",
+              "headers" : [ ],
+              "method" : "GET"
+            },
+            "response" : {
+              "assertions" : [ "#response.status == 200" ]
+            }
+          } ],
+          "enabled" : true
+        },
+        "headers" : [ ],
+        "backup" : false,
+        "inherit" : false,
+        "name" : "default-group",
+        "weight" : 1,
+        "http" : {
+          "keepAlive" : true,
+          "followRedirects" : false,
+          "idleTimeout" : 60000,
+          "readTimeout" : 360000,
+          "connectTimeout" : 5000,
+          "propagateClientAcceptEncoding" : false,
+          "maxConcurrentConnections" : 100,
+          "useCompression" : true,
+          "pipelining" : false,
+          "version" : "HTTP_1_1",
+          "clearTextUpgrade" : true
+        },
+        "type" : "http",
+        "ssl" : {
+          "keyStore" : {
+            "certContent" : "-----BEGIN CERTIFICATE-----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-----END CERTIFICATE-----",
+            "keyContent" : "-----BEGIN PRIVATE KEY-----MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDhTVflgDffmy3B7IDsQSkMlkP3FF1IJ5L168uPjWb2AW4A4rvQHJ8+i36OymXL3eYj3WuLKUvJi0dLYVR9IyLThIsEiIGf8PjSIaYIhAgORW2m+0VhoZAkJG+6wdxmF2BvGL4/vF4nutbQ+4qi2VkgEyyKGxt+b1/OKiJ17IUbb3hIBaJkYtCTXP72c3+z3ndlhX/CEvNgLuOGGhlzxj30vkcjxFxjuy+gPo2Z/bSxxMMm+9omR1nNKmZA/TQho8LQaMGXZAe3XkSAw0x/nkMSCtNsj2UqEKK7c3IJpbAHAvZRywShpCTt/MeJ60kZmoBCrXDKXfBO0RzS9zsYiZV3AgMBAAECggEAWwVAn9a7e+o4w7IU6Z1vhIbGgXDoOKjIPfLbY6zYLkWol9IB11Ng4EdBw1UwZ/rHKbEf6/IsjIloraLuG7oQrUxMT3IIkEGtfFMcvS7+BCn3YTD9ODKpxXg07Um5jUMfcfKYla43iax5cadVvHG7iHJGmarW4i8DkQpDrsl1gv21EcG0DbNVgQSFnsUkS5Ghlq5bsm5VeVZfU1bl+xnDO/f9GyNwVqnDDZZsKDcWs95ply63H6gFKG1FCebdiSLFW4l27CknBFdSIBaTsZKwigQ4I4Nt5Se2GM9QTLNgx7h/v1iYQHLnPq4CqO7AxJA8iQutXeCu9XP2gwbQLbXUsQKBgQD0S53EQv7rdCjW5pt3jq9QFvXZS/VWpauuZJjkSjrOtLVPELaaR9GwOJKNVDb7/MakXOCi4mP2D+sR9h7n01GINA0exMMqJmhKcrKMq/tHysaEBWjtubuqh8KjiLQKee+VPRSvr4L2ht6kKmS4Y5rnt12il+eAk871FUjDCCPMEQKBgQDsGMRX6C9Y3FVAgct2KBNvm7hKPuzMp+k0KDe3OCgsubssA8p2aib8O4sDWJDDxMkoswEVI84mEjlB63c6RzYo+LyhaO53fvul34MmTnUni7JDlJREn3AhzCu/DrGiMetA3Y6mRV0ATiZoHDsHjIh39kDM0tdPrnL/QJdVhEPxBwKBgQDnetsUQ/MvAdNMxhicMex2dDsiWnIvVy4VQicJcjjE8sA2Gf0ctV7Anupm1lx/ayaCSatlTCUx3CV+0Hq6aicAa2nfNMxFHT2HBaWf27pvbXmrUUD6uRpU3O0WbgtDPgVBoS3/xsvOcz91yOHFQkReugYUceGfmO7qle9rNkRNMQKBgQCXWRkksTcI49XS0GG5kN9EwLJXBheO6mTYhp+Q2HMImNef055KYqozL4hh0Licht3dNUMQZi+UwEHsPCHmPhg+E5X4cufLup9fKfVM7Sa0/xx7rheOFhcv006H38eHjjCdGGqFtBl2RKLiQpaktDYXkMjhhJd6AP6/GozoyS00qQKBgQDP7fwlq4qprn7oVx8VYGP/E7TWNEMg4qj41kytyRbeqTOmp68se4Hbw4SqxmZJp72pbGFyRLiGJI1KCxoS6Fu4kq0yVmm4ZYUUt5arNWFHYkHAFYU2tGQn46pCh7DNJP8wP57QVxEufRetyX9lW2L5od4yeGaKk234Z0Gp6JJJtA==-----END PRIVATE KEY-----",
+            "type" : "PEM"
+          },
+          "hostnameVerifier" : false,
+          "trustStore" : {
+            "type" : ""
+          },
+          "trustAll" : false
+        },
+        "target" : "https://api.bi.esante.gouv.fr/api/Certificat_Structure/Certificat_Structure_V002.00"
+      }, {
+        "healthcheck" : {
+          "enabled" : false
+        },
+        "backup" : false,
+        "inherit" : true,
+        "name" : "test2",
+        "weight" : 1,
+        "type" : "http",
+        "target" : "/test2"
+      } ],
+      "load_balancing" : {
+        "type" : "ROUND_ROBIN"
+      },
+      "http" : {
+        "connectTimeout" : 5000,
+        "idleTimeout" : 60000,
+        "keepAlive" : true,
+        "readTimeout" : 10000,
+        "pipelining" : false,
+        "maxConcurrentConnections" : 100,
+        "useCompression" : true,
+        "followRedirects" : false
+      }
+    }, {
+      "name" : "end_group",
+      "load_balancing" : {
+        "type" : "ROUND_ROBIN"
+      },
+      "services" : {
+        "discovery" : {
+          "enabled" : false
+        }
+      },
+      "http" : {
+        "connectTimeout" : 5000,
+        "idleTimeout" : 60000,
+        "keepAlive" : true,
+        "readTimeout" : 10000,
+        "pipelining" : false,
+        "maxConcurrentConnections" : 100,
+        "useCompression" : true,
+        "followRedirects" : false
+      }
+    } ]
+  },
+  "flow_mode" : "DEFAULT",
+  "flows" : [ {
+    "id" : "af52d1b1-3428-4071-92d1-b1342880719c",
+    "name" : "",
+    "path-operator" : {
+      "path" : "/",
+      "operator" : "STARTS_WITH"
+    },
+    "condition" : "",
+    "consumers" : [ ],
+    "methods" : [ ],
+    "pre" : [ {
+      "name" : "CertificateCheckPolicy",
+      "description" : "",
+      "enabled" : true,
+      "policy" : "cert-header-check-policy",
+      "configuration" : {"headerCertificate":"SSL_CLIENT_CERT","headerDn":"SSL_CLIENT_S_DN","headerToWAF":"API-User","apimUrl":"https://apim.gravitee.io","envId":"DEFAULT","orgId":"DEFAULT","token":""}
+    } ],
+    "post" : [ ],
+    "enabled" : true
+  } ],
+  "plans" : [ {
+    "id" : "aa83e375-87d7-4634-83e3-7587d79634ac",
+    "crossId" : "fb350cb3-b513-4651-b50c-b3b51316519e",
+    "name" : "authentifié",
+    "description" : "authn",
+    "validation" : "MANUAL",
+    "security" : "API_KEY",
+    "securityDefinition" : "{}",
+    "type" : "API",
+    "status" : "PUBLISHED",
+    "api" : "f704667f-f498-3015-a0a2-17c2a243942a",
+    "order" : 1,
+    "characteristics" : [ ],
+    "created_at" : 1729678666154,
+    "updated_at" : 1729781057991,
+    "published_at" : 1729678675066,
+    "paths" : { },
+    "flows" : [ {
+      "id" : "b1ee2a03-6f14-452c-ae2a-036f14a52cdf",
+      "name" : "",
+      "path-operator" : {
+        "path" : "/",
+        "operator" : "STARTS_WITH"
+      },
+      "condition" : "",
+      "consumers" : [ ],
+      "methods" : [ ],
+      "pre" : [ {
+        "name" : "Quota",
+        "description" : "",
+        "enabled" : true,
+        "policy" : "quota",
+        "configuration" : {"async":false,"addHeaders":true,"quota":{"periodTime":1,"periodTimeUnit":"MONTHS","key":""}}
+      } ],
+      "post" : [ ],
+      "enabled" : true
+    } ],
+    "comment_required" : false
+  }, {
+    "id" : "e8ace3f3-fdb1-4ad1-ace3-f3fdb1fad199",
+    "crossId" : "b2a3dd8a-352d-46f8-a3dd-8a352d26f8ef",
+    "name" : "Plan-HealthCheck",
+    "description" : "Plan-HealthCheck",
+    "validation" : "AUTO",
+    "security" : "KEY_LESS",
+    "securityDefinition" : "{}",
+    "type" : "API",
+    "status" : "PUBLISHED",
+    "api" : "f704667f-f498-3015-a0a2-17c2a243942a",
+    "order" : 2,
+    "characteristics" : [ ],
+    "created_at" : 1729678383818,
+    "updated_at" : 1729781058002,
+    "published_at" : 1729678715021,
+    "paths" : { },
+    "flows" : [ {
+      "id" : "e3d3e75f-247d-45ff-93e7-5f247df5ff43",
+      "name" : "",
+      "path-operator" : {
+        "path" : "/",
+        "operator" : "STARTS_WITH"
+      },
+      "condition" : "",
+      "consumers" : [ ],
+      "methods" : [ ],
+      "pre" : [ {
+        "name" : "Resource Filtering",
+        "description" : "Restrict resources according to whitelist and / or blacklist rules",
+        "enabled" : true,
+        "policy" : "resource-filtering",
+        "configuration" : {"blacklist":[],"whitelist":[{"methods":["GET"],"pattern":"/health"}]}
+      } ],
+      "post" : [ ],
+      "enabled" : true
+    } ],
+    "comment_required" : false
+  }, {
+    "id" : "c10dd0af-4df1-34d4-b3bc-b841a638057b",
+    "crossId" : "6b9b34a5-9438-4fba-9b34-a594388fbab2",
+    "name" : "Default",
+    "description" : "Default plan",
+    "validation" : "AUTO",
+    "security" : "KEY_LESS",
+    "type" : "API",
+    "status" : "CLOSED",
+    "api" : "f704667f-f498-3015-a0a2-17c2a243942a",
+    "order" : 1,
+    "characteristics" : [ ],
+    "created_at" : 1729245603375,
+    "updated_at" : 1729781058011,
+    "published_at" : 1729245603378,
+    "closed_at" : 1729678708147,
+    "paths" : { },
+    "flows" : [ ],
+    "comment_required" : false
+  } ],
+  "gravitee" : "2.0.0",
+  "definition_context" : {
+    "origin" : "management",
+    "mode" : "fully_managed"
+  },
+  "deployed_at" : 1729774100582,
+  "created_at" : 1729245602390,
+  "updated_at" : 1729781057978,
+  "owner" : {
+    "id" : "43ac0984-eade-4534-ac09-84eade15348d",
+    "displayName" : "gandalf",
+    "type" : "USER"
+  },
+  "properties" : [ ],
+  "services" : {
+    "health-check" : {
+      "enabled" : true,
+      "schedule" : "0 0 */3 * * *",
+      "steps" : [ {
+        "name" : "default-step",
+        "request" : {
+          "path" : "/healthapi",
+          "method" : "GET",
+          "fromRoot" : false
+        },
+        "response" : {
+          "assertions" : [ "#response.status == 200" ]
+        }
+      } ]
+    }
+  },
+  "picture_url" : "http://10.3.8.166:24723/management/organizations/DEFAULT/environments/DEFAULT/apis/f704667f-f498-3015-a0a2-17c2a243942a/picture?hash=1729781057978",
+  "resources" : [ ],
+  "path_mappings" : [ ],
+  "response_templates" : { },
+  "lifecycle_state" : "PUBLISHED",
+  "disable_membership_notifications" : false,
+  "background_url" : "http://10.3.8.166:24723/management/organizations/DEFAULT/environments/DEFAULT/apis/f704667f-f498-3015-a0a2-17c2a243942a/background?hash=1729781057978"
+}

@@ -104,7 +104,7 @@ class ApiDefinitionMapperTest {
         logging.setMode("NONE");
         logging.setScope("NONE");
 
-        expectedApiDef.setApiName("TestAPI-ex");
+        expectedApiDef.setApiName("TestAPI-ex (v1.0)");
         expectedApiDef.setAdminGroups(groups);
         expectedApiDef.setPlans(Set.of(accessPlan, healthcheckPlan));
         expectedApiDef.setVirtualHosts(List.of(virtualHost));

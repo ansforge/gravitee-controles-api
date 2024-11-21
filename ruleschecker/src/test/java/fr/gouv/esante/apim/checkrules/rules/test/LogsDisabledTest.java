@@ -60,8 +60,8 @@ class LogsDisabledTest extends LogsDisabled {
         LogsDisabled logsDisabled = new LogsDisabled(new RulesRegistry(), messageProvider);
         RuleResult result = apiDef.accept(logsDisabled);
 
-        assertFalse(result.isSuccess());
-        assertEquals(messageProvider.getMessage("rule.logging.msg.failure"), result.getMessage());
+        assertTrue(result.isSuccess());
+        assertEquals(messageProvider.getMessage("rule.logging.msg.success"), result.getMessage());
     }
 
     @ParameterizedTest

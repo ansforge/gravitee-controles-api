@@ -42,7 +42,7 @@ public class LogsDisabled extends AbstractRule {
 
     private boolean verify(Logging logging) {
         if (logging == null) {
-            return false;
+            return true;
         }
         if (!"NONE".equals(logging.getContent())) {
             return false;

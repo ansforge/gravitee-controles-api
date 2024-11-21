@@ -6,12 +6,7 @@ package fr.gouv.esante.apim.checkrules.integration;
 import fr.gouv.esante.apim.checkrules.config.AppTestConfig;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
-import fr.gouv.esante.apim.checkrules.rules.impl.GroupAssignment;
-import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckActivation;
-import fr.gouv.esante.apim.checkrules.rules.impl.HealthcheckSecured;
 import fr.gouv.esante.apim.checkrules.rules.impl.LogsDisabled;
-import fr.gouv.esante.apim.checkrules.rules.impl.SecuredPlan;
-import fr.gouv.esante.apim.checkrules.rules.impl.SubdomainConfiguration;
 import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionLoader;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.ApiDefinitionMapper;
@@ -26,6 +21,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,31 +36,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
             RulesChecker.class,
             RulesRegistry.class,
             MessageProvider.class,
-            GroupAssignment.class,
-            HealthcheckActivation.class,
-            HealthcheckSecured.class,
             LogsDisabled.class,
-            SecuredPlan.class,
-            SubdomainConfiguration.class,
         }
 )
 @ActiveProfiles({"test"})
 @Slf4j
-class AllSuccessTest extends AbstractIntegrationTest {
-
+class LoggingIsAbsentTest extends AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void dynamicPropertySources(DynamicPropertyRegistry registry) {
-        registry.add("envid",  () -> "ALL");
+        registry.add("envid",  () -> "LOA");
     }
 
 
     @Test
-    void testAllSuccess() throws Exception {
+    void testLoggingIsAbsent() throws Exception {
+        String expectedMessage = messageProvider.getMessage("rule.logging.msg.success");
+
         Report report = checkRulesService.check();
         assertTrue(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
-        assertEquals(6, apiResults.size());
+        Optional<RuleResult> rule6_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.logging.name"))).findFirst();
+        if(rule6_3.isPresent()) {
+            assertTrue(rule6_3.get().isSuccess());
+            assertEquals(expectedMessage, rule6_3.get().getMessage());
+        }
     }
 }

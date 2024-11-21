@@ -5,6 +5,7 @@ package fr.gouv.esante.apim.checkrules.services.notification;
 
 import fr.gouv.esante.apim.checkrules.exception.ApimRulecheckerException;
 import fr.gouv.esante.apim.checkrules.model.notification.ErrorEmail;
+import fr.gouv.esante.apim.checkrules.model.notification.Notification;
 import fr.gouv.esante.apim.checkrules.model.notification.ReportEmail;
 import fr.gouv.esante.apim.checkrules.model.results.Report;
 import jakarta.mail.MessagingException;
@@ -49,11 +50,10 @@ public class EmailNotifier implements Notifier {
     @Value("${recipients.filepath}")
     private String recipients;
 
-    @Value("${email.sender:noreply@gouv.esante.fr}")
+    @Value("${email.sender:noreply@esante.gouv.fr}")
     private String from;
 
-
-    public void notify(Report report) {
+    public Notification notify(Report report) {
         // On récupère les destinataires et on vérifie que chaque adresse est valide
         List<String> recipientsList = parseRecipientsList()
                 .stream()
@@ -64,10 +64,12 @@ public class EmailNotifier implements Notifier {
         for (String recipient : recipientsList) {
             sendMail(email, recipient);
         }
+
+        return email;
     }
 
     @Override
-    public void notifyError(ApimRulecheckerException e, String envId) {
+    public Notification notifyError(ApimRulecheckerException e, String envId) {
         // On récupère les destinataires et on vérifie que chaque adresse est valide
         List<String> recipientsList = parseRecipientsList()
                 .stream()
@@ -78,6 +80,8 @@ public class EmailNotifier implements Notifier {
         for (String recipient : recipientsList) {
             sendError(email, recipient);
         }
+
+        return email;
     }
 
     private void sendMail(ReportEmail email, String to) {

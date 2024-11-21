@@ -23,7 +23,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @SpringBootTest(
@@ -58,11 +59,11 @@ class NoShardingTagTest extends AbstractIntegrationTest {
         Report report = checkRulesService.check();
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
-        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure").getRuleResults();
+        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
         Optional<RuleResult> rule3_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase("3.3 - Un sous-domaine spécifique doit être configuré pour accéder à l’API")).findFirst();
         if(rule3_3.isPresent()) {
             assertFalse(rule3_3.get().isSuccess());
-            assertTrue(rule3_3.get().getMessage().equalsIgnoreCase(expectedMessage), "Erreur de message : " + rule3_3.get().getMessage());
+            assertEquals(expectedMessage, rule3_3.get().getMessage());
         }
 
     }
