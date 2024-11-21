@@ -54,7 +54,7 @@ public class ApiDefinitionMapper {
         log.info("Mapping de la définition de l'API {}", apiEntity.getName());
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
 
-        apiDef.setApiName(apiEntity.getName());
+        apiDef.setApiName(String.format("%s (%s)", apiEntity.getName(), apiEntity.getVersion()) );
 
         apiDef.setAdminGroups(apiEntity.getGroups());
 

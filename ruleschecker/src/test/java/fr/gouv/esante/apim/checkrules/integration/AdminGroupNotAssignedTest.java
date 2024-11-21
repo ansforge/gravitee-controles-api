@@ -55,7 +55,7 @@ class AdminGroupNotAssignedTest extends AbstractIntegrationTest {
         Report report = checkRulesService.check();
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
-        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure").getRuleResults();
+        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
         Optional<RuleResult> rule2_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.groupassignment.name"))).findFirst();
         if(rule2_1.isPresent()) {
             assertFalse(rule2_1.get().isSuccess());

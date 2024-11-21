@@ -55,7 +55,7 @@ class PlanIsNotSecuredCorrectlyTest extends AbstractIntegrationTest {
         Report report = checkRulesService.check();
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
-        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure").getRuleResults();
+        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
         Optional<RuleResult> rule3_1_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.securedplan.name"))).findFirst();
         if(rule3_1_1.isPresent()) {
             assertFalse(rule3_1_1.get().isSuccess());

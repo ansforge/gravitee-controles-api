@@ -64,7 +64,7 @@ class AllSuccessTest extends AbstractIntegrationTest {
         Report report = checkRulesService.check();
         assertTrue(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
-        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure").getRuleResults();
+        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
         assertEquals(6, apiResults.size());
     }
 }

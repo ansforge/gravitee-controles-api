@@ -44,7 +44,7 @@ class LoggingIsNotDisabledTest extends AbstractIntegrationTest {
 
     @DynamicPropertySource
     static void dynamicPropertySources(DynamicPropertyRegistry registry) {
-        registry.add("envid",  () -> "LOG");
+        registry.add("envid",  () -> "LOD");
     }
 
 
@@ -55,7 +55,7 @@ class LoggingIsNotDisabledTest extends AbstractIntegrationTest {
         Report report = checkRulesService.check();
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
-        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure").getRuleResults();
+        List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
         Optional<RuleResult> rule6_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.logging.name"))).findFirst();
         if(rule6_3.isPresent()) {
             assertFalse(rule6_3.get().isSuccess());
