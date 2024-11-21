@@ -16,7 +16,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -36,7 +38,7 @@ public class CheckRulesRunner implements ApplicationRunner {
 
     private Report report;
 
-    private Notification notification;
+    private List<Notification> notifications = new ArrayList<>();
 
 
     public CheckRulesRunner(ArgumentsChecker argsParser,
@@ -64,14 +66,10 @@ public class CheckRulesRunner implements ApplicationRunner {
         try {
             report = checkRulesService.check();
             // Préparation et envoi des notifications par mail
-            notification = emailNotifier.notify(report);
+            notifications.add(emailNotifier.notify(report));
         } catch (ApimRulecheckerException e) {
             // Envoi de l'email d'erreur aux destinataires
-            notification = emailNotifier.notifyError(e, envId);
+            notifications.add(emailNotifier.notifyError(e, envId));
         }
     }
-
-
-
-
 }
