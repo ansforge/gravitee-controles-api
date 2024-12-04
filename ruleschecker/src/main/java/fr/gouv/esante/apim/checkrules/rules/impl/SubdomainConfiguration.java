@@ -3,6 +3,11 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.ShardingTag;
 import fr.gouv.esante.apim.checkrules.model.definition.VirtualHost;
@@ -11,17 +16,11 @@ import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 
 @Component
 @Getter
 @Setter
-@Slf4j
 public class SubdomainConfiguration extends AbstractRule {
 
     /**
@@ -69,7 +68,6 @@ public class SubdomainConfiguration extends AbstractRule {
                     .append(ep.getTargetHostName())
                     .append(" ] pour le Vhost [ ")
                     .append(ep.getHost()).append(" ]."));
-            log.error("Aucun sharding tag n'est associé à cette API, le default entrypoint {} est utilisé", sb);
             setDetailErrorMessage(String.format(
                     messageProvider.getMessage("rule.subdomainconfig.msg.noshardingtag"),
                     System.lineSeparator(),
@@ -80,7 +78,6 @@ public class SubdomainConfiguration extends AbstractRule {
         // On controle que pour chaque sharding tag associé à l'API, tous les attributs sont renseignés
         for (ShardingTag shardingTag : shardingTags) {
             if (shardingTag.getEntrypointMappings() == null || shardingTag.getEntrypointMappings().isEmpty()) {
-                log.error("Un sharding tag associé à cette API n'a aucun hostname défini dans le mapping");
                 setDetailErrorMessage(String.format(
                         messageProvider.getMessage("rule.subdomainconfig.msg.nohostnamemapping"),
                         System.lineSeparator()
@@ -92,7 +89,6 @@ public class SubdomainConfiguration extends AbstractRule {
 
         // On controle que l'API est en mode virtual host et que ceux-ci sont bien définis
         if (virtualHosts == null || virtualHosts.isEmpty()) {
-            log.error("Aucun virtual host n'est associé à cette API");
             setDetailErrorMessage(String.format(
                     messageProvider.getMessage("rule.subdomainconfig.msg.novhost"),
                     System.lineSeparator()
@@ -103,7 +99,6 @@ public class SubdomainConfiguration extends AbstractRule {
         for (VirtualHost virtualHost : virtualHosts) {
             // Si on est en mode context-path le host est nul
             if (virtualHost.getHost() == null) {
-                log.error("Cette API n'est pas configurée en mode Virtual Host");
                 setDetailErrorMessage(String.format(
                         messageProvider.getMessage("rule.subdomainconfig.msg.notvhostmode"),
                         System.lineSeparator()
@@ -116,7 +111,6 @@ public class SubdomainConfiguration extends AbstractRule {
                     .anyMatch(entrypoint -> entrypoint.equals(virtualHost.getHost()));
 
             if (!isMapped) {
-                log.error("Le virtual host {} n'est pas mappé dans les entrypoint mappings", virtualHost.getHost());
                 setDetailErrorMessage(String.format(
                         messageProvider.getMessage("rule.subdomainconfig.msg.novhostmapping"),
                         System.lineSeparator(),
