@@ -10,10 +10,9 @@
     <parent>
         <groupId>fr.gouv.esante.apim.checkrules</groupId>
         <artifactId>check-apim-rules-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>check-apim-rules-gravitee-client</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
     <name>gravitee-client</name>
     <description>Gravitee API Manager API client</description>
     <url/>
