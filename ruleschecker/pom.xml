@@ -12,6 +12,7 @@
         <version>1.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>check-apim-rules-ruleschecker</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
     <name>ruleschecker</name>
     <description>Command line application to check API Manager integration rules for hosted APIs</description>
     <url />
@@ -41,7 +42,7 @@
         <dependency>
             <groupId>fr.gouv.esante.apim.checkrules</groupId>
             <artifactId>check-apim-rules-gravitee-client</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -12,6 +12,7 @@
         <version>1.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>check-apim-rules-gravitee-client</artifactId>
+    <version>1.0.2-SNAPSHOT</version>
     <name>gravitee-client</name>
     <description>Gravitee API Manager API client</description>
     <url />
