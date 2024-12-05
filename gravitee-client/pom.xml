@@ -9,10 +9,10 @@
     <parent>
         <groupId>fr.gouv.esante.apim.checkrules</groupId>
         <artifactId>check-apim-rules-parent</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
     <artifactId>check-apim-rules-gravitee-client</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
     <name>gravitee-client</name>
     <description>Gravitee API Manager API client</description>
     <url />
@@ -24,7 +24,7 @@
     </developers>
     <scm>
         <connection>scm:git:https://github.com/ansforge/gravitee-controles-api.git</connection>
-        <tag>HEAD</tag>
+        <tag>check-apim-rules-parent-1.0.2</tag>
     </scm>
     <properties />
     <dependencyManagement>
