@@ -4,8 +4,7 @@
     (c) Copyright 2024-2024, ANS. All rights reserved.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fr.gouv.esante.apim.checkrules</groupId>
@@ -15,20 +14,18 @@
     <artifactId>check-apim-rules-ruleschecker</artifactId>
     <name>ruleschecker</name>
     <description>Command line application to check API Manager integration rules for hosted APIs</description>
-    <url/>
+    <url />
     <licenses>
-        <license/>
+        <license />
     </licenses>
     <developers>
-        <developer/>
+        <developer />
     </developers>
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection>scm:git:https://github.com/ansforge/gravitee-controles-api.git</connection>
+        <tag>HEAD</tag>
     </scm>
-    <properties/>
+    <properties />
     <dependencyManagement>
         <dependencies>
             <dependency>
