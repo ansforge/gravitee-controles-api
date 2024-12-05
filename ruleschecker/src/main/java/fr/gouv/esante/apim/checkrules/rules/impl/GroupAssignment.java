@@ -3,15 +3,15 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 
 /**
@@ -19,7 +19,6 @@ import java.util.Set;
  * Vérifie que l'API est affectée à un groupe d'utilisateur.
  */
 @Component
-@Slf4j
 public class GroupAssignment extends AbstractRule {
 
     @Autowired

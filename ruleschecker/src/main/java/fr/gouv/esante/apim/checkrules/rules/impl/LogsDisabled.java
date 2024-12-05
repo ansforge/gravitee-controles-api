@@ -3,18 +3,17 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Logging;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 
 @Component
-@Slf4j
 public class LogsDisabled extends AbstractRule {
 
     @Autowired

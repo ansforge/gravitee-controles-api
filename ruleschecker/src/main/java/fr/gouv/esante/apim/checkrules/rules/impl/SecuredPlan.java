@@ -3,22 +3,21 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Plan;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 
 @Component
-@Slf4j
 public class SecuredPlan extends AbstractRule {
 
     @Autowired

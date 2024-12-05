@@ -3,6 +3,9 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.gouv.esante.apim.checkrules.model.definition.Endpoint;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
 import fr.gouv.esante.apim.checkrules.model.definition.Group;
@@ -10,12 +13,8 @@ import fr.gouv.esante.apim.checkrules.model.definition.HealthCheckService;
 import fr.gouv.esante.apim.checkrules.model.results.RuleResult;
 import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
 public class HealthcheckActivation extends AbstractRule {
 
     @Autowired
@@ -55,7 +54,6 @@ public class HealthcheckActivation extends AbstractRule {
                 // du groupe ont un healthcheck dédié activé
                 for (Endpoint endpoint : group.getEndpoints()) {
                     if (!endpoint.getHealthCheckService().isEnabled()) {
-                        log.info("Un endpoint du groupe {} n'a pas de healthcheck activé", group.getName());
                         return false;
                     }
                 }

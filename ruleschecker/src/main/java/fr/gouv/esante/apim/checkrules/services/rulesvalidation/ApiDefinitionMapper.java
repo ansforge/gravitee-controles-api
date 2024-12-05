@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class ApiDefinitionMapper {
     public GraviteeApiDefinition map(ApiEntityGravitee apiEntity,
                                      List<EntrypointEntityGravitee> entrypointEntities) {
 
-        log.info("Mapping de la définition de l'API {}", apiEntity.getName());
+        log.info("Mapping de la définition de l'API {} version : {}", apiEntity.getName(), apiEntity.getVersion());
         GraviteeApiDefinition apiDef = new GraviteeApiDefinition();
 
         apiDef.setApiName(String.format("%s (%s)", apiEntity.getName(), apiEntity.getVersion()) );
@@ -165,11 +166,11 @@ public class ApiDefinitionMapper {
         Map<String, Object> config = (Map<String, Object>) configGravitee;
         List<Object> whitelistObject = (List<Object>) config.get("whitelist");
         if (whitelistObject == null) {
-            whitelistObject = new ArrayList<>();
+            whitelistObject = Collections.emptyList();
         }
         List<Object> blacklistObject = (List<Object>) config.get("blacklist");
         if (blacklistObject == null) {
-            blacklistObject = new ArrayList<>();
+            blacklistObject = Collections.emptyList();
         }
         // On cast le contenu des 2 listes en objets Filter du modèle
         List<Filter> whitelist = buildFilterList(whitelistObject);

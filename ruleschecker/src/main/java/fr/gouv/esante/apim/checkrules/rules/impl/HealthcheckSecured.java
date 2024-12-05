@@ -3,6 +3,12 @@
  */
 package fr.gouv.esante.apim.checkrules.rules.impl;
 
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.gouv.esante.apim.checkrules.model.definition.Filter;
 import fr.gouv.esante.apim.checkrules.model.definition.Flow;
 import fr.gouv.esante.apim.checkrules.model.definition.GraviteeApiDefinition;
@@ -13,17 +19,10 @@ import fr.gouv.esante.apim.checkrules.services.MessageProvider;
 import fr.gouv.esante.apim.checkrules.services.rulesvalidation.RulesRegistry;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Set;
 
 @Component
 @Getter
 @Setter
-@Slf4j
 public class HealthcheckSecured extends AbstractRule {
 
     /**
