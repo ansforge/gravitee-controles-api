@@ -57,10 +57,10 @@ class NoEndpointHealthcheckTest extends AbstractIntegrationTest {
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
-        Optional<RuleResult> rule6_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.healthcheckactivation.name"))).findFirst();
-        if(rule6_1.isPresent()) {
-            assertFalse(rule6_1.get().isSuccess());
-            assertEquals(expectedMessage, rule6_1.get().getMessage());
+        Optional<RuleResult> rule6Result = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.healthcheckactivation.name"))).findFirst();
+        if(rule6Result.isPresent()) {
+            assertFalse(rule6Result.get().isSuccess());
+            assertEquals(expectedMessage, rule6Result.get().getMessage());
         }
     }
 }

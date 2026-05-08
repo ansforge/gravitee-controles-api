@@ -57,10 +57,10 @@ class LoggingIsAbsentTest extends AbstractIntegrationTest {
         assertTrue(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
-        Optional<RuleResult> rule6_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.logging.name"))).findFirst();
-        if(rule6_3.isPresent()) {
-            assertTrue(rule6_3.get().isSuccess());
-            assertEquals(expectedMessage, rule6_3.get().getMessage());
+        Optional<RuleResult> loggingRule = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.logging.name"))).findFirst();
+        if(loggingRule.isPresent()) {
+            assertTrue(loggingRule.get().isSuccess());
+            assertEquals(expectedMessage, loggingRule.get().getMessage());
         }
     }
 }

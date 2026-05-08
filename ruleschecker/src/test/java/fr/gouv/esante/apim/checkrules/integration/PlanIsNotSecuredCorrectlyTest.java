@@ -57,10 +57,10 @@ class PlanIsNotSecuredCorrectlyTest extends AbstractIntegrationTest {
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
-        Optional<RuleResult> rule3_1_1 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.securedplan.name"))).findFirst();
-        if(rule3_1_1.isPresent()) {
-            assertFalse(rule3_1_1.get().isSuccess());
-            assertEquals(expectedMessage, rule3_1_1.get().getMessage());
+        Optional<RuleResult> securedPlanRule = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.securedplan.name"))).findFirst();
+        if(securedPlanRule.isPresent()) {
+            assertFalse(securedPlanRule.get().isSuccess());
+            assertEquals(expectedMessage, securedPlanRule.get().getMessage());
         }
     }
 }
