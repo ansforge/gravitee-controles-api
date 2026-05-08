@@ -61,10 +61,10 @@ class VHostDoesNotMatchAnyMappingHostnameTest extends AbstractIntegrationTest {
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
-        Optional<RuleResult> rule3_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.subdomainconfig.name"))).findFirst();
-        if(rule3_3.isPresent()) {
-            assertFalse(rule3_3.get().isSuccess());
-            assertEquals(expectedMessage, rule3_3.get().getMessage());
+        Optional<RuleResult> rule3Result = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase(messageProvider.getMessage("rule.subdomainconfig.name"))).findFirst();
+        if(rule3Result.isPresent()) {
+            assertFalse(rule3Result.get().isSuccess());
+            assertEquals(expectedMessage, rule3Result.get().getMessage());
         }
 
     }
