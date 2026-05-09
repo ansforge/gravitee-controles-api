@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
@@ -97,17 +98,24 @@ public class ReportEmail implements Notification {
                     log.error("Erreur lors de l'écriture du fichier de résultats");
                 }
             }
-
-            try (PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
-                writer.print(report.toString());
-            } catch (IOException ex) {
-                log.error("Erreur lors de l'écriture du fichier de résultats", ex);
-            }
         } catch (IOException e) {
             log.error("Erreur lors de la création du fichier de résultats");
         }
 
+        writeReportToFile(tempFile, report);
+
         return tempFile;
+    }
+
+    private void writeReportToFile(File tempFile, Report report) {
+        if (tempFile == null) {
+            return;
+        }
+        try (PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
+            writer.print(report.toString());
+        } catch (IOException ex) {
+            log.error("Erreur lors de l'écriture du fichier de résultats", ex);
+        }
     }
 
     @Override
@@ -116,7 +124,7 @@ public class ReportEmail implements Notification {
         try {
             reportContent = Files.readString(getAttachment().toPath());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
         return String.format("Body : %s,%sReport : %s", getBody(), System.lineSeparator(), reportContent);
     }

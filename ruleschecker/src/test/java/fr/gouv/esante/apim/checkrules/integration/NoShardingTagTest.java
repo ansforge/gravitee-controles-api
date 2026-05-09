@@ -60,10 +60,10 @@ class NoShardingTagTest extends AbstractIntegrationTest {
         assertFalse(report.isSuccess());
         assertEquals(1, report.getGlobalCheckResults().size());
         List<RuleResult> apiResults = report.getGlobalCheckResults().get("Certificat_Structure (Certificat_Structure)").getRuleResults();
-        Optional<RuleResult> rule3_3 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase("3.3 - Un sous-domaine spécifique doit être configuré pour accéder à l’API")).findFirst();
-        if(rule3_3.isPresent()) {
-            assertFalse(rule3_3.get().isSuccess());
-            assertEquals(expectedMessage, rule3_3.get().getMessage());
+        Optional<RuleResult> rule33 = apiResults.stream().filter(r -> r.getRuleName().equalsIgnoreCase("3.3 - Un sous-domaine spécifique doit être configuré pour accéder à l’API")).findFirst();
+        if(rule33.isPresent()) {
+            assertFalse(rule33.get().isSuccess());
+            assertEquals(expectedMessage, rule33.get().getMessage());
         }
 
     }
