@@ -41,6 +41,7 @@ class GroupAssignmentTest extends GroupAssignment {
 
     @BeforeEach
     void setUp() {
+        // No setup required for this test class
     }
 
     @Test
