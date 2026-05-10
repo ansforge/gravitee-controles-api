@@ -51,9 +51,8 @@ class ContextPathModeInsteadofVHostTest extends AbstractIntegrationTest {
 
     @Test
     void testContextPathModeInsteadofVHost() throws Exception {
-        String expectedMessage = String.format(
-                messageProvider.getMessage("rule.subdomainconfig.msg.failure") +
-                messageProvider.getMessage("rule.subdomainconfig.msg.notvhostmode"),
+        String expectedMessage = messageProvider.getMessage("rule.subdomainconfig.msg.failure") +
+                String.format(messageProvider.getMessage("rule.subdomainconfig.msg.notvhostmode"),
                 System.lineSeparator()
         );
 
